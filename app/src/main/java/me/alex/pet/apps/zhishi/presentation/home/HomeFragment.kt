@@ -48,7 +48,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun renderState(state: HomeViewState) = with(binding) {
-        contentsAdapter.data = state.contents
+        contentsAdapter.items = state.contents
     }
 
     override fun onDestroyView() {

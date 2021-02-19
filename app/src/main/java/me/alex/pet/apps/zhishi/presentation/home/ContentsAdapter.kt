@@ -11,59 +11,73 @@ import me.alex.pet.apps.zhishi.presentation.home.model.ContentsElement
 
 class ContentsAdapter(
         private val onSectionClick: (Long) -> Unit
-) : RecyclerView.Adapter<ContentsAdapter.Holder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var data: List<ContentsElement> = emptyList()
+    var items: List<ContentsElement> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
     override fun getItemViewType(position: Int): Int {
-        return when (data[position]) {
+        return when (items[position]) {
             is ContentsElement.Part -> R.layout.item_generic_title
             is ContentsElement.Chapter -> R.layout.item_generic_subtitle
             is ContentsElement.Section -> R.layout.item_clickable_section
         }
     }
 
-    override fun getItemCount() = data.size
+    override fun getItemCount() = items.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        return Holder(view, onSectionClick)
+        return when (viewType) {
+            R.layout.item_generic_title -> PartHolder(view)
+            R.layout.item_generic_subtitle -> ChapterHolder(view)
+            R.layout.item_clickable_section -> SectionHolder(view, onSectionClick)
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
+        }
     }
 
-    override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(data[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = items[position]
+        when (holder) {
+            is PartHolder -> holder.bind(item as ContentsElement.Part)
+            is ChapterHolder -> holder.bind(item as ContentsElement.Chapter)
+            is SectionHolder -> holder.bind(item as ContentsElement.Section)
+            else -> throw IllegalArgumentException("Unknown holder type: ${holder::class.java}")
+        }
     }
 
 
-    class Holder(itemView: View, private val onSectionClick: (Long) -> Unit) : RecyclerView.ViewHolder(itemView) {
+    class PartHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val textView = itemView.findViewById<TextView>(R.id.content_tv)
 
-        fun bind(item: ContentsElement) {
-            when (item) {
-                is ContentsElement.Part -> bindPart(item)
-                is ContentsElement.Chapter -> bindChapter(item)
-                is ContentsElement.Section -> bindSection(item)
-            }
+        fun bind(item: ContentsElement.Part) {
+            textView.text = item.name
         }
+    }
 
-        private fun bindPart(part: ContentsElement.Part) {
-            textView.text = part.name
-            textView.setOnClickListener(null)
+    class ChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val textView = itemView.findViewById<TextView>(R.id.content_tv)
+
+        fun bind(item: ContentsElement.Chapter) {
+            textView.text = item.name
         }
+    }
 
-        private fun bindChapter(chapter: ContentsElement.Chapter) {
-            textView.text = chapter.name
-            textView.setOnClickListener(null)
-        }
+    class SectionHolder(
+            itemView: View,
+            private val onSectionClick: (Long) -> Unit
+    ) : RecyclerView.ViewHolder(itemView) {
 
-        private fun bindSection(section: ContentsElement.Section) {
-            textView.text = section.name.toSpannedString()
-            textView.setOnClickListener { onSectionClick.invoke(section.id) }
+        private val textView = itemView.findViewById<TextView>(R.id.content_tv)
+
+        fun bind(item: ContentsElement.Section) {
+            textView.text = item.name.toSpannedString()
+            textView.setOnClickListener { onSectionClick.invoke(item.id) }
         }
     }
 }
