@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ActivityHostBinding
 import me.alex.pet.apps.zhishi.presentation.home.HomeFragment
+import me.alex.pet.apps.zhishi.presentation.section.SectionFragment
 
 class HostActivity : AppCompatActivity() {
 
@@ -20,5 +21,16 @@ class HostActivity : AppCompatActivity() {
                     .add(R.id.fragment_container, HomeFragment.newInstance())
                     .commit()
         }
+    }
+
+    fun navigateToSection(sectionId: Long) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SectionFragment.newInstance(sectionId))
+                .addToBackStack("SECTION")
+                .commit()
+    }
+
+    fun navigateBack() {
+        supportFragmentManager.popBackStack()
     }
 }

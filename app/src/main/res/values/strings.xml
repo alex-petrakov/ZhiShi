@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ZhiShi</string>
+    <string name="section_rules_range">§§ %d–%d</string>
 </resources>
