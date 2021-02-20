@@ -1,12 +1,19 @@
 package me.alex.pet.apps.zhishi.presentation.home
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.CharacterStyle
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
-import me.alex.pet.apps.zhishi.presentation.common.toSpannedString
+import me.alex.pet.apps.zhishi.domain.CharacterStyleType
+import me.alex.pet.apps.zhishi.domain.StyledText
 import me.alex.pet.apps.zhishi.presentation.home.model.ContentsElement
 
 class ContentsAdapter(
@@ -79,5 +86,28 @@ class ContentsAdapter(
             textView.text = item.name.toSpannedString()
             textView.setOnClickListener { onSectionClick.invoke(item.id) }
         }
+    }
+}
+
+
+private fun StyledText.toSpannedString(): Spanned {
+    val spansAndPositions = characterStyles.mapNotNull { style ->
+        when (val span = style.type.toSpan()) {
+            null -> null
+            else -> Triple(span, style.start, style.end)
+        }
+    }
+    val spannable = SpannableString(string)
+    spansAndPositions.forEach { (span, start, end) ->
+        spannable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
+    return spannable
+}
+
+private fun CharacterStyleType.toSpan(): CharacterStyle? {
+    return when (this) {
+        CharacterStyleType.EMPHASIS -> StyleSpan(Typeface.ITALIC)
+        CharacterStyleType.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)
+        else -> null
     }
 }
