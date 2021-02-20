@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.alex.pet.apps.zhishi.R
@@ -28,6 +29,10 @@ class SectionFragment : Fragment() {
         parametersOf(sectionId)
     }
 
+    private val rulesAdapter = RulesAdapter { clickedRuleId ->
+        Toast.makeText(requireContext(), "$clickedRuleId", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentSectionBinding.inflate(inflater, container, false)
         return binding.root
@@ -42,7 +47,7 @@ class SectionFragment : Fragment() {
     private fun prepareView() = with(binding) {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = RulesAdapter()
+            adapter = rulesAdapter
         }
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_action_up)
@@ -56,6 +61,7 @@ class SectionFragment : Fragment() {
 
     private fun render(state: SectionViewState) = with(binding) {
         toolbar.title = getString(R.string.section_rules_range, state.rulesRange.first, state.rulesRange.last)
+        rulesAdapter.items = state.elements
     }
 
     override fun onStart() {
