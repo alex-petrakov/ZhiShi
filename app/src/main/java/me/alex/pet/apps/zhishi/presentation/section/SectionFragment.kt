@@ -44,6 +44,10 @@ class SectionFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = RulesAdapter()
         }
+        toolbar.apply {
+            setNavigationIcon(R.drawable.ic_action_up)
+            setNavigationContentDescription(R.string.app_navigate_up)
+        }
     }
 
     private fun subscribeToModel() = with(viewModel) {
@@ -52,6 +56,13 @@ class SectionFragment : Fragment() {
 
     private fun render(state: SectionViewState) = with(binding) {
         toolbar.title = getString(R.string.section_rules_range, state.rulesRange.first, state.rulesRange.last)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     override fun onDestroyView() {

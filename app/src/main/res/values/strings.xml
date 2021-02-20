@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ZhiShi</string>
+    <string name="app_navigate_up">Navigate up</string>
     <string name="section_rules_range">§§ %d–%d</string>
 </resources>
