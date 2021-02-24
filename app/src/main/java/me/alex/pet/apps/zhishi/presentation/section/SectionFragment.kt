@@ -23,9 +23,7 @@ class SectionFragment : Fragment() {
 
     private val viewModel by viewModel<SectionViewModel> {
         val args = requireArguments()
-        if (!args.containsKey(ARG_SECTION_ID)) {
-            throw IllegalStateException("Required section id argument is missing")
-        }
+        check(args.containsKey(ARG_SECTION_ID)) { "Required section id argument is missing" }
         val sectionId = args.getLong(ARG_SECTION_ID)
         parametersOf(sectionId)
     }
