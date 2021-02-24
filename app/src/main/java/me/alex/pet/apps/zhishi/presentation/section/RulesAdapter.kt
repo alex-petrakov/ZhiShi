@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.presentation.common.toSpannedString
-import me.alex.pet.apps.zhishi.presentation.section.model.DisplayableElement
 
 class RulesAdapter(private val onRuleClick: (Long) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

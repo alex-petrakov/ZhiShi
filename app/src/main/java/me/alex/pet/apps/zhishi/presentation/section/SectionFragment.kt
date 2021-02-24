@@ -11,7 +11,6 @@ import me.alex.pet.apps.zhishi.databinding.FragmentSectionBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.observe
 import me.alex.pet.apps.zhishi.presentation.rule.ViewEffect
-import me.alex.pet.apps.zhishi.presentation.section.model.SectionViewState
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -59,7 +58,7 @@ class SectionFragment : Fragment() {
         viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
-    private fun render(state: SectionViewState) = with(binding) {
+    private fun render(state: ViewState) = with(binding) {
         val ruleNumbersRange = state.ruleNumbersRange
         toolbar.title = when (ruleNumbersRange.first) {
             ruleNumbersRange.last -> getString(R.string.section_rule_number, ruleNumbersRange.first)
