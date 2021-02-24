@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import me.alex.pet.apps.zhishi.databinding.FragmentHomeBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.observe
-import me.alex.pet.apps.zhishi.presentation.home.model.HomeViewEffect
-import me.alex.pet.apps.zhishi.presentation.home.model.HomeViewState
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -48,13 +46,13 @@ class HomeFragment : Fragment() {
         viewEffect.observe(viewLifecycleOwner) { effect -> handleEffect(effect) }
     }
 
-    private fun handleEffect(effect: HomeViewEffect) {
+    private fun handleEffect(effect: ViewEffect) {
         when (effect) {
-            is HomeViewEffect.NavigateToSection -> (requireActivity() as HostActivity).navigateToSection(effect.sectionId)
+            is ViewEffect.NavigateToSection -> (requireActivity() as HostActivity).navigateToSection(effect.sectionId)
         }
     }
 
-    private fun renderState(state: HomeViewState) = with(binding) {
+    private fun renderState(state: ViewState) = with(binding) {
         contentsAdapter.items = state.contents
     }
 

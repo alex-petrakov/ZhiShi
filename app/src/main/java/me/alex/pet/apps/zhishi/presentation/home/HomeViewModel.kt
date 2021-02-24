@@ -9,28 +9,25 @@ import me.alex.pet.apps.zhishi.domain.contents.ContentsChapter
 import me.alex.pet.apps.zhishi.domain.contents.ContentsPart
 import me.alex.pet.apps.zhishi.domain.contents.ContentsSection
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
-import me.alex.pet.apps.zhishi.presentation.home.model.ContentsElement
-import me.alex.pet.apps.zhishi.presentation.home.model.HomeViewEffect
-import me.alex.pet.apps.zhishi.presentation.home.model.HomeViewState
 
 class HomeViewModel(rulesRepository: RulesRepository) : ViewModel() {
 
-    val viewState: LiveData<HomeViewState> = liveData {
+    val viewState: LiveData<ViewState> = liveData {
         val contents = rulesRepository.getContents()
         emit(contents.toViewState())
     }
 
-    private val _viewEffect = SingleLiveEvent<HomeViewEffect>()
+    private val _viewEffect = SingleLiveEvent<ViewEffect>()
 
-    val viewEffect: LiveData<HomeViewEffect> get() = _viewEffect
+    val viewEffect: LiveData<ViewEffect> get() = _viewEffect
 
     fun onClickSection(sectionId: Long) {
-        _viewEffect.value = HomeViewEffect.NavigateToSection(sectionId)
+        _viewEffect.value = ViewEffect.NavigateToSection(sectionId)
     }
 }
 
-private fun Contents.toViewState(): HomeViewState {
-    return HomeViewState(toUiModel())
+private fun Contents.toViewState(): ViewState {
+    return ViewState(toUiModel())
 }
 
 private fun Contents.toUiModel(): List<ContentsElement> {

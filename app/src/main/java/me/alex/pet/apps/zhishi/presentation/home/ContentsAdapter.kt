@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.CharacterStyleType
 import me.alex.pet.apps.zhishi.domain.StyledText
-import me.alex.pet.apps.zhishi.presentation.home.model.ContentsElement
 
 class ContentsAdapter(
         private val onSectionClick: (Long) -> Unit

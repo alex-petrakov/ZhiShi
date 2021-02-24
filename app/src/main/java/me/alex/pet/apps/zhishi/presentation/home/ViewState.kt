@@ -1,8 +1,8 @@
-package me.alex.pet.apps.zhishi.presentation.home.model
+package me.alex.pet.apps.zhishi.presentation.home
 
 import me.alex.pet.apps.zhishi.domain.StyledText
 
-data class HomeViewState(val contents: List<ContentsElement>)
+data class ViewState(val contents: List<ContentsElement>)
 
 sealed class ContentsElement {
     data class Part(val name: String) : ContentsElement()
