@@ -60,7 +60,11 @@ class SectionFragment : Fragment() {
     }
 
     private fun render(state: SectionViewState) = with(binding) {
-        toolbar.title = getString(R.string.section_rules_range, state.rulesRange.first, state.rulesRange.last)
+        val ruleNumbersRange = state.ruleNumbersRange
+        toolbar.title = when (ruleNumbersRange.first) {
+            ruleNumbersRange.last -> getString(R.string.section_rule_number, ruleNumbersRange.first)
+            else -> getString(R.string.section_rule_numbers_range, ruleNumbersRange.first, ruleNumbersRange.last)
+        }
         rulesAdapter.items = state.elements
     }
 

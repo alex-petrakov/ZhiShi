@@ -2,5 +2,6 @@
     <string name="app_name">ZhiShi</string>
     <string name="app_navigate_up">Navigate up</string>
     <string name="app_rule_number">§ %d</string>
-    <string name="section_rules_range">§§ %d–%d</string>
+    <string name="section_rule_numbers_range">§§ %d–%d</string>
+    <string name="section_rule_number">§ %d</string>
 </resources>

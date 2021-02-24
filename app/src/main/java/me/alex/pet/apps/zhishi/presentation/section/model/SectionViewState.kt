@@ -2,7 +2,7 @@ package me.alex.pet.apps.zhishi.presentation.section.model
 
 import me.alex.pet.apps.zhishi.domain.StyledText
 
-data class SectionViewState(val rulesRange: IntRange, val elements: List<DisplayableElement>)
+data class SectionViewState(val ruleNumbersRange: IntRange, val elements: List<DisplayableElement>)
 
 sealed class DisplayableElement {
     data class Heading(val content: StyledText) : DisplayableElement()
