@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
+import me.alex.pet.apps.zhishi.presentation.common.observe
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -29,9 +31,24 @@ class RuleFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-        val ruleId = requireArguments().getLong(ARG_RULE_ID)
-        binding.textView.text = "Rule ID $ruleId"
+        prepareView()
+        subscribeToModel()
+    }
+
+    private fun prepareView() = with(binding) {
+        toolbar.apply {
+            setNavigationIcon(R.drawable.ic_action_up)
+            setNavigationOnClickListener { requireActivity().onBackPressed() }
+        }
+    }
+
+    private fun subscribeToModel() = with(viewModel) {
+        viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
+    }
+
+    private fun render(state: ViewState) = with(binding) {
+        toolbar.title = getString(R.string.rule_rule_number, state.ruleNumber)
+        ruleContentTv.text = state.ruleContent.string
     }
 
     override fun onDestroyView() {
