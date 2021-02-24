@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.home
+package me.alex.pet.apps.zhishi.presentation.contents
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,25 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import me.alex.pet.apps.zhishi.databinding.FragmentHomeBinding
+import me.alex.pet.apps.zhishi.databinding.FragmentContentsBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.observe
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class HomeFragment : Fragment() {
+class ContentsFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentContentsBinding? = null
 
     private val binding get() = _binding!!
 
-    private val viewModel by viewModel<HomeViewModel>()
+    private val viewModel by viewModel<ContentsViewModel>()
 
     private val contentsAdapter = ContentsAdapter { clickedSectionId ->
         viewModel.onClickSection(clickedSectionId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentContentsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -62,6 +62,6 @@ class HomeFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = HomeFragment()
+        fun newInstance() = ContentsFragment()
     }
 }

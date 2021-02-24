@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.home
+package me.alex.pet.apps.zhishi.presentation.contents
 
 import me.alex.pet.apps.zhishi.domain.StyledText
 

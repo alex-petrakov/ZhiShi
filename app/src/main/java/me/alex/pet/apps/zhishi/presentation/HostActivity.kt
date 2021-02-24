@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ActivityHostBinding
-import me.alex.pet.apps.zhishi.presentation.home.HomeFragment
+import me.alex.pet.apps.zhishi.presentation.contents.ContentsFragment
 import me.alex.pet.apps.zhishi.presentation.rule.RuleFragment
 import me.alex.pet.apps.zhishi.presentation.section.SectionFragment
 
@@ -19,7 +19,7 @@ class HostActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, HomeFragment.newInstance())
+                    .add(R.id.fragment_container, ContentsFragment.newInstance())
                     .commit()
         }
     }

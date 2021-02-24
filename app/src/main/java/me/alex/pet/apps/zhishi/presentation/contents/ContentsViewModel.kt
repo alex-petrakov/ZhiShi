@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.home
+package me.alex.pet.apps.zhishi.presentation.contents
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +10,7 @@ import me.alex.pet.apps.zhishi.domain.contents.ContentsPart
 import me.alex.pet.apps.zhishi.domain.contents.ContentsSection
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 
-class HomeViewModel(rulesRepository: RulesRepository) : ViewModel() {
+class ContentsViewModel(rulesRepository: RulesRepository) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
         val contents = rulesRepository.getContents()
