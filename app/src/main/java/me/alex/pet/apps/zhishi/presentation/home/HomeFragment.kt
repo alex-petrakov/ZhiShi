@@ -22,7 +22,7 @@ class HomeFragment : Fragment() {
     private val viewModel by viewModel<HomeViewModel>()
 
     private val contentsAdapter = ContentsAdapter { clickedSectionId ->
-        viewModel.onNavigateToSection(clickedSectionId)
+        viewModel.onClickSection(clickedSectionId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -24,7 +24,7 @@ class HomeViewModel(rulesRepository: RulesRepository) : ViewModel() {
 
     val viewEffect: LiveData<HomeViewEffect> get() = _viewEffect
 
-    fun onNavigateToSection(sectionId: Long) {
+    fun onClickSection(sectionId: Long) {
         _viewEffect.value = HomeViewEffect.NavigateToSection(sectionId)
     }
 }
