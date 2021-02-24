@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSectionBinding
+import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.observe
+import me.alex.pet.apps.zhishi.presentation.rule.ViewEffect
 import me.alex.pet.apps.zhishi.presentation.section.model.SectionViewState
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -30,7 +31,7 @@ class SectionFragment : Fragment() {
     }
 
     private val rulesAdapter = RulesAdapter { clickedRuleId ->
-        Toast.makeText(requireContext(), "$clickedRuleId", Toast.LENGTH_SHORT).show()
+        viewModel.onClickRule(clickedRuleId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -57,6 +58,7 @@ class SectionFragment : Fragment() {
 
     private fun subscribeToModel() = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
+        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
     private fun render(state: SectionViewState) = with(binding) {
@@ -66,6 +68,12 @@ class SectionFragment : Fragment() {
             else -> getString(R.string.section_rule_numbers_range, ruleNumbersRange.first, ruleNumbersRange.last)
         }
         rulesAdapter.items = state.elements
+    }
+
+    private fun handle(effect: ViewEffect) {
+        when (effect) {
+            is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.ruleId)
+        }
     }
 
     override fun onStart() {

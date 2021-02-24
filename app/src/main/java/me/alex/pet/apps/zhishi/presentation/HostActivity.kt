@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ActivityHostBinding
 import me.alex.pet.apps.zhishi.presentation.home.HomeFragment
+import me.alex.pet.apps.zhishi.presentation.rule.RuleFragment
 import me.alex.pet.apps.zhishi.presentation.section.SectionFragment
 
 class HostActivity : AppCompatActivity() {
@@ -27,6 +28,13 @@ class HostActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SectionFragment.newInstance(sectionId))
                 .addToBackStack("SECTION")
+                .commit()
+    }
+
+    fun navigateToRule(ruleId: Long) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, RuleFragment.newInstance(ruleId))
+                .addToBackStack("RULE")
                 .commit()
     }
 

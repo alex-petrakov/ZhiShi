@@ -6,6 +6,8 @@ import androidx.lifecycle.liveData
 import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.domain.rules.Rule
 import me.alex.pet.apps.zhishi.domain.rules.Section
+import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
+import me.alex.pet.apps.zhishi.presentation.rule.ViewEffect
 import me.alex.pet.apps.zhishi.presentation.section.model.DisplayableElement
 import me.alex.pet.apps.zhishi.presentation.section.model.SectionViewState
 
@@ -20,6 +22,14 @@ class SectionViewModel(
         val ruleNumbersRange = section.ruleNumbersRange()
         val displayableElements = section.toUiModel()
         emit(SectionViewState(ruleNumbersRange, displayableElements))
+    }
+
+    private val _viewEffect = SingleLiveEvent<ViewEffect>()
+
+    val viewEffect: LiveData<ViewEffect> get() = _viewEffect
+
+    fun onClickRule(ruleId: Long) {
+        _viewEffect.value = ViewEffect.NavigateToRule(ruleId)
     }
 }
 
