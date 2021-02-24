@@ -125,4 +125,8 @@ class RulesDataStore : RulesRepository {
     override suspend fun getSection(sectionId: Long): Section? {
         return sections[sectionId]
     }
+
+    override suspend fun getRule(ruleId: Long): Rule? {
+        return rules[ruleId]
+    }
 }
