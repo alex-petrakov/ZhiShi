@@ -5,7 +5,7 @@ data class StyledText(
         val paragraphStyles: List<ParagraphStyle> = emptyList(),
         val indents: List<Indent> = emptyList(),
         val characterStyles: List<CharacterStyle> = emptyList(),
-        val links: List<Links> = emptyList()
+        val links: List<Link> = emptyList()
 )
 
 data class ParagraphStyle(val start: Int, val end: Int, val type: ParagraphStyleType)
@@ -25,4 +25,4 @@ enum class CharacterStyleType {
     MISSPELL
 }
 
-data class Links(val start: Int, val end: Int, val ruleId: Int)
+data class Link(val start: Int, val end: Int, val ruleId: Int)
