@@ -25,4 +25,4 @@ enum class CharacterStyleType {
     MISSPELL
 }
 
-data class Link(val start: Int, val end: Int, val ruleId: Int)
+data class Link(val start: Int, val end: Int, val ruleId: Long)
