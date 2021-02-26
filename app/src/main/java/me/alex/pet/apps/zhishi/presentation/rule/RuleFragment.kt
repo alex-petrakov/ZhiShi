@@ -1,13 +1,20 @@
 package me.alex.pet.apps.zhishi.presentation.rule
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
+import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.observe
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultIndentConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultLinkConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -22,6 +29,17 @@ class RuleFragment : Fragment() {
         check(args.containsKey(ARG_RULE_ID)) { "Required rule ID argument is missing" }
         val ruleId = args.getLong(ARG_RULE_ID)
         parametersOf(ruleId)
+    }
+
+    private val styledTextConverter by lazy {
+        StyledTextConverter(
+                paragraphStyleConverter = DefaultParagraphStyleConverter(requireActivity().theme),
+                indentConverter = DefaultIndentConverter(),
+                characterStyleConverter = DefaultCharStyleConverter(requireActivity().theme),
+                linkConverter = DefaultLinkConverter { clickedRuleId ->
+                    viewModel.onRuleLinkClick(clickedRuleId)
+                }
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,15 +58,23 @@ class RuleFragment : Fragment() {
             setNavigationIcon(R.drawable.ic_action_up)
             setNavigationOnClickListener { requireActivity().onBackPressed() }
         }
+        ruleContentTv.movementMethod = LinkMovementMethod() // TODO: Use BetterLinkMovementMethod
     }
 
     private fun subscribeToModel() = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
+        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
     private fun render(state: ViewState) = with(binding) {
         toolbar.title = getString(R.string.rule_rule_number, state.ruleNumber)
-        ruleContentTv.text = state.ruleContent.string
+        ruleContentTv.text = styledTextConverter.convertToSpanned(state.ruleContent)
+    }
+
+    private fun handle(effect: ViewEffect) {
+        when (effect) {
+            is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.ruleId)
+        }
     }
 
     override fun onDestroyView() {

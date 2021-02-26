@@ -1,9 +1,6 @@
 package me.alex.pet.apps.zhishi.data
 
-import me.alex.pet.apps.zhishi.domain.CharacterStyle
-import me.alex.pet.apps.zhishi.domain.CharacterStyleType
-import me.alex.pet.apps.zhishi.domain.RulesRepository
-import me.alex.pet.apps.zhishi.domain.StyledText
+import me.alex.pet.apps.zhishi.domain.*
 import me.alex.pet.apps.zhishi.domain.contents.Contents
 import me.alex.pet.apps.zhishi.domain.contents.ContentsChapter
 import me.alex.pet.apps.zhishi.domain.contents.ContentsPart
@@ -80,7 +77,21 @@ class RulesDataStore : RulesRepository {
                     0,
                     1,
                     StyledText(
-                            "После ж, ч, ш, щ не пишутся ю, я, ы, а пишутся у, а, и, например: чудо, щука, час, роща, жир, шить.\n\nБуквы ю и я допускаются после этих согласных только в иноязычных словах (преимущественно французских), например: жюри, парашют (в том числе — в именах собственных, например: Сен-Жюст), а также в сложносокращённых словах и буквенных аббревиатурах, в которых, по общему правилу, допускаются любые сочетания букв (см. § 110)."
+                            "После ж, ч, ш, щ не пишутся ю, я, ы, а пишутся у, а, и, например: чудо, щука, час, роща, жир, шить.\n\nБуквы ю и я допускаются после этих согласных только в иноязычных словах (преимущественно французских), например: жюри, парашют (в том числе — в именах собственных, например: Сен-Жюст), а также в сложносокращённых словах и буквенных аббревиатурах, в которых, по общему правилу, допускаются любые сочетания букв (см. § 110).",
+                            characterStyles = listOf(
+                                    CharacterStyle(6, 7, CharacterStyleType.EMPHASIS),
+                                    CharacterStyle(0, 5, CharacterStyleType.STRONG_EMPHASIS),
+                                    CharacterStyle(9, 15, CharacterStyleType.MISSPELL)
+                            ),
+                            links = listOf(
+                                    Link(15, 20, 3)
+                            ),
+                            paragraphStyles = listOf(
+                                    ParagraphStyle(0, 99, ParagraphStyleType.QUOTE)
+                            ),
+                            indents = listOf(
+                                    Indent(0, 99, 1)
+                            )
                     )
             ),
             Rule(
