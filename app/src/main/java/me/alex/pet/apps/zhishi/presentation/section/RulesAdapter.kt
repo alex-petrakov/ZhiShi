@@ -1,20 +1,38 @@
 package me.alex.pet.apps.zhishi.presentation.section
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
-import me.alex.pet.apps.zhishi.presentation.common.toSpannedString
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.BasicCharStyleConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultIndentConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
 
-class RulesAdapter(private val onRuleClick: (Long) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RulesAdapter(
+        theme: Resources.Theme,
+        private val onRuleClick: (Long) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items: List<DisplayableElement> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
+
+    private val ruleContentStyledTextConverter = StyledTextConverter(
+            paragraphStyleConverter = DefaultParagraphStyleConverter(theme),
+            indentConverter = DefaultIndentConverter(),
+            characterStyleConverter = DefaultCharStyleConverter(theme)
+    )
+
+    private val headingStyledTextConverter = StyledTextConverter(
+            characterStyleConverter = BasicCharStyleConverter()
+    )
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
@@ -28,8 +46,8 @@ class RulesAdapter(private val onRuleClick: (Long) -> Unit) : RecyclerView.Adapt
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.item_generic_indented_subtitle -> HeadingHolder(view)
-            R.layout.item_rule_numbered -> RuleHolder(view, onRuleClick)
+            R.layout.item_generic_indented_subtitle -> HeadingHolder(view, headingStyledTextConverter)
+            R.layout.item_rule_numbered -> RuleHolder(view, ruleContentStyledTextConverter, onRuleClick)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -43,17 +61,21 @@ class RulesAdapter(private val onRuleClick: (Long) -> Unit) : RecyclerView.Adapt
         }
     }
 
-    private class HeadingHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private class HeadingHolder(
+            itemView: View,
+            private val styledTextConverter: StyledTextConverter
+    ) : RecyclerView.ViewHolder(itemView) {
 
         private val contentTextView = itemView.findViewById<TextView>(R.id.content_tv)
 
         fun bind(heading: DisplayableElement.Heading) {
-            contentTextView.text = heading.content.toSpannedString()
+            contentTextView.text = styledTextConverter.convertToSpanned(heading.content)
         }
     }
 
     private class RuleHolder(
             itemView: View,
+            private val styledTextConverter: StyledTextConverter,
             private val onRuleClick: (Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -63,7 +85,7 @@ class RulesAdapter(private val onRuleClick: (Long) -> Unit) : RecyclerView.Adapt
         fun bind(rule: DisplayableElement.Rule) {
             itemView.setOnClickListener { onRuleClick(rule.id) }
             numberTextView.text = itemView.context.getString(R.string.app_rule_number, rule.number)
-            contentTextView.text = rule.content.toSpannedString()
+            contentTextView.text = styledTextConverter.convertToSpanned(rule.content)
         }
     }
 }

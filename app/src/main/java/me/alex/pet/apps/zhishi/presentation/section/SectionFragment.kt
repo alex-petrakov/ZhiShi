@@ -26,8 +26,10 @@ class SectionFragment : Fragment() {
         parametersOf(sectionId)
     }
 
-    private val rulesAdapter = RulesAdapter { clickedRuleId ->
-        viewModel.onClickRule(clickedRuleId)
+    private val rulesAdapter by lazy {
+        RulesAdapter(requireActivity().theme) { clickedRuleId ->
+            viewModel.onClickRule(clickedRuleId)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
