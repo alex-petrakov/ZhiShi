@@ -7,7 +7,6 @@ import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.domain.rules.Rule
 import me.alex.pet.apps.zhishi.domain.rules.Section
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
-import me.alex.pet.apps.zhishi.presentation.rule.ViewEffect
 
 class SectionViewModel(
         private val sectionId: Long,
