@@ -81,7 +81,7 @@ class RulesDataStore : RulesRepository {
                             characterStyles = listOf(
                                     CharacterStyle(6, 7, CharacterStyleType.EMPHASIS),
                                     CharacterStyle(0, 5, CharacterStyleType.STRONG_EMPHASIS),
-                                    CharacterStyle(9, 15, CharacterStyleType.MISSPELL)
+                                    CharacterStyle(20, 90, CharacterStyleType.MISSPELL)
                             ),
                             links = listOf(
                                     Link(15, 20, 3)

@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="§ 1" />
 
-    <TextView
+    <me.alex.pet.apps.zhishi.presentation.common.FancyTextView
         android:id="@+id/content_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
