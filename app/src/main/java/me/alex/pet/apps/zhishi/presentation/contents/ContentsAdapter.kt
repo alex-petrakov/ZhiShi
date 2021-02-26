@@ -1,19 +1,13 @@
 package me.alex.pet.apps.zhishi.presentation.contents
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.CharacterStyle
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
-import me.alex.pet.apps.zhishi.domain.CharacterStyleType
-import me.alex.pet.apps.zhishi.domain.StyledText
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.BasicCharStyleConverter
 
 class ContentsAdapter(
         private val onSectionClick: (Long) -> Unit
@@ -24,6 +18,10 @@ class ContentsAdapter(
             field = value
             notifyDataSetChanged()
         }
+
+    private val sectionStyledTextConverter = StyledTextConverter(
+            characterStyleConverter = BasicCharStyleConverter()
+    )
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
@@ -40,7 +38,7 @@ class ContentsAdapter(
         return when (viewType) {
             R.layout.item_generic_title -> PartHolder(view)
             R.layout.item_generic_subtitle -> ChapterHolder(view)
-            R.layout.item_clickable_section -> SectionHolder(view, onSectionClick)
+            R.layout.item_clickable_section -> SectionHolder(view, sectionStyledTextConverter, onSectionClick)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -56,7 +54,7 @@ class ContentsAdapter(
     }
 
 
-    class PartHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private class PartHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val textView = itemView.findViewById<TextView>(R.id.content_tv)
 
@@ -65,7 +63,7 @@ class ContentsAdapter(
         }
     }
 
-    class ChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private class ChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val textView = itemView.findViewById<TextView>(R.id.content_tv)
 
@@ -74,39 +72,17 @@ class ContentsAdapter(
         }
     }
 
-    class SectionHolder(
+    private class SectionHolder(
             itemView: View,
+            private val styledTextConverter: StyledTextConverter,
             private val onSectionClick: (Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val textView = itemView.findViewById<TextView>(R.id.content_tv)
 
         fun bind(item: ContentsElement.Section) {
-            textView.text = item.name.toSpannedString()
             textView.setOnClickListener { onSectionClick.invoke(item.id) }
+            textView.text = styledTextConverter.convertToSpanned(item.name)
         }
-    }
-}
-
-
-private fun StyledText.toSpannedString(): Spanned {
-    val spansAndPositions = characterStyles.mapNotNull { style ->
-        when (val span = style.type.toSpan()) {
-            null -> null
-            else -> Triple(span, style.start, style.end)
-        }
-    }
-    val spannable = SpannableString(string)
-    spansAndPositions.forEach { (span, start, end) ->
-        spannable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    }
-    return spannable
-}
-
-private fun CharacterStyleType.toSpan(): CharacterStyle? {
-    return when (this) {
-        CharacterStyleType.EMPHASIS -> StyleSpan(Typeface.ITALIC)
-        CharacterStyleType.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)
-        else -> null
     }
 }
