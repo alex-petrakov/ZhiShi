@@ -9,6 +9,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.ParagraphStyle
+import me.alex.pet.apps.zhishi.domain.ParagraphStyleType
 import me.alex.pet.apps.zhishi.presentation.common.resolveColorAttr
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
 import kotlin.math.roundToInt
@@ -20,7 +21,11 @@ class DefaultParagraphStyleConverter(theme: Resources.Theme) : ElementConverter<
     private val stripeWidth = 2.dp(theme.resources)
 
     override fun convertToSpan(element: ParagraphStyle): PositionAwareSpan? {
-        return PositionAwareSpan(QuotationSpan(stripeColor, stripeWidth), element.start, element.end)
+        val span = when (element.type) {
+            ParagraphStyleType.QUOTE -> QuotationSpan(stripeColor, stripeWidth)
+            ParagraphStyleType.FOOTNOTE -> null
+        }
+        return span?.let { PositionAwareSpan(span, element.start, element.end) }
     }
 }
 
