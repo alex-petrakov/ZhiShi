@@ -4,13 +4,12 @@ import android.content.res.Resources
 import android.graphics.Typeface
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.text.style.UpdateAppearance
-import androidx.annotation.ColorInt
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.CharacterStyle
 import me.alex.pet.apps.zhishi.domain.CharacterStyleType
 import me.alex.pet.apps.zhishi.presentation.common.resolveColorAttr
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.ColoredUnderlineSpan
 
 class DefaultCharStyleConverter(private val theme: Resources.Theme) : ElementConverter<CharacterStyle> {
 
@@ -27,5 +26,3 @@ class DefaultCharStyleConverter(private val theme: Resources.Theme) : ElementCon
         return PositionAwareSpan(span, element.start, element.end)
     }
 }
-
-class ColoredUnderlineSpan(@ColorInt val color: Int) : UpdateAppearance
