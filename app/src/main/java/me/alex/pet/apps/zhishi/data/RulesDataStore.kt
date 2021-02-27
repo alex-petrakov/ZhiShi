@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.data
 
+import me.alex.pet.apps.zhishi.RulesQueries
 import me.alex.pet.apps.zhishi.domain.*
 import me.alex.pet.apps.zhishi.domain.contents.Contents
 import me.alex.pet.apps.zhishi.domain.contents.ContentsChapter
@@ -8,7 +9,7 @@ import me.alex.pet.apps.zhishi.domain.contents.ContentsSection
 import me.alex.pet.apps.zhishi.domain.rules.Rule
 import me.alex.pet.apps.zhishi.domain.rules.Section
 
-class RulesDataStore : RulesRepository {
+class RulesDataStore(private val rulesQueries: RulesQueries) : RulesRepository {
 
     private val vowelSections = listOf(
             ContentsSection(
