@@ -1,0 +1,5 @@
+findById:
+SELECT * FROM section WHERE id = ?;
+
+findByChapterId:
+SELECT * FROM section WHERE chapter_id = ? ORDER BY id;

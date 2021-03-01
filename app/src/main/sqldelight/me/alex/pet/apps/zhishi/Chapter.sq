@@ -1,0 +1,2 @@
+findByPartId:
+SELECT * FROM chapter WHERE part_id = ? ORDER BY id;

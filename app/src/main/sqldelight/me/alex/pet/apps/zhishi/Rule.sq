@@ -1,0 +1,5 @@
+findById:
+SELECT * FROM rule WHERE id = ?;
+
+findBySectionId:
+SELECT * FROM rule WHERE section_id = ? ORDER BY number;

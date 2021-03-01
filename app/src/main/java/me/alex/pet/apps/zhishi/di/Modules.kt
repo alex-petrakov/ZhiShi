@@ -16,7 +16,15 @@ val appModule = module {
     single<SqlDriver> { AndroidSqliteDriver(Database.Schema, androidContext(), "rules.db") }
     single { Database(get()) }
 
-    single<RulesRepository> { RulesDataStore(get<Database>().rulesQueries) }
+    single<RulesRepository> {
+        val db = get<Database>()
+        RulesDataStore(
+                db.partQueries,
+                db.chapterQueries,
+                db.sectionQueries,
+                db.ruleQueries
+        )
+    }
 
     viewModel { ContentsViewModel(get()) }
     viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get()) }
