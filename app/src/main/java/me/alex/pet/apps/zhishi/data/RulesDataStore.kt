@@ -1,11 +1,11 @@
 package me.alex.pet.apps.zhishi.data
 
+import com.squareup.moshi.Moshi
 import me.alex.pet.apps.zhishi.ChapterQueries
 import me.alex.pet.apps.zhishi.PartQueries
 import me.alex.pet.apps.zhishi.RuleQueries
 import me.alex.pet.apps.zhishi.SectionQueries
 import me.alex.pet.apps.zhishi.domain.RulesRepository
-import me.alex.pet.apps.zhishi.domain.StyledText
 import me.alex.pet.apps.zhishi.domain.contents.Contents
 import me.alex.pet.apps.zhishi.domain.contents.ContentsChapter
 import me.alex.pet.apps.zhishi.domain.contents.ContentsPart
@@ -17,8 +17,11 @@ class RulesDataStore(
         private val partQueries: PartQueries,
         private val chapterQueries: ChapterQueries,
         private val sectionQueries: SectionQueries,
-        private val ruleQueries: RuleQueries
+        private val ruleQueries: RuleQueries,
+        moshi: Moshi
 ) : RulesRepository {
+
+    private val markupAdapter = moshi.adapter(MarkupDto::class.java)
 
     override suspend fun getContents(): Contents {
         return partQueries.transactionWithResult {
@@ -37,27 +40,35 @@ class RulesDataStore(
 
     private fun findContentsSectionsByChapterId(chapterId: Long): List<ContentsSection> {
         return sectionQueries.findByChapterId(chapterId) { id, _, name, markup ->
-            ContentsSection(id, StyledText(name)) // TODO: Parse markup
+            val markupDto = markupAdapter.fromJson(markup)
+                    ?: throw IllegalStateException("Unable to parse markup")
+            ContentsSection(id, styledTextOf(name, markupDto))
         }.executeAsList()
     }
 
     override suspend fun getSection(sectionId: Long): Section? {
         return sectionQueries.transactionWithResult {
-            sectionQueries.findById(sectionId) { id, chapterId, name, markup ->
-                Section(id, StyledText(name), findRulesBySectionId(id)) // TODO: Parse markup
+            sectionQueries.findById(sectionId) { id, _, name, markup ->
+                val markupDto = markupAdapter.fromJson(markup)
+                        ?: throw IllegalStateException("Unable to parse markup")
+                Section(id, styledTextOf(name, markupDto), findRulesBySectionId(id))
             }.executeAsOneOrNull()
         }
     }
 
     private fun findRulesBySectionId(sectionId: Long): List<Rule> {
         return ruleQueries.findBySectionId(sectionId) { id, _, number, content, markup ->
-            Rule(id, number, StyledText(content)) // TODO: Parse markup
+            val markupDto = markupAdapter.fromJson(markup)
+                    ?: throw IllegalStateException("Unable to parse markup")
+            Rule(id, number, styledTextOf(content, markupDto))
         }.executeAsList()
     }
 
     override suspend fun getRule(ruleId: Long): Rule? {
         return ruleQueries.findById(ruleId) { id, _, number, content, markup ->
-            Rule(id, number, StyledText(content)) // TODO: Parse markup
+            val markupDto = markupAdapter.fromJson(markup)
+                    ?: throw IllegalStateException("Unable to parse markup")
+            Rule(id, number, styledTextOf(content, markupDto))
         }.executeAsOneOrNull()
     }
 }

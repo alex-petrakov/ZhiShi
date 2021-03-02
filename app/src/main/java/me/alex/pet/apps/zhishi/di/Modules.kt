@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.di
 
+import com.squareup.moshi.Moshi
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import me.alex.pet.apps.zhishi.Database
@@ -16,13 +17,16 @@ val appModule = module {
     single<SqlDriver> { AndroidSqliteDriver(Database.Schema, androidContext(), "rules.db") }
     single { Database(get()) }
 
+    single<Moshi> { Moshi.Builder().build() }
+
     single<RulesRepository> {
         val db = get<Database>()
         RulesDataStore(
                 db.partQueries,
                 db.chapterQueries,
                 db.sectionQueries,
-                db.ruleQueries
+                db.ruleQueries,
+                get()
         )
     }
 
