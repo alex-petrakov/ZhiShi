@@ -3,6 +3,8 @@ package me.alex.pet.apps.zhishi.presentation.section
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.domain.rules.Rule
 import me.alex.pet.apps.zhishi.domain.rules.Section
@@ -14,8 +16,10 @@ class SectionViewModel(
 ) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
-        val section = rulesRepository.getSection(sectionId)
-                ?: throw IllegalStateException("Section with ID $sectionId was not found") // TODO: Consider showing an empty view instead
+        val section = withContext(Dispatchers.IO) {
+            rulesRepository.getSection(sectionId)
+                    ?: throw IllegalStateException("Section with ID $sectionId was not found") // TODO: Consider showing an empty view instead
+        }
         val ruleNumbersRange = section.ruleNumbersRange()
         val displayableElements = section.toUiModel()
         emit(ViewState(ruleNumbersRange, displayableElements))

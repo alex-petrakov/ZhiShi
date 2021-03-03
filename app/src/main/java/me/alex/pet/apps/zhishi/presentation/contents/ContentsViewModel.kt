@@ -3,6 +3,8 @@ package me.alex.pet.apps.zhishi.presentation.contents
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.domain.contents.Contents
 import me.alex.pet.apps.zhishi.domain.contents.ContentsChapter
@@ -13,7 +15,9 @@ import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 class ContentsViewModel(rulesRepository: RulesRepository) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
-        val contents = rulesRepository.getContents()
+        val contents = withContext(Dispatchers.IO) {
+            rulesRepository.getContents()
+        }
         emit(contents.toViewState())
     }
 
