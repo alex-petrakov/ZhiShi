@@ -10,7 +10,7 @@ import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.observe
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultIndentConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultLinkConverter
@@ -32,7 +32,7 @@ class RuleFragment : Fragment() {
     }
 
     private val styledTextConverter by lazy {
-        StyledTextConverter(
+        StyledTextRenderer(
                 paragraphStyleConverter = DefaultParagraphStyleConverter(requireActivity().theme),
                 indentConverter = DefaultIndentConverter(),
                 characterStyleConverter = DefaultCharStyleConverter(requireActivity().theme),
@@ -68,7 +68,7 @@ class RuleFragment : Fragment() {
 
     private fun render(state: ViewState) = with(binding) {
         toolbar.title = getString(R.string.rule_rule_number, state.ruleNumber)
-        ruleContentTv.text = styledTextConverter.convertToSpanned(state.ruleContent)
+        styledTextConverter.render(state.ruleContent, ruleContentTv)
     }
 
     private fun handle(effect: ViewEffect) {

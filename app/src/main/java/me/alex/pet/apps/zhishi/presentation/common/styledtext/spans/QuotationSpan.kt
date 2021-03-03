@@ -6,16 +6,17 @@ import android.text.Layout
 import android.text.style.LeadingMarginSpan
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
-import kotlin.math.roundToInt
 
-data class QuotationSpan(@ColorInt val color: Int, @Px val stripeWidth: Int) : LeadingMarginSpan {
+data class QuotationSpan(
+        @ColorInt val color: Int,
+        @Px val stripeWidth: Int,
+        @Px val gapWidth: Int
+) : LeadingMarginSpan {
 
     init {
         require(stripeWidth > 0) { "Stripe width must be > 0, but it was $stripeWidth" }
+        require(gapWidth > 0) { "Gap width must be > 0, but it was $gapWidth" }
     }
-
-    @Px
-    private var gapWidth: Int = 0
 
     override fun getLeadingMargin(first: Boolean) = stripeWidth + gapWidth
 
@@ -33,8 +34,6 @@ data class QuotationSpan(@ColorInt val color: Int, @Px val stripeWidth: Int) : L
             first: Boolean,
             layout: Layout
     ) {
-        gapWidth = p.measureText(gapLengthSample).roundToInt()
-
         val oldStyle = p.style
         val oldAlpha = p.alpha
         val oldColor = p.color
@@ -50,5 +49,3 @@ data class QuotationSpan(@ColorInt val color: Int, @Px val stripeWidth: Int) : L
         p.color = oldColor
     }
 }
-
-private const val gapLengthSample = "  "

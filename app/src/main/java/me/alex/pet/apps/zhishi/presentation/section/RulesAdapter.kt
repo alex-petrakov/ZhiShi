@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.BasicCharStyleConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultIndentConverter
@@ -24,13 +24,13 @@ class RulesAdapter(
             notifyDataSetChanged()
         }
 
-    private val ruleContentStyledTextConverter = StyledTextConverter(
+    private val ruleContentStyledTextConverter = StyledTextRenderer(
             paragraphStyleConverter = DefaultParagraphStyleConverter(theme),
             indentConverter = DefaultIndentConverter(),
             characterStyleConverter = DefaultCharStyleConverter(theme)
     )
 
-    private val headingStyledTextConverter = StyledTextConverter(
+    private val headingStyledTextConverter = StyledTextRenderer(
             characterStyleConverter = BasicCharStyleConverter()
     )
 
@@ -63,19 +63,19 @@ class RulesAdapter(
 
     private class HeadingHolder(
             itemView: View,
-            private val styledTextConverter: StyledTextConverter
+            private val styledTextRenderer: StyledTextRenderer
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val contentTextView = itemView.findViewById<TextView>(R.id.content_tv)
 
         fun bind(heading: DisplayableElement.Heading) {
-            contentTextView.text = styledTextConverter.convertToSpanned(heading.content)
+            styledTextRenderer.render(heading.content, contentTextView)
         }
     }
 
     private class RuleHolder(
             itemView: View,
-            private val styledTextConverter: StyledTextConverter,
+            private val styledTextRenderer: StyledTextRenderer,
             private val onRuleClick: (Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -85,7 +85,7 @@ class RulesAdapter(
         fun bind(rule: DisplayableElement.Rule) {
             itemView.setOnClickListener { onRuleClick(rule.id) }
             numberTextView.text = itemView.context.getString(R.string.app_rule_number, rule.number)
-            contentTextView.text = styledTextConverter.convertToSpanned(rule.content)
+            styledTextRenderer.render(rule.content, contentTextView)
         }
     }
 }

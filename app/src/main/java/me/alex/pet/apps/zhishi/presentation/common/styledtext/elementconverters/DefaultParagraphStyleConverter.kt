@@ -1,6 +1,7 @@
 package me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters
 
 import android.content.res.Resources
+import android.text.TextPaint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.ParagraphStyle
 import me.alex.pet.apps.zhishi.domain.ParagraphStyleType
@@ -15,14 +16,20 @@ class DefaultParagraphStyleConverter(theme: Resources.Theme) : ElementConverter<
 
     private val stripeWidth = 2.dp(theme.resources)
 
-    override fun convertToSpan(element: ParagraphStyle): PositionAwareSpan? {
+    override fun convertToSpan(element: ParagraphStyle, textPaint: TextPaint): PositionAwareSpan? {
         val span = when (element.type) {
-            ParagraphStyleType.QUOTE -> QuotationSpan(stripeColor, stripeWidth)
+            ParagraphStyleType.QUOTE -> {
+                // TODO: Measuring the text each time is expensive. Consider adding some kind of caching.
+                val gapWidth = textPaint.measureText(gapLengthSample).roundToInt()
+                QuotationSpan(stripeColor, stripeWidth, gapWidth)
+            }
             ParagraphStyleType.FOOTNOTE -> null
         }
         return span?.let { PositionAwareSpan(span, element.start, element.end) }
     }
 }
+
+private const val gapLengthSample = "  "
 
 private fun Int.dp(resources: Resources): Int {
     return this * (resources.displayMetrics.density).roundToInt()

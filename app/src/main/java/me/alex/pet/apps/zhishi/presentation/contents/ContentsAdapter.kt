@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.BasicCharStyleConverter
 
 class ContentsAdapter(
@@ -19,7 +19,7 @@ class ContentsAdapter(
             notifyDataSetChanged()
         }
 
-    private val sectionStyledTextConverter = StyledTextConverter(
+    private val sectionStyledTextConverter = StyledTextRenderer(
             characterStyleConverter = BasicCharStyleConverter()
     )
 
@@ -74,7 +74,7 @@ class ContentsAdapter(
 
     private class SectionHolder(
             itemView: View,
-            private val styledTextConverter: StyledTextConverter,
+            private val styledTextRenderer: StyledTextRenderer,
             private val onSectionClick: (Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
@@ -82,7 +82,7 @@ class ContentsAdapter(
 
         fun bind(item: ContentsElement.Section) {
             textView.setOnClickListener { onSectionClick.invoke(item.id) }
-            textView.text = styledTextConverter.convertToSpanned(item.name)
+            styledTextRenderer.render(item.name, textView)
         }
     }
 }

@@ -5,12 +5,11 @@ import android.graphics.Paint
 import android.text.Layout
 import android.text.style.LeadingMarginSpan
 import androidx.annotation.Px
-import kotlin.math.roundToInt
 
-data class IndentSpan(val level: Int) : LeadingMarginSpan {
+data class IndentSpan(@Px val stepWidth: Int, val level: Int) : LeadingMarginSpan {
 
     @Px
-    private var indentWidth: Int = 0
+    private val indentWidth = stepWidth * level
 
     init {
         require(level in minLevel..maxLevel) {
@@ -32,15 +31,13 @@ data class IndentSpan(val level: Int) : LeadingMarginSpan {
             first: Boolean,
             layout: Layout
     ) {
-        indentWidth = p.measureText(indentStepLengthSample).roundToInt()
+        // Do nothing
     }
 
     override fun getLeadingMargin(first: Boolean): Int {
-        return indentWidth * level
+        return indentWidth
     }
 }
-
-private const val indentStepLengthSample = "   "
 
 private const val minLevel = 1
 private const val maxLevel = 5
