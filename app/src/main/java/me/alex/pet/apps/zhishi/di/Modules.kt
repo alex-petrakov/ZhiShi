@@ -3,7 +3,7 @@ package me.alex.pet.apps.zhishi.di
 import com.squareup.moshi.Moshi
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
-import me.alex.pet.apps.zhishi.Database
+import me.alex.pet.apps.zhishi.data.Database
 import me.alex.pet.apps.zhishi.data.RulesDataStore
 import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsViewModel

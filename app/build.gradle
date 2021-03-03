@@ -35,6 +35,12 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+
+    sqldelight {
+        Database {
+            packageName = "me.alex.pet.apps.zhishi.data"
+        }
+    }
 }
 
 dependencies {
