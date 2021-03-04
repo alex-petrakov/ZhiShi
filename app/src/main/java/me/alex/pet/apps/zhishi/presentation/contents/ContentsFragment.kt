@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.alex.pet.apps.zhishi.databinding.FragmentContentsBinding
@@ -38,6 +39,16 @@ class ContentsFragment : Fragment() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = contentsAdapter
+        }
+        searchBar.apply {
+            onCardClickListener = {
+                // TODO: Navigate to the search screen
+                Toast.makeText(requireContext(), "On card click", Toast.LENGTH_SHORT).show()
+            }
+            onMenuButtonClickListener = {
+                // TODO: Show the app menu
+                Toast.makeText(requireContext(), "On menu button click", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

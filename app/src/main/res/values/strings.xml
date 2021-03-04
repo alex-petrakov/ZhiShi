@@ -5,4 +5,7 @@
     <string name="section_rule_numbers_range">§§ %d–%d</string>
     <string name="section_rule_number">§ %d</string>
     <string name="rule_rule_number">§ %d</string>
+    <string name="search_bar_search_rules">Search rules</string>
+    <string name="search_bar_cd_search_icon">Search icon</string>
+    <string name="search_bar_cd_menu">Menu</string>
 </resources>

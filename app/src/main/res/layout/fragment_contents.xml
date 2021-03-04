@@ -6,11 +6,10 @@
     android:orientation="vertical"
     tools:context=".presentation.contents.ContentsFragment">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <me.alex.pet.apps.zhishi.presentation.common.SearchBar
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        style="@style/Widget.MaterialComponents.Toolbar.Surface" />
+        android:layout_height="56dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
