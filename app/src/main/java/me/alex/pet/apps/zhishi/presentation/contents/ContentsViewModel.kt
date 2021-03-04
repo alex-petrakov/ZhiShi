@@ -18,7 +18,8 @@ class ContentsViewModel(rulesRepository: RulesRepository) : ViewModel() {
         val contents = withContext(Dispatchers.IO) {
             rulesRepository.getContents()
         }
-        emit(contents.toViewState())
+        val newState = withContext(Dispatchers.Default) { contents.toViewState() }
+        emit(newState)
     }
 
     private val _viewEffect = SingleLiveEvent<ViewEffect>()

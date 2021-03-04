@@ -20,8 +20,8 @@ class SectionViewModel(
             rulesRepository.getSection(sectionId)
                     ?: throw IllegalStateException("Section with ID $sectionId was not found") // TODO: Consider showing an empty view instead
         }
-        val ruleNumbersRange = section.ruleNumbersRange()
-        val displayableElements = section.toUiModel()
+        val ruleNumbersRange = withContext(Dispatchers.Default) { section.ruleNumbersRange() }
+        val displayableElements = withContext(Dispatchers.Default) { section.toUiModel() }
         emit(ViewState(ruleNumbersRange, displayableElements))
     }
 
