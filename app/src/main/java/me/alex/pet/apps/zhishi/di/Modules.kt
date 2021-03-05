@@ -8,6 +8,7 @@ import me.alex.pet.apps.zhishi.data.RulesDataStore
 import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsViewModel
 import me.alex.pet.apps.zhishi.presentation.rule.RuleViewModel
+import me.alex.pet.apps.zhishi.presentation.search.SearchViewModel
 import me.alex.pet.apps.zhishi.presentation.section.SectionViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
@@ -33,4 +34,5 @@ val appModule = module {
     viewModel { ContentsViewModel(get()) }
     viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get()) }
     viewModel { (ruleId: Long) -> RuleViewModel(ruleId, get()) }
+    viewModel { SearchViewModel() }
 }

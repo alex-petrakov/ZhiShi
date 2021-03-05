@@ -29,6 +29,10 @@ class ContentsViewModel(rulesRepository: RulesRepository) : ViewModel() {
     fun onClickSection(sectionId: Long) {
         _viewEffect.value = ViewEffect.NavigateToSection(sectionId)
     }
+
+    fun onClickSearchAction() {
+        _viewEffect.value = ViewEffect.NavigateToSearch
+    }
 }
 
 private fun Contents.toViewState(): ViewState {

@@ -6,6 +6,7 @@ import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ActivityHostBinding
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsFragment
 import me.alex.pet.apps.zhishi.presentation.rule.RuleFragment
+import me.alex.pet.apps.zhishi.presentation.search.SearchFragment
 import me.alex.pet.apps.zhishi.presentation.section.SectionFragment
 
 class HostActivity : AppCompatActivity() {
@@ -35,6 +36,13 @@ class HostActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, RuleFragment.newInstance(ruleId))
                 .addToBackStack("RULE")
+                .commit()
+    }
+
+    fun navigateToSearch() {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, SearchFragment.newInstance())
+                .addToBackStack("SEARCH")
                 .commit()
     }
 

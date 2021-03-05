@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.alex.pet.apps.zhishi.R
@@ -54,8 +53,10 @@ class ContentsFragment : Fragment() {
     }
 
     private fun handleEffect(effect: ViewEffect) {
+        val navigator = requireActivity() as HostActivity
         when (effect) {
-            is ViewEffect.NavigateToSection -> (requireActivity() as HostActivity).navigateToSection(effect.sectionId)
+            is ViewEffect.NavigateToSection -> navigator.navigateToSection(effect.sectionId)
+            is ViewEffect.NavigateToSearch -> navigator.navigateToSearch()
         }
     }
 
@@ -66,7 +67,7 @@ class ContentsFragment : Fragment() {
     private fun handleMenuClick(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-                Toast.makeText(requireContext(), "Search rules", Toast.LENGTH_SHORT).show()
+                viewModel.onClickSearchAction()
                 true
             }
             else -> false
