@@ -2,11 +2,13 @@ package me.alex.pet.apps.zhishi.presentation.contents
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentContentsBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.observe
@@ -40,15 +42,9 @@ class ContentsFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = contentsAdapter
         }
-        searchBar.apply {
-            onCardClickListener = {
-                // TODO: Navigate to the search screen
-                Toast.makeText(requireContext(), "On card click", Toast.LENGTH_SHORT).show()
-            }
-            onMenuButtonClickListener = {
-                // TODO: Show the app menu
-                Toast.makeText(requireContext(), "On menu button click", Toast.LENGTH_SHORT).show()
-            }
+        toolbar.apply {
+            inflateMenu(R.menu.main)
+            setOnMenuItemClickListener(::handleMenuClick)
         }
     }
 
@@ -65,6 +61,16 @@ class ContentsFragment : Fragment() {
 
     private fun renderState(state: ViewState) = with(binding) {
         contentsAdapter.items = state.contents
+    }
+
+    private fun handleMenuClick(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_search -> {
+                Toast.makeText(requireContext(), "Search rules", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> false
+        }
     }
 
     override fun onDestroyView() {
