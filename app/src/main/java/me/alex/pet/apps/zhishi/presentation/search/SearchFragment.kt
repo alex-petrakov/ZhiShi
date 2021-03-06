@@ -44,6 +44,7 @@ class SearchFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = searchResultsAdapter
         }
+        toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         queryEt.textChanges()
                 .debounce(300)
                 .onEach { viewModel.onUpdateQuery(it.toString()) }
