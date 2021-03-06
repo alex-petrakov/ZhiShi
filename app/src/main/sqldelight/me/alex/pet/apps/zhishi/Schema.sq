@@ -39,7 +39,7 @@ CREATE TABLE section_core (
 );
 
 CREATE VIRTUAL TABLE section_name_fts
-USING fts4(content="section_core", name TEXT NOT NULL);
+USING fts4(tokenize=unicode61, content="section_core", name TEXT NOT NULL);
 
 CREATE TRIGGER section_core_before_upd_update_fts_index BEFORE UPDATE ON section_core BEGIN
     DELETE FROM section_name_fts WHERE docid=old.rowid;
@@ -100,7 +100,7 @@ CREATE TABLE rule_core (
 );
 
 CREATE VIRTUAL TABLE rule_content_fts
-USING fts4(content="rule_core", content TEXT NOT NULL);
+USING fts4(tokenize=unicode61, content="rule_core", content TEXT NOT NULL);
 
 CREATE TRIGGER rule_core_before_upd_update_fts_index BEFORE UPDATE ON rule_core BEGIN
     DELETE FROM rule_content_fts WHERE docid=old.rowid;
