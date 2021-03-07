@@ -1,3 +1,148 @@
+CREATE TABLE rule_core (
+    id INTEGER PRIMARY KEY,
+    section_id INTEGER NOT NULL,
+    number INTEGER as Int UNIQUE NOT NULL,
+    content TEXT NOT NULL,
+    markup TEXT NOT NULL,
+    FOREIGN KEY (section_id) REFERENCES section_core(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE VIRTUAL TABLE rule_content_fts
+USING fts4(tokenize=unicode61, content="rule_core", content TEXT NOT NULL);
+
+CREATE TRIGGER rule_core_before_upd_update_fts_index BEFORE UPDATE ON rule_core BEGIN
+    DELETE FROM rule_content_fts WHERE docid=old.rowid;
+END;
+
+CREATE TRIGGER rule_core_before_del_update_fts_index BEFORE DELETE ON rule_core BEGIN
+    DELETE FROM rule_content_fts WHERE docid=old.rowid;
+END;
+
+CREATE TRIGGER rule_core_after_upd_update_fts_index AFTER UPDATE ON rule_core BEGIN
+    INSERT INTO rule_content_fts(docid, content) VALUES (new.rowid, new.content);
+END;
+
+CREATE TRIGGER rule_core_after_ins_update_fts_index AFTER INSERT ON rule_core BEGIN
+    INSERT INTO rule_content_fts(docid, content) VALUES (new.rowid, new.content);
+END;
+
+CREATE VIEW rule AS
+SELECT
+    rule_core.id AS id,
+    rule_core.section_id AS section_id,
+    rule_core.number AS number,
+    rule_content_fts.content AS content,
+    rule_core.markup AS markup
+FROM rule_core JOIN rule_content_fts ON rule_core.rowid = rule_content_fts.rowid;
+
+CREATE TRIGGER on_rule_insert INSTEAD OF INSERT ON rule
+BEGIN
+    INSERT INTO rule_core(id, section_id, number, content, markup) VALUES (new.id, new.section_id, new.number, new.content, new.markup);
+END;
+
+CREATE TRIGGER on_rule_del INSTEAD OF DELETE ON rule
+BEGIN
+    DELETE FROM rule_core WHERE id = old.id;
+END;
+
+CREATE TRIGGER on_rule_upd INSTEAD OF UPDATE ON rule
+BEGIN
+    UPDATE rule_core
+    SET
+        id = new.id,
+        section_id = new.section_id,
+        number = new.number,
+        content = new.content,
+        markup = new.markup
+    WHERE id = old.id;
+END;
+
+CREATE INDEX number_index ON rule_core (number);
+
+CREATE INDEX section_id_index ON rule_core (section_id);
+
+
+-- TODO: Remove these lines as soon as database can be prepopulated from assets
+BEGIN TRANSACTION;
+INSERT INTO "rule_core" VALUES (1,1,1,'После ж, ч, ш, щ не пишутся ю, я, ы, а пишутся у, а, и, например: чудо, щука, час, роща, жир, шить.
+
+Буквы ю и я допускаются после этих согласных только в иноязычных словах (преимущественно французских), например: жюри, парашют (в том числе — в именах собственных, например: Сен-Жюст), а также в сложносокращённых словах и буквенных аббревиатурах, в которых, по общему правилу, допускаются любые сочетания букв (см. § 110).
+
+','{"paragraphSpans":[],"indentSpans":[],"characterSpans":[{"start":6,"end":7,"style":"EMPHASIS"},{"start":9,"end":10,"style":"EMPHASIS"},{"start":12,"end":13,"style":"EMPHASIS"},{"start":15,"end":16,"style":"EMPHASIS"},{"start":28,"end":29,"style":"EMPHASIS"},{"start":31,"end":32,"style":"EMPHASIS"},{"start":34,"end":35,"style":"EMPHASIS"},{"start":47,"end":48,"style":"EMPHASIS"},{"start":50,"end":51,"style":"EMPHASIS"},{"start":53,"end":54,"style":"EMPHASIS"},{"start":66,"end":70,"style":"EMPHASIS"},{"start":72,"end":76,"style":"EMPHASIS"},{"start":78,"end":81,"style":"EMPHASIS"},{"start":83,"end":87,"style":"EMPHASIS"},{"start":89,"end":92,"style":"EMPHASIS"},{"start":94,"end":98,"style":"EMPHASIS"},{"start":107,"end":108,"style":"EMPHASIS"},{"start":111,"end":112,"style":"EMPHASIS"},{"start":214,"end":218,"style":"EMPHASIS"},{"start":220,"end":227,"style":"EMPHASIS"},{"start":275,"end":283,"style":"EMPHASIS"}],"linkSpans":[{"start":416,"end":421,"ruleId":110}]}');
+INSERT INTO "rule_core" VALUES (2,1,2,'После ц буква ы пишется в окончаниях и в суффиксе -ын, например: птицы, о́вцы и овцы́, огурцы, белолицый, сестрицын, лисицын, а также в словах цыган, цыплёнок, на цыпочках, цыц (междометие) и в других словах того же корня.
+
+В остальных случаях после ц пишется всегда и, например: станция, цибик, циновка, цимбалы, цинк, медицина.
+
+','{"paragraphSpans":[],"indentSpans":[],"characterSpans":[{"start":6,"end":7,"style":"EMPHASIS"},{"start":14,"end":15,"style":"EMPHASIS"},{"start":50,"end":53,"style":"EMPHASIS"},{"start":65,"end":70,"style":"EMPHASIS"},{"start":72,"end":77,"style":"EMPHASIS"},{"start":80,"end":85,"style":"EMPHASIS"},{"start":87,"end":93,"style":"EMPHASIS"},{"start":95,"end":104,"style":"EMPHASIS"},{"start":106,"end":115,"style":"EMPHASIS"},{"start":117,"end":124,"style":"EMPHASIS"},{"start":143,"end":148,"style":"EMPHASIS"},{"start":150,"end":158,"style":"EMPHASIS"},{"start":160,"end":171,"style":"EMPHASIS"},{"start":173,"end":176,"style":"EMPHASIS"},{"start":250,"end":251,"style":"EMPHASIS"},{"start":267,"end":268,"style":"EMPHASIS"},{"start":280,"end":287,"style":"EMPHASIS"},{"start":289,"end":294,"style":"EMPHASIS"},{"start":296,"end":303,"style":"EMPHASIS"},{"start":305,"end":312,"style":"EMPHASIS"},{"start":314,"end":318,"style":"EMPHASIS"},{"start":320,"end":328,"style":"EMPHASIS"}],"linkSpans":[]}');
+INSERT INTO "rule_core" VALUES (3,1,3,'После ц буквы ю и я допускаются только в иноязычных именах собственных, например Цюрих, Свенцяны.
+
+','{"paragraphSpans":[],"indentSpans":[],"characterSpans":[{"start":6,"end":7,"style":"EMPHASIS"},{"start":14,"end":15,"style":"EMPHASIS"},{"start":18,"end":19,"style":"EMPHASIS"},{"start":81,"end":86,"style":"EMPHASIS"},{"start":88,"end":96,"style":"EMPHASIS"}],"linkSpans":[]}');
+INSERT INTO "rule_core" VALUES (4,1,4,'А. Если после ж, ч, ш, щ произносится под ударением о, то буква о пишется:
+
+1. В окончаниях имён существительных и прилагательных, например: плечо, ножом, шалашом, плечом, Фомичом, плащом, межой, вожжой, душой, свечой, пращой, чужой, большой.
+
+2.В суффиксах:
+
+а) имён существительных:
+
+-ок, например: рожок, петушок, крючок, борщок;
+
+-онок, например: медвежонок, мышонок, галчонок, бочонок;
+
+-онк-а, например: книжонка, рубашонка, ручонка; также деньжонки;
+
+б) имён прилагательных:
+
+-ов-, например: ежовый, грошовый, парчовый, холщовый;
+
+-он (с беглым о), например: смешон;
+
+в) наречий, например: свежо, горячо, общо.
+
+3. В именах существительных родительного падежа множественного числа на -ок, -он, например: кишок, княжон.
+
+В словах (и в производных от них): обжора, крыжовник, жом, трещотка, трущоба, чащоба, чокаться, чопорный, Печора, шов, шорох, шоры, в именах существительных: изжога, ожог, поджог (ср. написания с -ёг в прошедшем времени глаголов: изжёг, ожёг, поджёг); также в некоторых областных и просторечных словах, например: жолкнуть, зажора (и зажор), жох, ужо (в значении «потом», «после»), вечор (в значении «вчера вечером»), чох (например, в выражении «не верит ни в сон, ни в чох»), наречие чохом.
+
+Примечание. Иноязычные слова пишутся согласно произношению, например: крюшон, мажор, шомпол — шомпола, Чосер (фамилия), но: жест, планшет.
+
+Б. Во всех прочих случаях после ж, ч, ш, щ под ударением пишется буква ё, хотя и произносится о, а именно:
+
+1. В глагольных окончаниях -ёшь, -ёт, -ём, -ёте, например: лжёшь, лжёт и т. д., печёшь, печёт и т. д.
+
+2. В глагольном суффиксе -ёвыва-, например: затушёвывать, перекочёвывать, также затушёвывание, перекочёвывание.
+
+3. В суффиксе отглагольных существительных -ёвк-, например: перекочёвка, размежёвка.
+
+4. В суффиксе существительных -ёр-, например: дирижёр, ретушёр, стажёр, ухажёр.
+
+5. В суффиксе причастий страдательного залога -ённ- (-ён-) и в словах, образованных от таких причастий, например: напряжённый, напряжён, напряжённость, напряжённо; отрешённый, отрешённость; размягчённый, размягчённость; упрощённый, упрощённость; учёный, учёность; толчёный; жжёный, жжёнка.
+
+6. В словах, в корне которых под ударением произносится о, чередующееся с е в других формах или в других словах того же корня, например: жёлтый (желтеть), жёсткий (жестковатый), жёрнов (жернова), жёлудь (желудей), жёрдочка (жердей); дешёвый, дешёвка (дешеветь), шёлк (шелковистый), шёрстка (шерстяной), решётка, решётчатый (решето), кошёлка (кошелёк), шёпот (шептать); чёлн (челнок), чёлка (чело), чёрт (чертей), чёрный (чернота), чёт (нечет), чечётка (чечет), отчёт, счёт (вычет, вычесть), чёрточка (черта), печёнка (печень), бечёвка (бечева); щётка (щетина), щёлкать (щелчок), пощёчина, щёки (щека); в корнях глагольных форм: сжёг, поджёг, сжёгший, поджёгший (сжечь, поджечь), шёл (шедший), разжёвывать (разжевать).
+
+7. В предложном падеже местоимения что: о чём, на чём, а также в словах причём, нипочём.
+
+Примечание. Правила § 4, равно как и все другие, не распространяются на фамилии: они пишутся в соответствии с написаниями в официальных личных документах.
+
+','{"paragraphSpans":[{"start":1219,"end":1357,"style":"FOOTNOTE"},{"start":2950,"end":3104,"style":"FOOTNOTE"}],"indentSpans":[{"start":76,"end":242,"level":1},{"start":244,"end":258,"level":1},{"start":260,"end":284,"level":2},{"start":286,"end":332,"level":3},{"start":334,"end":390,"level":3},{"start":392,"end":456,"level":3},{"start":458,"end":481,"level":2},{"start":483,"end":536,"level":3},{"start":538,"end":573,"level":3},{"start":575,"end":617,"level":2},{"start":619,"end":725,"level":1},{"start":727,"end":1217,"level":1},{"start":1219,"end":1357,"level":1},{"start":1467,"end":1568,"level":2},{"start":1570,"end":1681,"level":2},{"start":1683,"end":1767,"level":2},{"start":1769,"end":1848,"level":2},{"start":1850,"end":2139,"level":2},{"start":2141,"end":2858,"level":2},{"start":2860,"end":2948,"level":2}],"characterSpans":[{"start":14,"end":15,"style":"EMPHASIS"},{"start":17,"end":18,"style":"EMPHASIS"},{"start":20,"end":21,"style":"EMPHASIS"},{"start":23,"end":24,"style":"EMPHASIS"},{"start":52,"end":53,"style":"EMPHASIS"},{"start":64,"end":65,"style":"EMPHASIS"},{"start":141,"end":146,"style":"EMPHASIS"},{"start":148,"end":153,"style":"EMPHASIS"},{"start":155,"end":162,"style":"EMPHASIS"},{"start":164,"end":170,"style":"EMPHASIS"},{"start":172,"end":179,"style":"EMPHASIS"},{"start":181,"end":187,"style":"EMPHASIS"},{"start":189,"end":194,"style":"EMPHASIS"},{"start":196,"end":202,"style":"EMPHASIS"},{"start":204,"end":209,"style":"EMPHASIS"},{"start":211,"end":217,"style":"EMPHASIS"},{"start":219,"end":225,"style":"EMPHASIS"},{"start":227,"end":232,"style":"EMPHASIS"},{"start":234,"end":241,"style":"EMPHASIS"},{"start":286,"end":289,"style":"EMPHASIS"},{"start":301,"end":306,"style":"EMPHASIS"},{"start":308,"end":315,"style":"EMPHASIS"},{"start":317,"end":323,"style":"EMPHASIS"},{"start":325,"end":331,"style":"EMPHASIS"},{"start":334,"end":339,"style":"EMPHASIS"},{"start":351,"end":361,"style":"EMPHASIS"},{"start":363,"end":370,"style":"EMPHASIS"},{"start":372,"end":380,"style":"EMPHASIS"},{"start":382,"end":389,"style":"EMPHASIS"},{"start":392,"end":398,"style":"EMPHASIS"},{"start":410,"end":418,"style":"EMPHASIS"},{"start":420,"end":429,"style":"EMPHASIS"},{"start":431,"end":438,"style":"EMPHASIS"},{"start":446,"end":455,"style":"EMPHASIS"},{"start":483,"end":487,"style":"EMPHASIS"},{"start":499,"end":505,"style":"EMPHASIS"},{"start":507,"end":515,"style":"EMPHASIS"},{"start":517,"end":525,"style":"EMPHASIS"},{"start":527,"end":535,"style":"EMPHASIS"},{"start":538,"end":541,"style":"EMPHASIS"},{"start":552,"end":553,"style":"EMPHASIS"},{"start":566,"end":572,"style":"EMPHASIS"},{"start":597,"end":602,"style":"EMPHASIS"},{"start":604,"end":610,"style":"EMPHASIS"},{"start":612,"end":616,"style":"EMPHASIS"},{"start":691,"end":694,"style":"EMPHASIS"},{"start":696,"end":699,"style":"EMPHASIS"},{"start":711,"end":716,"style":"EMPHASIS"},{"start":718,"end":724,"style":"EMPHASIS"},{"start":762,"end":768,"style":"EMPHASIS"},{"start":770,"end":779,"style":"EMPHASIS"},{"start":781,"end":784,"style":"EMPHASIS"},{"start":786,"end":794,"style":"EMPHASIS"},{"start":796,"end":803,"style":"EMPHASIS"},{"start":805,"end":811,"style":"EMPHASIS"},{"start":813,"end":821,"style":"EMPHASIS"},{"start":823,"end":831,"style":"EMPHASIS"},{"start":833,"end":839,"style":"EMPHASIS"},{"start":841,"end":844,"style":"EMPHASIS"},{"start":846,"end":851,"style":"EMPHASIS"},{"start":853,"end":857,"style":"EMPHASIS"},{"start":885,"end":891,"style":"EMPHASIS"},{"start":893,"end":897,"style":"EMPHASIS"},{"start":899,"end":905,"style":"EMPHASIS"},{"start":923,"end":926,"style":"EMPHASIS"},{"start":957,"end":962,"style":"EMPHASIS"},{"start":964,"end":968,"style":"EMPHASIS"},{"start":970,"end":976,"style":"EMPHASIS"},{"start":1040,"end":1048,"style":"EMPHASIS"},{"start":1050,"end":1056,"style":"EMPHASIS"},{"start":1060,"end":1065,"style":"EMPHASIS"},{"start":1068,"end":1071,"style":"EMPHASIS"},{"start":1073,"end":1076,"style":"EMPHASIS"},{"start":1108,"end":1113,"style":"EMPHASIS"},{"start":1144,"end":1147,"style":"EMPHASIS"},{"start":1211,"end":1216,"style":"EMPHASIS"},{"start":1219,"end":1230,"style":"STRONG_EMPHASIS"},{"start":1289,"end":1295,"style":"EMPHASIS"},{"start":1297,"end":1302,"style":"EMPHASIS"},{"start":1304,"end":1310,"style":"EMPHASIS"},{"start":1313,"end":1320,"style":"EMPHASIS"},{"start":1322,"end":1327,"style":"EMPHASIS"},{"start":1343,"end":1347,"style":"EMPHASIS"},{"start":1349,"end":1356,"style":"EMPHASIS"},{"start":1391,"end":1392,"style":"EMPHASIS"},{"start":1394,"end":1395,"style":"EMPHASIS"},{"start":1397,"end":1398,"style":"EMPHASIS"},{"start":1400,"end":1401,"style":"EMPHASIS"},{"start":1430,"end":1431,"style":"EMPHASIS"},{"start":1453,"end":1454,"style":"EMPHASIS"},{"start":1494,"end":1498,"style":"EMPHASIS"},{"start":1500,"end":1503,"style":"EMPHASIS"},{"start":1505,"end":1508,"style":"EMPHASIS"},{"start":1510,"end":1514,"style":"EMPHASIS"},{"start":1526,"end":1531,"style":"EMPHASIS"},{"start":1533,"end":1537,"style":"EMPHASIS"},{"start":1547,"end":1553,"style":"EMPHASIS"},{"start":1555,"end":1560,"style":"EMPHASIS"},{"start":1595,"end":1602,"style":"EMPHASIS"},{"start":1614,"end":1626,"style":"EMPHASIS"},{"start":1628,"end":1642,"style":"EMPHASIS"},{"start":1650,"end":1663,"style":"EMPHASIS"},{"start":1665,"end":1680,"style":"EMPHASIS"},{"start":1726,"end":1731,"style":"EMPHASIS"},{"start":1743,"end":1754,"style":"EMPHASIS"},{"start":1756,"end":1766,"style":"EMPHASIS"},{"start":1799,"end":1803,"style":"EMPHASIS"},{"start":1815,"end":1822,"style":"EMPHASIS"},{"start":1824,"end":1831,"style":"EMPHASIS"},{"start":1833,"end":1839,"style":"EMPHASIS"},{"start":1841,"end":1847,"style":"EMPHASIS"},{"start":1896,"end":1901,"style":"EMPHASIS"},{"start":1903,"end":1907,"style":"EMPHASIS"},{"start":1964,"end":1975,"style":"EMPHASIS"},{"start":1977,"end":1985,"style":"EMPHASIS"},{"start":1987,"end":2000,"style":"EMPHASIS"},{"start":2002,"end":2012,"style":"EMPHASIS"},{"start":2014,"end":2024,"style":"EMPHASIS"},{"start":2026,"end":2038,"style":"EMPHASIS"},{"start":2040,"end":2052,"style":"EMPHASIS"},{"start":2054,"end":2068,"style":"EMPHASIS"},{"start":2070,"end":2080,"style":"EMPHASIS"},{"start":2082,"end":2094,"style":"EMPHASIS"},{"start":2096,"end":2102,"style":"EMPHASIS"},{"start":2104,"end":2112,"style":"EMPHASIS"},{"start":2114,"end":2122,"style":"EMPHASIS"},{"start":2124,"end":2130,"style":"EMPHASIS"},{"start":2132,"end":2138,"style":"EMPHASIS"},{"start":2197,"end":2198,"style":"EMPHASIS"},{"start":2215,"end":2216,"style":"EMPHASIS"},{"start":2278,"end":2284,"style":"EMPHASIS"},{"start":2296,"end":2303,"style":"EMPHASIS"},{"start":2319,"end":2325,"style":"EMPHASIS"},{"start":2337,"end":2343,"style":"EMPHASIS"},{"start":2355,"end":2363,"style":"EMPHASIS"},{"start":2374,"end":2381,"style":"EMPHASIS"},{"start":2383,"end":2390,"style":"EMPHASIS"},{"start":2403,"end":2407,"style":"EMPHASIS"},{"start":2423,"end":2430,"style":"EMPHASIS"},{"start":2444,"end":2451,"style":"EMPHASIS"},{"start":2453,"end":2463,"style":"EMPHASIS"},{"start":2474,"end":2481,"style":"EMPHASIS"},{"start":2493,"end":2498,"style":"EMPHASIS"},{"start":2510,"end":2514,"style":"EMPHASIS"},{"start":2525,"end":2530,"style":"EMPHASIS"},{"start":2539,"end":2543,"style":"EMPHASIS"},{"start":2554,"end":2560,"style":"EMPHASIS"},{"start":2572,"end":2575,"style":"EMPHASIS"},{"start":2585,"end":2592,"style":"EMPHASIS"},{"start":2602,"end":2607,"style":"EMPHASIS"},{"start":2609,"end":2613,"style":"EMPHASIS"},{"start":2632,"end":2640,"style":"EMPHASIS"},{"start":2650,"end":2657,"style":"EMPHASIS"},{"start":2668,"end":2675,"style":"EMPHASIS"},{"start":2686,"end":2691,"style":"EMPHASIS"},{"start":2702,"end":2709,"style":"EMPHASIS"},{"start":2720,"end":2728,"style":"EMPHASIS"},{"start":2730,"end":2734,"style":"EMPHASIS"},{"start":2769,"end":2773,"style":"EMPHASIS"},{"start":2775,"end":2781,"style":"EMPHASIS"},{"start":2783,"end":2790,"style":"EMPHASIS"},{"start":2792,"end":2801,"style":"EMPHASIS"},{"start":2820,"end":2823,"style":"EMPHASIS"},{"start":2834,"end":2845,"style":"EMPHASIS"},{"start":2895,"end":2898,"style":"EMPHASIS"},{"start":2900,"end":2905,"style":"EMPHASIS"},{"start":2907,"end":2913,"style":"EMPHASIS"},{"start":2932,"end":2938,"style":"EMPHASIS"},{"start":2940,"end":2947,"style":"EMPHASIS"},{"start":2950,"end":2961,"style":"STRONG_EMPHASIS"}],"linkSpans":[]}');
+INSERT INTO "rule_core" VALUES (5,1,5,'В русских словах в неударяемых слогах после ж, ч, ш, щ буква о не пишется, например: горо́шек (ср. петушо́к), сто́рожем (ср. чижо́м), бо́льшего (ср. большо́го), ры́жего (ср. чужо́го).
+
+В иноязычных словах допускается буква о и в слогах неударяемых, например: жоке́й, шокола́д.
+
+','{"paragraphSpans":[],"indentSpans":[],"characterSpans":[{"start":44,"end":45,"style":"EMPHASIS"},{"start":47,"end":48,"style":"EMPHASIS"},{"start":50,"end":51,"style":"EMPHASIS"},{"start":53,"end":54,"style":"EMPHASIS"},{"start":61,"end":62,"style":"EMPHASIS"},{"start":85,"end":93,"style":"EMPHASIS"},{"start":110,"end":119,"style":"EMPHASIS"},{"start":134,"end":143,"style":"EMPHASIS"},{"start":161,"end":168,"style":"EMPHASIS"},{"start":223,"end":224,"style":"EMPHASIS"},{"start":259,"end":265,"style":"EMPHASIS"},{"start":267,"end":275,"style":"EMPHASIS"}],"linkSpans":[]}');
+INSERT INTO "rule_core" VALUES (6,1,6,'Написание о или е после ц в русских словах определяется следующими правилами:
+
+В слогах ударяемых пишется о или е в соответствии с произношением, например: цокать, лицо, овцой, дельцов, отцов, отцовский, облицовка, вытанцовывать, танцор, но: прицел, целый, ценный, цеп и т. п.
+
+В слогах неударяемых о не пишется, кроме слова цокоту́ха и родственных (ср. цо́кот).
+
+При отсутствии ударения в суффиксах и окончаниях всегда пишется е, например: полотенце, пальцем, пальцев, куцего, ситцевый, молодцеватый, глянцевитый, танцевать, гарцевать, Кунцево, Баренцево море.
+
+В иноязычных словах о после ц может писаться и в неударяемых слогах, например: пала́ццо, ске́рцо.
+
+','{"paragraphSpans":[],"indentSpans":[],"characterSpans":[{"start":10,"end":11,"style":"EMPHASIS"},{"start":16,"end":17,"style":"EMPHASIS"},{"start":24,"end":25,"style":"EMPHASIS"},{"start":106,"end":107,"style":"EMPHASIS"},{"start":112,"end":113,"style":"EMPHASIS"},{"start":156,"end":162,"style":"EMPHASIS"},{"start":164,"end":168,"style":"EMPHASIS"},{"start":170,"end":175,"style":"EMPHASIS"},{"start":177,"end":184,"style":"EMPHASIS"},{"start":186,"end":191,"style":"EMPHASIS"},{"start":193,"end":202,"style":"EMPHASIS"},{"start":204,"end":213,"style":"EMPHASIS"},{"start":215,"end":228,"style":"EMPHASIS"},{"start":230,"end":236,"style":"EMPHASIS"},{"start":242,"end":248,"style":"EMPHASIS"},{"start":250,"end":255,"style":"EMPHASIS"},{"start":257,"end":263,"style":"EMPHASIS"},{"start":265,"end":268,"style":"EMPHASIS"},{"start":299,"end":300,"style":"EMPHASIS"},{"start":325,"end":334,"style":"EMPHASIS"},{"start":428,"end":429,"style":"EMPHASIS"},{"start":441,"end":450,"style":"EMPHASIS"},{"start":452,"end":459,"style":"EMPHASIS"},{"start":461,"end":468,"style":"EMPHASIS"},{"start":470,"end":476,"style":"EMPHASIS"},{"start":478,"end":486,"style":"EMPHASIS"},{"start":488,"end":500,"style":"EMPHASIS"},{"start":502,"end":513,"style":"EMPHASIS"},{"start":515,"end":524,"style":"EMPHASIS"},{"start":526,"end":535,"style":"EMPHASIS"},{"start":537,"end":544,"style":"EMPHASIS"},{"start":546,"end":555,"style":"EMPHASIS"},{"start":583,"end":584,"style":"EMPHASIS"},{"start":591,"end":592,"style":"EMPHASIS"},{"start":642,"end":650,"style":"EMPHASIS"},{"start":652,"end":659,"style":"EMPHASIS"}],"linkSpans":[]}');
+COMMIT;
+
+
 findById:
 SELECT * FROM rule WHERE id = ?;
 

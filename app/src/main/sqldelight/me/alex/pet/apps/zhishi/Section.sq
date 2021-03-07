@@ -1,3 +1,64 @@
+CREATE TABLE section_core (
+    id INTEGER PRIMARY KEY,
+    chapter_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    markup TEXT NOT NULL,
+    FOREIGN KEY (chapter_id) REFERENCES chapter(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE VIRTUAL TABLE section_name_fts
+USING fts4(tokenize=unicode61, content="section_core", name TEXT NOT NULL);
+
+CREATE TRIGGER section_core_before_upd_update_fts_index BEFORE UPDATE ON section_core BEGIN
+    DELETE FROM section_name_fts WHERE docid=old.rowid;
+END;
+
+CREATE TRIGGER section_core_before_del_update_fts_index BEFORE DELETE ON section_core BEGIN
+    DELETE FROM section_name_fts WHERE docid=old.rowid;
+END;
+
+CREATE TRIGGER section_core_after_upd_update_fts_index AFTER UPDATE ON section_core BEGIN
+    INSERT INTO section_name_fts(docid, name) VALUES (new.rowid, new.name);
+END;
+
+CREATE TRIGGER section_core_after_ins_update_fts_index AFTER INSERT ON section_core BEGIN
+    INSERT INTO section_name_fts(docid, name) VALUES (new.rowid, new.name);
+END;
+
+CREATE VIEW section AS
+SELECT
+    section_core.id AS id,
+    section_core.chapter_id AS chapter_id,
+    section_name_fts.name AS name,
+    section_core.markup AS markup
+FROM section_core JOIN section_name_fts ON section_core.rowid = section_name_fts.rowid;
+
+CREATE TRIGGER on_section_insert INSTEAD OF INSERT ON section
+BEGIN
+    INSERT INTO section_core(id, chapter_id, name, markup) VALUES (new.id, new.chapter_id, new.name, new.markup);
+END;
+
+CREATE TRIGGER on_section_del INSTEAD OF DELETE ON section
+BEGIN
+    DELETE FROM section_core WHERE id = old.id;
+END;
+
+CREATE TRIGGER on_section_upd INSTEAD OF UPDATE ON section
+BEGIN
+    UPDATE section_core
+    SET
+        id = new.id,
+        chapter_id = new.chapter_id,
+        name = new.name,
+        markup = new.markup
+    WHERE id = old.id;
+END;
+
+
+-- TODO: Remove these lines as soon as database can be prepopulated from assets
+INSERT INTO "section_core" VALUES (1,1,'Гласные после шипящих и ц','{"paragraphSpans":[],"indentSpans":[],"characterSpans":[{"start":24,"end":25,"style":"EMPHASIS"}],"linkSpans":[]}');
+
+
 findById:
 SELECT * FROM section WHERE id = ?;
 

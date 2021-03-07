@@ -1,2 +1,12 @@
+CREATE TABLE part (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+
+-- TODO: Remove this line as soon as database can be prepopulated from assets
+INSERT INTO "part" VALUES (1,'Орфография');
+
+
 getAll:
 SELECT * FROM part ORDER BY id;
