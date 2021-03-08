@@ -6,6 +6,7 @@ import me.alex.pet.apps.zhishi.PartQueries
 import me.alex.pet.apps.zhishi.RuleQueries
 import me.alex.pet.apps.zhishi.SectionQueries
 import me.alex.pet.apps.zhishi.domain.RulesRepository
+import me.alex.pet.apps.zhishi.domain.StyledText
 import me.alex.pet.apps.zhishi.domain.contents.Contents
 import me.alex.pet.apps.zhishi.domain.contents.ContentsChapter
 import me.alex.pet.apps.zhishi.domain.contents.ContentsPart
@@ -70,5 +71,15 @@ class RulesDataStore(
                     ?: throw IllegalStateException("Unable to parse markup")
             Rule(id, number, styledTextOf(content, markupDto))
         }.executeAsOneOrNull()
+    }
+
+    override suspend fun query(searchTerms: List<String>, limit: Int): List<Rule> {
+        require(searchTerms.isNotEmpty()) { "There must be at least one search term" }
+        require(limit > 0) { "Limit must be > 0, but it was $limit" }
+        // TODO: Treat each search term as a prefix and append a star symbol to it when stemming is ready
+        val query = searchTerms.joinToString(separator = " OR ")
+        return ruleQueries.query(query, 30) { id, _, number, snippet, _ ->
+            Rule(id, number, StyledText(snippet!!))
+        }.executeAsList()
     }
 }

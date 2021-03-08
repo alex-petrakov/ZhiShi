@@ -224,3 +224,14 @@ SELECT * FROM rule WHERE id = ?;
 
 findBySectionId:
 SELECT * FROM rule WHERE section_id = ? ORDER BY number;
+
+query:
+SELECT
+	rule_core.id,
+	rule_core.section_id,
+	rule_core.number,
+	snippet(rule_content_fts, '', '', '...') AS snippet,
+	rule_core.markup
+FROM rule_content_fts INNER JOIN rule_core ON rule_content_fts.rowid = rule_core.rowid
+WHERE rule_content_fts.content MATCH :searchQuery
+ORDER BY length(offsets(rule_content_fts)) DESC LIMIT :limit;

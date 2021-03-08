@@ -11,4 +11,6 @@ interface RulesRepository {
     suspend fun getSection(sectionId: Long): Section?
 
     suspend fun getRule(ruleId: Long): Rule?
+
+    suspend fun query(searchTerms: List<String>, limit: Int): List<Rule>
 }

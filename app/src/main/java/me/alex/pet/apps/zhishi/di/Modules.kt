@@ -34,5 +34,5 @@ val appModule = module {
     viewModel { ContentsViewModel(get()) }
     viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get()) }
     viewModel { (ruleId: Long) -> RuleViewModel(ruleId, get()) }
-    viewModel { SearchViewModel() }
+    viewModel { SearchViewModel(get()) }
 }
