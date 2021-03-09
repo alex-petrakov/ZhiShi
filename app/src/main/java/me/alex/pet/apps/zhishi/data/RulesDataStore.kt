@@ -13,6 +13,7 @@ import me.alex.pet.apps.zhishi.domain.contents.ContentsPart
 import me.alex.pet.apps.zhishi.domain.contents.ContentsSection
 import me.alex.pet.apps.zhishi.domain.rules.Rule
 import me.alex.pet.apps.zhishi.domain.rules.Section
+import me.alex.pet.apps.zhishi.domain.search.SearchResult
 
 class RulesDataStore(
         private val partQueries: PartQueries,
@@ -73,12 +74,12 @@ class RulesDataStore(
         }.executeAsOneOrNull()
     }
 
-    override suspend fun query(searchTerms: List<String>, limit: Int): List<Rule> {
+    override suspend fun query(searchTerms: List<String>, limit: Int): List<SearchResult> {
         require(searchTerms.isNotEmpty()) { "There must be at least one search term" }
         require(limit > 0) { "Limit must be > 0, but it was $limit" }
         val query = searchTerms.joinToString(separator = " OR ", transform = { term -> "$term*" })
         return ruleQueries.query(query, 30) { id, _, number, snippet, _ ->
-            Rule(id, number, StyledText(snippet!!))
+            SearchResult(id, number, StyledText(snippet!!))
         }.executeAsList()
     }
 }

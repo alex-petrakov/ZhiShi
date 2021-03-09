@@ -6,6 +6,8 @@ import com.squareup.sqldelight.db.SqlDriver
 import me.alex.pet.apps.zhishi.data.Database
 import me.alex.pet.apps.zhishi.data.RulesDataStore
 import me.alex.pet.apps.zhishi.domain.RulesRepository
+import me.alex.pet.apps.zhishi.domain.search.SearchRules
+import me.alex.pet.apps.zhishi.domain.stemming.Stemmer
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsViewModel
 import me.alex.pet.apps.zhishi.presentation.rule.RuleViewModel
 import me.alex.pet.apps.zhishi.presentation.search.SearchViewModel
@@ -30,6 +32,9 @@ val appModule = module {
                 get()
         )
     }
+
+    factory { Stemmer() }
+    factory { SearchRules(get(), get()) }
 
     viewModel { ContentsViewModel(get()) }
     viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get()) }

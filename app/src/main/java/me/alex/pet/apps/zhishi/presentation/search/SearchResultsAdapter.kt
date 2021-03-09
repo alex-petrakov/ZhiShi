@@ -13,7 +13,7 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.
 
 class SearchResultsAdapter(theme: Resources.Theme) : RecyclerView.Adapter<SearchResultsAdapter.Holder>() {
 
-    var items: List<SearchResult> = emptyList()
+    var items: List<SearchResultItem> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -44,7 +44,7 @@ class SearchResultsAdapter(theme: Resources.Theme) : RecyclerView.Adapter<Search
 
         private val context get() = binding.root.context
 
-        fun bind(item: SearchResult) = with(binding) {
+        fun bind(item: SearchResultItem) = with(binding) {
             numberTv.text = context.getString(R.string.rule_rule_number, item.ruleNumber)
             contentTv.text = item.snippet.string
         }
