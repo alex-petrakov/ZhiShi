@@ -76,8 +76,7 @@ class RulesDataStore(
     override suspend fun query(searchTerms: List<String>, limit: Int): List<Rule> {
         require(searchTerms.isNotEmpty()) { "There must be at least one search term" }
         require(limit > 0) { "Limit must be > 0, but it was $limit" }
-        // TODO: Treat each search term as a prefix and append a star symbol to it when stemming is ready
-        val query = searchTerms.joinToString(separator = " OR ")
+        val query = searchTerms.joinToString(separator = " OR ", transform = { term -> "$term*" })
         return ruleQueries.query(query, 30) { id, _, number, snippet, _ ->
             Rule(id, number, StyledText(snippet!!))
         }.executeAsList()
