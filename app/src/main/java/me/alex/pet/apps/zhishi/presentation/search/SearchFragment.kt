@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.alex.pet.apps.zhishi.databinding.FragmentSearchBinding
+import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.textChanges
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -26,7 +27,11 @@ class SearchFragment : Fragment() {
 
     private val viewModel by viewModel<SearchViewModel>()
 
-    private val searchResultsAdapter by lazy { SearchResultsAdapter(requireActivity().theme) }
+    private val searchResultsAdapter by lazy {
+        SearchResultsAdapter(requireActivity().theme) { ruleId ->
+            viewModel.onClickRule(ruleId)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -52,11 +57,18 @@ class SearchFragment : Fragment() {
     }
 
     private fun subscribeToModel() = with(viewModel) {
-        viewState.observe(viewLifecycleOwner) { newState -> renderState(newState) }
+        viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
+        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
-    private fun renderState(state: ViewState) = with(binding) {
+    private fun render(state: ViewState) = with(binding) {
         searchResultsAdapter.items = state.searchResults
+    }
+
+    private fun handle(effect: ViewEffect) {
+        when (effect) {
+            is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.ruleId)
+        }
     }
 
     companion object {

@@ -11,7 +11,10 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultIndentConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
 
-class SearchResultsAdapter(theme: Resources.Theme) : RecyclerView.Adapter<SearchResultsAdapter.Holder>() {
+class SearchResultsAdapter(
+        theme: Resources.Theme,
+        private val onRuleClick: (Long) -> Unit
+) : RecyclerView.Adapter<SearchResultsAdapter.Holder>() {
 
     var items: List<SearchResultItem> = emptyList()
         set(value) {
@@ -19,7 +22,7 @@ class SearchResultsAdapter(theme: Resources.Theme) : RecyclerView.Adapter<Search
             notifyDataSetChanged()
         }
 
-    private val ruleContentStyledTextConverter = StyledTextRenderer(
+    private val ruleContentStyledTextRenderer = StyledTextRenderer(
             paragraphStyleConverter = DefaultParagraphStyleConverter(theme),
             indentConverter = DefaultIndentConverter(),
             characterStyleConverter = DefaultCharStyleConverter(theme)
@@ -33,20 +36,25 @@ class SearchResultsAdapter(theme: Resources.Theme) : RecyclerView.Adapter<Search
                 parent,
                 false
         )
-        return Holder(binding)
+        return Holder(binding, ruleContentStyledTextRenderer, onRuleClick)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(items[position])
     }
 
-    class Holder(private val binding: ItemRuleSearchResultBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(
+            private val binding: ItemRuleSearchResultBinding,
+            private val styledTextRenderer: StyledTextRenderer,
+            private val onRuleClick: (Long) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         private val context get() = binding.root.context
 
         fun bind(item: SearchResultItem) = with(binding) {
+            root.setOnClickListener { onRuleClick(item.ruleId) }
             numberTv.text = context.getString(R.string.rule_rule_number, item.ruleNumber)
-            contentTv.text = item.snippet.string
+            styledTextRenderer.render(item.snippet, contentTv)
         }
     }
 }
