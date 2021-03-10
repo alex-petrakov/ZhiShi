@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -62,7 +64,12 @@ class SearchFragment : Fragment() {
     }
 
     private fun render(state: ViewState) = with(binding) {
-        searchResultsAdapter.items = state.searchResults
+        TransitionManager.beginDelayedTransition(contentFrame)
+
+        recyclerView.isVisible = state.searchResults.isVisible
+        searchResultsAdapter.items = state.searchResults.items
+
+        emptyView.isVisible = state.emptyView.isVisible
     }
 
     private fun handle(effect: ViewEffect) {

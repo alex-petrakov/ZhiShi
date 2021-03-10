@@ -14,7 +14,7 @@ import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 class SearchViewModel(private val searchRules: SearchRules) : ViewModel() {
 
     private val _viewState = MutableLiveData<ViewState>().apply {
-        value = ViewState(emptyList())
+        value = ViewState(EmptyView(false), SearchResults(true, emptyList()))
     }
 
     val viewState: LiveData<ViewState> get() = _viewState
@@ -26,14 +26,20 @@ class SearchViewModel(private val searchRules: SearchRules) : ViewModel() {
     fun onUpdateQuery(query: String) {
         if (query.isEmpty()) {
             // TODO: Show search suggestions instead of showing empty list
-            _viewState.value = _viewState.value!!.copy(searchResults = emptyList())
+            _viewState.value = ViewState(
+                    EmptyView(false),
+                    SearchResults(true, emptyList())
+            )
             return
         }
 
         viewModelScope.launch {
             val results = searchRules(query)
             val uiModel = withContext(Dispatchers.Default) { results.map { it.toUiModel() } }
-            _viewState.value = _viewState.value!!.copy(searchResults = uiModel)
+            _viewState.value = ViewState(
+                    EmptyView(uiModel.isEmpty()),
+                    SearchResults(uiModel.isNotEmpty(), uiModel)
+            )
         }
     }
 

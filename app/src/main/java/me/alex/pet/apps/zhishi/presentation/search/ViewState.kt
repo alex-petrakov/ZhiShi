@@ -3,7 +3,17 @@ package me.alex.pet.apps.zhishi.presentation.search
 import me.alex.pet.apps.zhishi.domain.StyledText
 
 data class ViewState(
-        val searchResults: List<SearchResultItem>
+        val emptyView: EmptyView,
+        val searchResults: SearchResults
+)
+
+data class EmptyView(
+        val isVisible: Boolean
+)
+
+data class SearchResults(
+        val isVisible: Boolean,
+        val items: List<SearchResultItem>
 )
 
 data class SearchResultItem(
