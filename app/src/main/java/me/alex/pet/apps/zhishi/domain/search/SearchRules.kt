@@ -24,8 +24,6 @@ class SearchRules(
             return emptyList()
         }
 
-        return withContext(Dispatchers.IO) {
-            repository.query(searchTerms, 30)
-        }
+        return repository.query(searchTerms, 30)
     }
 }

@@ -3,8 +3,6 @@ package me.alex.pet.apps.zhishi.presentation.rule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 
@@ -14,10 +12,8 @@ class RuleViewModel(
 ) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
-        val rule = withContext(Dispatchers.IO) {
-            rulesRepository.getRule(ruleId)
-                    ?: throw IllegalStateException("Rule with ID $ruleId was not found") // TODO: Consider showing an empty view instead
-        }
+        val rule = rulesRepository.getRule(ruleId)
+                ?: throw IllegalStateException("Rule with ID $ruleId was not found") // TODO: Consider showing an empty view instead
         emit(ViewState(rule.number, rule.content))
     }
 

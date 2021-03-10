@@ -16,10 +16,8 @@ class SectionViewModel(
 ) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
-        val section = withContext(Dispatchers.IO) {
-            rulesRepository.getSection(sectionId)
-                    ?: throw IllegalStateException("Section with ID $sectionId was not found") // TODO: Consider showing an empty view instead
-        }
+        val section = rulesRepository.getSection(sectionId)
+                ?: throw IllegalStateException("Section with ID $sectionId was not found") // TODO: Consider showing an empty view instead
         val ruleNumbersRange = withContext(Dispatchers.Default) { section.ruleNumbersRange() }
         val displayableElements = withContext(Dispatchers.Default) { section.toUiModel() }
         emit(ViewState(ruleNumbersRange, displayableElements))

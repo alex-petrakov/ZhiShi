@@ -1,6 +1,8 @@
 package me.alex.pet.apps.zhishi.data
 
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.ChapterQueries
 import me.alex.pet.apps.zhishi.PartQueries
 import me.alex.pet.apps.zhishi.RuleQueries
@@ -25,8 +27,8 @@ class RulesDataStore(
 
     private val markupAdapter = moshi.adapter(MarkupDto::class.java)
 
-    override suspend fun getContents(): Contents {
-        return partQueries.transactionWithResult {
+    override suspend fun getContents(): Contents = withContext(Dispatchers.IO) {
+        partQueries.transactionWithResult {
             val parts = partQueries.getAll { id, name ->
                 ContentsPart(name, findContentsChaptersByPartId(id))
             }.executeAsList()
@@ -48,8 +50,8 @@ class RulesDataStore(
         }.executeAsList()
     }
 
-    override suspend fun getSection(sectionId: Long): Section? {
-        return sectionQueries.transactionWithResult {
+    override suspend fun getSection(sectionId: Long): Section? = withContext(Dispatchers.IO) {
+        sectionQueries.transactionWithResult {
             sectionQueries.findById(sectionId) { id, _, name, markup ->
                 val markupDto = markupAdapter.fromJson(markup)
                         ?: throw IllegalStateException("Unable to parse markup")
@@ -66,19 +68,19 @@ class RulesDataStore(
         }.executeAsList()
     }
 
-    override suspend fun getRule(ruleId: Long): Rule? {
-        return ruleQueries.findById(ruleId) { id, _, number, content, markup ->
+    override suspend fun getRule(ruleId: Long): Rule? = withContext(Dispatchers.IO) {
+        ruleQueries.findById(ruleId) { id, _, number, content, markup ->
             val markupDto = markupAdapter.fromJson(markup)
                     ?: throw IllegalStateException("Unable to parse markup")
             Rule(id, number, styledTextOf(content, markupDto))
         }.executeAsOneOrNull()
     }
 
-    override suspend fun query(searchTerms: List<String>, limit: Int): List<SearchResult> {
+    override suspend fun query(searchTerms: List<String>, limit: Int): List<SearchResult> = withContext(Dispatchers.IO) {
         require(searchTerms.isNotEmpty()) { "There must be at least one search term" }
         require(limit > 0) { "Limit must be > 0, but it was $limit" }
         val query = searchTerms.joinToString(separator = " OR ", transform = { term -> "$term*" })
-        return ruleQueries.query(query, 30) { id, _, number, snippet, _ ->
+        ruleQueries.query(query, 30) { id, _, number, snippet, _ ->
             SearchResult(id, number, StyledText(snippet!!))
         }.executeAsList()
     }

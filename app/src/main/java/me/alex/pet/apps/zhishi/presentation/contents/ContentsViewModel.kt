@@ -15,9 +15,7 @@ import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 class ContentsViewModel(rulesRepository: RulesRepository) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
-        val contents = withContext(Dispatchers.IO) {
-            rulesRepository.getContents()
-        }
+        val contents = rulesRepository.getContents()
         val newState = withContext(Dispatchers.Default) { contents.toViewState() }
         emit(newState)
     }
