@@ -3,6 +3,8 @@ package me.alex.pet.apps.zhishi.presentation.search
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ItemRuleSearchResultBinding
@@ -16,11 +18,23 @@ class SearchResultsAdapter(
         private val onRuleClick: (Long) -> Unit
 ) : RecyclerView.Adapter<SearchResultsAdapter.Holder>() {
 
-    var items: List<SearchResultItem> = emptyList()
+    var items: List<SearchResultItem>
         set(value) {
-            field = value
-            notifyDataSetChanged()
+            listDiffer.submitList(value)
         }
+        get() = listDiffer.currentList
+
+    private val diffCallback = object : DiffUtil.ItemCallback<SearchResultItem>() {
+        override fun areItemsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
+            return oldItem.ruleId == newItem.ruleId
+        }
+
+        override fun areContentsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    private val listDiffer = AsyncListDiffer(this, diffCallback)
 
     private val ruleContentStyledTextRenderer = StyledTextRenderer(
             paragraphStyleConverter = DefaultParagraphStyleConverter(theme),
