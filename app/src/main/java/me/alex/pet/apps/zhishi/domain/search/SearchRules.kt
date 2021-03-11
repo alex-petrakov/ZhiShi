@@ -13,10 +13,11 @@ class SearchRules(
 
     suspend operator fun invoke(query: String): List<SearchResult> {
         val searchTerms = withContext(Dispatchers.Default) {
-            query.replace("ё", "е", true)
+            query.toLowerCase(Locale.getDefault())
+                    .filter { it.isLetterOrDigit() || it.isWhitespace() }
+                    .replace("ё", "е")
                     .split("\\s".toRegex())
                     .filter { it.isNotBlank() }
-                    .map { it.toLowerCase(Locale.getDefault()) }
                     .map(stemmer::stem)
         }
 
