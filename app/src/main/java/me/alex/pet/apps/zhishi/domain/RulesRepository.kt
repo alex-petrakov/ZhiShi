@@ -13,5 +13,7 @@ interface RulesRepository {
 
     suspend fun getRule(ruleId: Long): Rule?
 
-    suspend fun query(searchTerms: List<String>, limit: Int): List<SearchResult>
+    suspend fun queryRulesByNumber(numbers: List<Int>): List<SearchResult>
+
+    suspend fun queryRulesByContent(searchTerms: List<String>, limit: Int): List<SearchResult>
 }

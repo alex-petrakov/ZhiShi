@@ -225,7 +225,11 @@ SELECT * FROM rule WHERE id = ?;
 findBySectionId:
 SELECT * FROM rule WHERE section_id = ? ORDER BY number;
 
-query:
+queryByNumber:
+SELECT * FROM rule WHERE number IN :numbers
+ORDER BY number ASC;
+
+queryByContent:
 SELECT
 	rule_core.id,
 	rule_core.section_id,

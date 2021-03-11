@@ -76,11 +76,16 @@ class RulesDataStore(
         }.executeAsOneOrNull()
     }
 
-    override suspend fun query(searchTerms: List<String>, limit: Int): List<SearchResult> = withContext(Dispatchers.IO) {
-        require(searchTerms.isNotEmpty()) { "There must be at least one search term" }
+    override suspend fun queryRulesByNumber(numbers: List<Int>): List<SearchResult> = withContext(Dispatchers.IO) {
+        ruleQueries.queryByNumber(numbers) { id, _, number, content, _ ->
+            SearchResult(id, number, StyledText(content))
+        }.executeAsList()
+    }
+
+    override suspend fun queryRulesByContent(searchTerms: List<String>, limit: Int): List<SearchResult> = withContext(Dispatchers.IO) {
         require(limit > 0) { "Limit must be > 0, but it was $limit" }
         val query = searchTerms.joinToString(separator = " OR ", transform = { term -> "$term*" })
-        ruleQueries.query(query, 30) { id, _, number, snippet, _ ->
+        ruleQueries.queryByContent(query, 30) { id, _, number, snippet, _ ->
             SearchResult(id, number, StyledText(snippet!!))
         }.executeAsList()
     }
