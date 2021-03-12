@@ -5,8 +5,10 @@ import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import me.alex.pet.apps.zhishi.data.Database
 import me.alex.pet.apps.zhishi.data.RulesDataStore
+import me.alex.pet.apps.zhishi.data.SuggestionsProvider
 import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
+import me.alex.pet.apps.zhishi.domain.search.SuggestionsRepository
 import me.alex.pet.apps.zhishi.domain.stemming.Stemmer
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsViewModel
 import me.alex.pet.apps.zhishi.presentation.rule.RuleViewModel
@@ -33,11 +35,13 @@ val appModule = module {
         )
     }
 
+    single<SuggestionsRepository> { SuggestionsProvider() }
+
     factory { Stemmer() }
     factory { SearchRules(get(), get()) }
 
     viewModel { ContentsViewModel(get()) }
     viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get()) }
     viewModel { (ruleId: Long) -> RuleViewModel(ruleId, get()) }
-    viewModel { SearchViewModel(get()) }
+    viewModel { SearchViewModel(get(), get()) }
 }

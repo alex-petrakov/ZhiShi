@@ -9,12 +9,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
+import me.alex.pet.apps.zhishi.domain.search.SuggestionsRepository
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 
-class SearchViewModel(private val searchRules: SearchRules) : ViewModel() {
+class SearchViewModel(
+        private val searchRules: SearchRules,
+        private val suggestionsRepo: SuggestionsRepository
+) : ViewModel() {
 
     private val _viewState = MutableLiveData<ViewState>().apply {
-        value = ViewState(SearchResults(false, emptyList()), EmptyView(false), SuggestionsView(true))
+        val searchSuggestions = suggestionsRepo.getSuggestions()
+        val viewState = ViewState(
+                SearchResults(false, emptyList()),
+                EmptyView(false),
+                SuggestionsView(true, searchSuggestions)
+        )
+        value = viewState
     }
 
     val viewState: LiveData<ViewState> get() = _viewState
@@ -28,7 +38,7 @@ class SearchViewModel(private val searchRules: SearchRules) : ViewModel() {
             _viewState.value = ViewState(
                     SearchResults(false, emptyList()),
                     EmptyView(false),
-                    SuggestionsView(true)
+                    _viewState.value!!.suggestionsView.copy(isVisible = true)
             )
             return
         }
@@ -39,7 +49,7 @@ class SearchViewModel(private val searchRules: SearchRules) : ViewModel() {
             _viewState.value = ViewState(
                     SearchResults(uiModel.isNotEmpty(), uiModel),
                     EmptyView(uiModel.isEmpty()),
-                    SuggestionsView(false)
+                    _viewState.value!!.suggestionsView.copy(isVisible = false)
             )
         }
     }

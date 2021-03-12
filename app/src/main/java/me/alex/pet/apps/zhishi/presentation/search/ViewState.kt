@@ -13,7 +13,8 @@ data class EmptyView(
 )
 
 data class SuggestionsView(
-        val isVisible: Boolean
+        val isVisible: Boolean,
+        val suggestions: List<String>
 )
 
 data class SearchResults(
