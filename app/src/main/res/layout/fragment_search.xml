@@ -35,6 +35,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/suggestions_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:textColor="?android:textColorSecondary"
+                android:text="@string/search_suggestions_explanation" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/suggestions_chip_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                app:singleLine="false">
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/BaseAppTheme.Overlay.PrimaryOnSurface"
+                    style="?chipStyle"
+                    android:text="пре при" />
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/empty_view"
             style="@style/TextAppearance.MaterialComponents.Body1"
@@ -44,8 +78,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:gravity="center"
-            android:textColor="?android:textColorTertiary"
-            android:text="@string/search_no_results" />
+            android:text="@string/search_no_results"
+            android:textColor="?android:textColorTertiary" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"

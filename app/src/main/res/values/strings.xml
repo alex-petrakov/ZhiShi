@@ -10,4 +10,5 @@
     <string name="search_bar_cd_menu">Menu</string>
     <string name="app_action_search_rules">Search rules</string>
     <string name="search_no_results">Nothing found</string>
+    <string name="search_suggestions_explanation">Ищите номера параграфов и всё, что душе угодно:</string>
 </resources>

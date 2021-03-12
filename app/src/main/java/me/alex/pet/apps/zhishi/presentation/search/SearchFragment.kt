@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.TransitionManager
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -70,6 +73,15 @@ class SearchFragment : Fragment() {
         searchResultsAdapter.items = state.searchResults.items
 
         emptyView.isVisible = state.emptyView.isVisible
+
+        suggestionsView.isVisible = state.suggestionsView.isVisible
+        suggestionsChipGroup.chips.forEach { chip ->
+            chip.setOnClickListener { view ->
+                val chipText = (view as Chip).text
+                queryEt.setText(chipText)
+                queryEt.setSelection(chipText.length)
+            }
+        }
     }
 
     private fun handle(effect: ViewEffect) {
@@ -82,3 +94,5 @@ class SearchFragment : Fragment() {
         fun newInstance() = SearchFragment()
     }
 }
+
+private val ChipGroup.chips get() = this.children.mapNotNull { it as? Chip }
