@@ -1,14 +1,18 @@
 <resources>
-    <string name="app_name">ZhiShi</string>
-    <string name="app_navigate_up">Navigate up</string>
+    <string name="app_name">Правила</string>
+    <string name="app_navigate_up">Перейти наверх</string>
     <string name="app_rule_number">§ %d</string>
+    <string name="app_action_search_rules">Поиск правил</string>
+
     <string name="section_rule_numbers_range">§§ %d–%d</string>
     <string name="section_rule_number">§ %d</string>
+
     <string name="rule_rule_number">§ %d</string>
-    <string name="search_bar_search_rules">Search rules</string>
-    <string name="search_bar_cd_search_icon">Search icon</string>
-    <string name="search_bar_cd_menu">Menu</string>
-    <string name="app_action_search_rules">Search rules</string>
-    <string name="search_no_results">Nothing found</string>
+
+    <string name="search_bar_search_rules">Поиск правил</string>
+    <string name="search_bar_cd_search_icon">Поиск</string>
+    <string name="search_bar_cd_menu">Больше опций</string>
+
+    <string name="search_no_results">Ничего не найдено</string>
     <string name="search_suggestions_explanation">Ищите номера параграфов и всё, что душе угодно:</string>
 </resources>
