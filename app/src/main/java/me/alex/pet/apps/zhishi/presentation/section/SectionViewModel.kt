@@ -47,6 +47,6 @@ private fun Rule.toUiModel(): DisplayableElement {
     return DisplayableElement.Rule(
             this.id,
             this.number,
-            this.content
+            this.annotation
     )
 }
