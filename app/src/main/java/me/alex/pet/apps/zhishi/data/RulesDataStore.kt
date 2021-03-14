@@ -61,23 +61,27 @@ class RulesDataStore(
     }
 
     private fun findRulesBySectionId(sectionId: Long): List<Rule> {
-        return ruleQueries.findBySectionId(sectionId) { id, _, number, content, markup ->
-            val markupDto = markupAdapter.fromJson(markup)
+        return ruleQueries.findBySectionId(sectionId) { id, _, number, annotation, annotationMarkup, content, contentMarkup ->
+            val annotationMarkupDto = markupAdapter.fromJson(annotationMarkup)
                     ?: throw IllegalStateException("Unable to parse markup")
-            Rule(id, number, styledTextOf(content, markupDto))
+            val contentMarkupDto = markupAdapter.fromJson(contentMarkup)
+                    ?: throw IllegalStateException("Unable to parse markup")
+            Rule(id, number, styledTextOf(annotation, annotationMarkupDto), styledTextOf(content, contentMarkupDto))
         }.executeAsList()
     }
 
     override suspend fun getRule(ruleId: Long): Rule? = withContext(Dispatchers.IO) {
-        ruleQueries.findById(ruleId) { id, _, number, content, markup ->
-            val markupDto = markupAdapter.fromJson(markup)
+        ruleQueries.findById(ruleId) { id, _, number, annotation, annotationMarkup, content, contentMarkup ->
+            val annotationMarkupDto = markupAdapter.fromJson(annotationMarkup)
                     ?: throw IllegalStateException("Unable to parse markup")
-            Rule(id, number, styledTextOf(content, markupDto))
+            val contentMarkupDto = markupAdapter.fromJson(contentMarkup)
+                    ?: throw IllegalStateException("Unable to parse markup")
+            Rule(id, number, styledTextOf(annotation, annotationMarkupDto), styledTextOf(content, contentMarkupDto))
         }.executeAsOneOrNull()
     }
 
     override suspend fun queryRulesByNumber(numbers: List<Int>): List<SearchResult> = withContext(Dispatchers.IO) {
-        ruleQueries.queryByNumber(numbers) { id, _, number, content, _ ->
+        ruleQueries.queryByNumber(numbers) { id, _, number, _, _, content, _ ->
             SearchResult(id, number, StyledText(content))
         }.executeAsList()
     }
