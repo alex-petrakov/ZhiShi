@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.domain.rules.Rule
+import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.domain.rules.Section
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 

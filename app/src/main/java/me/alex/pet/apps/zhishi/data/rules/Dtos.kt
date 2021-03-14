@@ -1,8 +1,8 @@
-package me.alex.pet.apps.zhishi.data
+package me.alex.pet.apps.zhishi.data.rules
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import me.alex.pet.apps.zhishi.domain.*
+import me.alex.pet.apps.zhishi.domain.common.*
 
 @JsonClass(generateAdapter = true)
 data class MarkupDto(

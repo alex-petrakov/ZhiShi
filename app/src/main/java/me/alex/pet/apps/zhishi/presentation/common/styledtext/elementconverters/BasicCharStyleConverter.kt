@@ -3,8 +3,8 @@ package me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters
 import android.graphics.Typeface
 import android.text.TextPaint
 import android.text.style.StyleSpan
-import me.alex.pet.apps.zhishi.domain.CharacterStyle
-import me.alex.pet.apps.zhishi.domain.CharacterStyleType
+import me.alex.pet.apps.zhishi.domain.common.CharacterStyle
+import me.alex.pet.apps.zhishi.domain.common.CharacterStyleType
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
 
 class BasicCharStyleConverter : ElementConverter<CharacterStyle> {

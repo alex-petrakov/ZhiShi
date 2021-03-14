@@ -1,8 +1,6 @@
-package me.alex.pet.apps.zhishi.domain
+package me.alex.pet.apps.zhishi.domain.rules
 
 import me.alex.pet.apps.zhishi.domain.contents.Contents
-import me.alex.pet.apps.zhishi.domain.rules.Rule
-import me.alex.pet.apps.zhishi.domain.rules.Section
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 
 interface RulesRepository {

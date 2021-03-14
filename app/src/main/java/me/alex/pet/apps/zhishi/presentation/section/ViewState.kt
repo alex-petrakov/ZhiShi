@@ -1,6 +1,6 @@
 package me.alex.pet.apps.zhishi.presentation.section
 
-import me.alex.pet.apps.zhishi.domain.StyledText
+import me.alex.pet.apps.zhishi.domain.common.StyledText
 
 data class ViewState(val ruleNumbersRange: IntRange, val elements: List<DisplayableElement>)
 

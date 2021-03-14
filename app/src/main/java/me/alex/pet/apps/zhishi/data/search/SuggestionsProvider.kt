@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.data
+package me.alex.pet.apps.zhishi.data.search
 
 import me.alex.pet.apps.zhishi.domain.search.SuggestionsRepository
 

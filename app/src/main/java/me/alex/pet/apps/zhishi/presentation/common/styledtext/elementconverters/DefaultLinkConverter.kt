@@ -1,7 +1,7 @@
 package me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters
 
 import android.text.TextPaint
-import me.alex.pet.apps.zhishi.domain.Link
+import me.alex.pet.apps.zhishi.domain.common.Link
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.LinkSpan
 

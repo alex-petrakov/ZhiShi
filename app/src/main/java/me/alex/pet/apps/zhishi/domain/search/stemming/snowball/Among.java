@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.domain.stemming.snowball;
+package me.alex.pet.apps.zhishi.domain.search.stemming.snowball;
 
 import java.lang.reflect.Method;
 

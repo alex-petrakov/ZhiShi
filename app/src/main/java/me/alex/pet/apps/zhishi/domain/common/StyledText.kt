@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.domain
+package me.alex.pet.apps.zhishi.domain.common
 
 data class StyledText(
         val string: String,

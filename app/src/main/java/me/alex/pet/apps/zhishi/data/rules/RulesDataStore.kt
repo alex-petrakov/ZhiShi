@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.data
+package me.alex.pet.apps.zhishi.data.rules
 
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
@@ -7,13 +7,13 @@ import me.alex.pet.apps.zhishi.ChapterQueries
 import me.alex.pet.apps.zhishi.PartQueries
 import me.alex.pet.apps.zhishi.RuleQueries
 import me.alex.pet.apps.zhishi.SectionQueries
-import me.alex.pet.apps.zhishi.domain.RulesRepository
-import me.alex.pet.apps.zhishi.domain.StyledText
+import me.alex.pet.apps.zhishi.domain.common.StyledText
 import me.alex.pet.apps.zhishi.domain.contents.Contents
 import me.alex.pet.apps.zhishi.domain.contents.ContentsChapter
 import me.alex.pet.apps.zhishi.domain.contents.ContentsPart
 import me.alex.pet.apps.zhishi.domain.contents.ContentsSection
 import me.alex.pet.apps.zhishi.domain.rules.Rule
+import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.domain.rules.Section
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 

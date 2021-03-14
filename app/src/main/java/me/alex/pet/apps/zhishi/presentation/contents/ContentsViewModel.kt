@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import me.alex.pet.apps.zhishi.domain.RulesRepository
 import me.alex.pet.apps.zhishi.domain.contents.Contents
 import me.alex.pet.apps.zhishi.domain.contents.ContentsChapter
 import me.alex.pet.apps.zhishi.domain.contents.ContentsPart
 import me.alex.pet.apps.zhishi.domain.contents.ContentsSection
+import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 
 class ContentsViewModel(rulesRepository: RulesRepository) : ViewModel() {

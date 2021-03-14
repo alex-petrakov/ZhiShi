@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.domain.stemming.snowball;
+package me.alex.pet.apps.zhishi.domain.search.stemming.snowball;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

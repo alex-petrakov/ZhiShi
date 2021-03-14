@@ -3,8 +3,8 @@ package me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters
 import android.content.res.Resources
 import android.text.TextPaint
 import me.alex.pet.apps.zhishi.R
-import me.alex.pet.apps.zhishi.domain.ParagraphStyle
-import me.alex.pet.apps.zhishi.domain.ParagraphStyleType
+import me.alex.pet.apps.zhishi.domain.common.ParagraphStyle
+import me.alex.pet.apps.zhishi.domain.common.ParagraphStyleType
 import me.alex.pet.apps.zhishi.presentation.common.resolveColorAttr
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.QuotationSpan

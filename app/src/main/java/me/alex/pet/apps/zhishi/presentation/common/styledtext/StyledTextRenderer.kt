@@ -5,7 +5,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.widget.TextView
-import me.alex.pet.apps.zhishi.domain.*
+import me.alex.pet.apps.zhishi.domain.common.*
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.ElementConverter
 
 class StyledTextRenderer(

@@ -4,12 +4,12 @@ import com.squareup.moshi.Moshi
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import me.alex.pet.apps.zhishi.data.Database
-import me.alex.pet.apps.zhishi.data.RulesDataStore
-import me.alex.pet.apps.zhishi.data.SuggestionsProvider
-import me.alex.pet.apps.zhishi.domain.RulesRepository
+import me.alex.pet.apps.zhishi.data.rules.RulesDataStore
+import me.alex.pet.apps.zhishi.data.search.SuggestionsProvider
+import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
 import me.alex.pet.apps.zhishi.domain.search.SuggestionsRepository
-import me.alex.pet.apps.zhishi.domain.stemming.Stemmer
+import me.alex.pet.apps.zhishi.domain.search.stemming.Stemmer
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsViewModel
 import me.alex.pet.apps.zhishi.presentation.rule.RuleViewModel
 import me.alex.pet.apps.zhishi.presentation.search.SearchViewModel

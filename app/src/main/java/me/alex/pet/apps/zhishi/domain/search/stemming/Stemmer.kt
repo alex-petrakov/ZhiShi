@@ -1,6 +1,6 @@
-package me.alex.pet.apps.zhishi.domain.stemming
+package me.alex.pet.apps.zhishi.domain.search.stemming
 
-import me.alex.pet.apps.zhishi.domain.stemming.snowball.RussianStemmer
+import me.alex.pet.apps.zhishi.domain.search.stemming.snowball.RussianStemmer
 
 class Stemmer {
     private val stemmer = RussianStemmer()
