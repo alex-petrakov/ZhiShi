@@ -4,9 +4,5 @@ CREATE TABLE part (
 );
 
 
--- TODO: Remove this line as soon as database can be prepopulated from assets
-INSERT INTO "part" VALUES (1,'Орфография');
-
-
 getAll:
 SELECT * FROM part ORDER BY id;

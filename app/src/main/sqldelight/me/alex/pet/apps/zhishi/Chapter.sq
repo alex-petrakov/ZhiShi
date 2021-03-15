@@ -6,9 +6,5 @@ CREATE TABLE chapter(
 );
 
 
--- TODO: Remove these lines as soon as database can be prepopulated from assets
-INSERT INTO "chapter" VALUES (1,1,'Правописание гласных');
-
-
 findByPartId:
 SELECT * FROM chapter WHERE part_id = ? ORDER BY id;

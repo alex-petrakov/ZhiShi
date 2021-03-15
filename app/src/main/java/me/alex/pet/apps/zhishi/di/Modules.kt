@@ -1,9 +1,12 @@
 package me.alex.pet.apps.zhishi.di
 
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 import me.alex.pet.apps.zhishi.data.Database
+import me.alex.pet.apps.zhishi.data.common.CopyOpenHelperFactory
 import me.alex.pet.apps.zhishi.data.rules.RulesDataStore
 import me.alex.pet.apps.zhishi.data.search.SuggestionsProvider
 import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
@@ -19,7 +22,19 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    single<SqlDriver> { AndroidSqliteDriver(Database.Schema, androidContext(), "rules.db") }
+    single<SqlDriver> {
+        val factory = CopyOpenHelperFactory("db/rules.db")
+        val callback = object : SupportSQLiteOpenHelper.Callback(Database.Schema.version) {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                // Do nothing
+            }
+
+            override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
+                // Do nothing
+            }
+        }
+        AndroidSqliteDriver(Database.Schema, androidContext(), "rules.db", factory, callback)
+    }
     single { Database(get()) }
 
     single<Moshi> { Moshi.Builder().build() }
