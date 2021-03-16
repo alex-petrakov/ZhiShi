@@ -23,8 +23,9 @@ import org.koin.dsl.module
 
 val appModule = module {
     single<SqlDriver> {
-        val factory = CopyOpenHelperFactory("db/rules.db")
-        val callback = object : SupportSQLiteOpenHelper.Callback(Database.Schema.version) {
+        val dbVersion = Database.Schema.version
+        val factory = CopyOpenHelperFactory("db/rules.db", dbVersion)
+        val callback = object : SupportSQLiteOpenHelper.Callback(dbVersion) {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 // Do nothing
             }

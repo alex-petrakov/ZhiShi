@@ -5,12 +5,15 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import timber.log.Timber
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.ByteBuffer
 
 class CopyOpenHelper(
         private val context: Context,
         private val assetsPath: String,
+        private val databaseVersion: Int,
         private val delegate: SupportSQLiteOpenHelper
 ) : SupportSQLiteOpenHelper {
 
@@ -39,7 +42,7 @@ class CopyOpenHelper(
     }
 
     private fun prepareDatabase(writable: Boolean) {
-        val dbFile = context.getDatabasePath(databaseName)
+        val dbFile: File = context.getDatabasePath(databaseName)
 
         // TODO: prevent concurrent writes?
         if (!dbFile.exists()) {
@@ -51,7 +54,44 @@ class CopyOpenHelper(
                 throw RuntimeException("Unable to copy database file.", e)
             }
         }
-        // TODO: check the DB version
+
+        val currentVersion = try {
+            readVersion(dbFile)
+        } catch (e: IOException) {
+            Timber.w(e, "Unable to read database version")
+            return
+        }
+        Timber.i("Found database file $databaseName with version $currentVersion")
+
+        if (currentVersion == databaseVersion) {
+            Timber.i("Database version is up to date (current version = $currentVersion)")
+            return
+        }
+
+        Timber.i("Database version is not up to date (current version = $currentVersion, required version = $databaseVersion)")
+        if (context.deleteDatabase(databaseName)) {
+            try {
+                copyDatabaseFile(dbFile, writable)
+            } catch (e: IOException) {
+                throw RuntimeException("Unable to copy database file during version migration", e)
+            }
+        } else {
+            throw RuntimeException("Failed to delete old version of the database file $databaseName")
+        }
+    }
+
+    private fun readVersion(dbFile: File): Int {
+        return FileInputStream(dbFile).channel.use { input ->
+            input.tryLock(60, 4, true)
+            input.position(60)
+            val buffer = ByteBuffer.allocate(4)
+            val numOfReadBytes = input.read(buffer)
+            if (numOfReadBytes != 4) {
+                throw IOException("Bad database header, unable to read 4 bytes at offset 60")
+            }
+            buffer.rewind()
+            buffer.int
+        }
     }
 
     private fun copyDatabaseFile(destinationFile: File, writable: Boolean) {
