@@ -45,27 +45,31 @@ class CopyOpenHelper(
         // TODO: prevent concurrent writes?
         if (!dbFile.exists()) {
             Timber.i("No database file found at ${dbFile.absolutePath}")
-            tryCopyDatabaseFile(dbFile, writable)
+            tryCopyDatabaseFileFromAssets(dbFile, writable)
             return
         }
 
+        Timber.i("Found database file $databaseName")
         val currentVersion = tryReadDatabaseVersion(dbFile)
-        Timber.i("Found database file $databaseName with version $currentVersion")
-
-        if (currentVersion == databaseVersion) {
-            Timber.i("Database version is up to date (current version = $currentVersion)")
-            return
+        when {
+            currentVersion != databaseVersion -> {
+                Timber.i("Database version is not up to date (current version = $currentVersion, required version = $databaseVersion)")
+                replaceExistingDatabase(dbFile, writable)
+            }
+            else -> Timber.i("Database version is up to date (current version = $currentVersion)")
         }
+    }
 
-        Timber.i("Database version is not up to date (current version = $currentVersion, required version = $databaseVersion)")
+    private fun replaceExistingDatabase(dbFile: File, writable: Boolean) {
+        Timber.i("Trying to replace existing database")
         if (context.deleteDatabase(databaseName)) {
-            tryCopyDatabaseFile(dbFile, writable)
+            tryCopyDatabaseFileFromAssets(dbFile, writable)
         } else {
             throw DatabaseCopyException("Failed to delete old version of the database file $databaseName")
         }
     }
 
-    private fun tryCopyDatabaseFile(dbFile: File, writable: Boolean) {
+    private fun tryCopyDatabaseFileFromAssets(dbFile: File, writable: Boolean) {
         try {
             copyDatabaseFileFromAssets(dbFile, writable)
         } catch (e: IOException) {
