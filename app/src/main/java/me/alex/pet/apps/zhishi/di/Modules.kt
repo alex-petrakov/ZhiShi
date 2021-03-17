@@ -1,7 +1,5 @@
 package me.alex.pet.apps.zhishi.di
 
-import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.squareup.moshi.Moshi
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
@@ -23,18 +21,8 @@ import org.koin.dsl.module
 
 val appModule = module {
     single<SqlDriver> {
-        val dbVersion = Database.Schema.version
-        val factory = CopyOpenHelperFactory("db/rules.db", dbVersion)
-        val callback = object : SupportSQLiteOpenHelper.Callback(dbVersion) {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                // Do nothing
-            }
-
-            override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
-                // Do nothing
-            }
-        }
-        AndroidSqliteDriver(Database.Schema, androidContext(), "rules.db", factory, callback)
+        val factory = CopyOpenHelperFactory("db/rules.db")
+        AndroidSqliteDriver(Database.Schema, androidContext(), "rules.db", factory)
     }
     single { Database(get()) }
 
