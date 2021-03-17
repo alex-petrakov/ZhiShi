@@ -3,12 +3,14 @@ package me.alex.pet.apps.zhishi.data.common
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.ByteBuffer
+
 
 class CopyOpenHelper(
         private val context: Context,
@@ -92,7 +94,7 @@ class CopyOpenHelper(
             throw IOException("Failed to create parent directories for ${destinationFile.absolutePath}")
         }
 
-        // TODO: try to open the db?
+        tryOpenDatabase(tempFile, writable)
 
         if (!tempFile.renameTo(destinationFile)) {
             throw IOException("Failed to move temp file ${tempFile.absolutePath} to ${destinationFile.absolutePath}")
@@ -120,6 +122,35 @@ class CopyOpenHelper(
             buffer.rewind()
             buffer.int
         }
+    }
+
+    private fun tryOpenDatabase(databaseFile: File, writable: Boolean) {
+        createFrameworkOpenHelper(databaseFile).use { helper ->
+            if (writable) {
+                helper.writableDatabase
+            } else {
+                helper.readableDatabase
+            }
+        }
+    }
+
+    private fun createFrameworkOpenHelper(databaseFile: File): SupportSQLiteOpenHelper {
+        val databaseName = databaseFile.name
+        val version = tryReadDatabaseVersion(databaseFile)
+        val factory = FrameworkSQLiteOpenHelperFactory()
+        val configuration = SupportSQLiteOpenHelper.Configuration.builder(context)
+                .name(databaseName)
+                .callback(object : SupportSQLiteOpenHelper.Callback(version) {
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        // Do nothing
+                    }
+
+                    override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
+                        // Do nothing
+                    }
+                })
+                .build()
+        return factory.create(configuration)
     }
 
     override fun close() {
