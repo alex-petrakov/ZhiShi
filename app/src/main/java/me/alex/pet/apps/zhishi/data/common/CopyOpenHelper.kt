@@ -17,6 +17,8 @@ class CopyOpenHelper(
         private val delegate: SupportSQLiteOpenHelper
 ) : SupportSQLiteOpenHelper {
 
+    class DatabaseCopyException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
+
     override fun getDatabaseName(): String? {
         return delegate.databaseName
     }
@@ -26,41 +28,26 @@ class CopyOpenHelper(
     }
 
     override fun getWritableDatabase(): SupportSQLiteDatabase {
-        Timber.d("getWritableDatabase()")
-
-        prepareDatabase(true)
-
+        verifyDatabase(true)
         return delegate.writableDatabase
     }
 
     override fun getReadableDatabase(): SupportSQLiteDatabase {
-        Timber.d("getReadableDatabase()")
-
-        prepareDatabase(false)
-
+        verifyDatabase(false)
         return delegate.readableDatabase
     }
 
-    private fun prepareDatabase(writable: Boolean) {
+    private fun verifyDatabase(writable: Boolean) {
         val dbFile: File = context.getDatabasePath(databaseName)
 
         // TODO: prevent concurrent writes?
         if (!dbFile.exists()) {
             Timber.i("No database file found at ${dbFile.absolutePath}")
-            try {
-                copyDatabaseFile(dbFile, writable)
-                return
-            } catch (e: IOException) {
-                throw RuntimeException("Unable to copy database file.", e)
-            }
-        }
-
-        val currentVersion = try {
-            readVersion(dbFile)
-        } catch (e: IOException) {
-            Timber.w(e, "Unable to read database version")
+            tryCopyDatabaseFile(dbFile, writable)
             return
         }
+
+        val currentVersion = tryReadDatabaseVersion(dbFile)
         Timber.i("Found database file $databaseName with version $currentVersion")
 
         if (currentVersion == databaseVersion) {
@@ -70,13 +57,54 @@ class CopyOpenHelper(
 
         Timber.i("Database version is not up to date (current version = $currentVersion, required version = $databaseVersion)")
         if (context.deleteDatabase(databaseName)) {
-            try {
-                copyDatabaseFile(dbFile, writable)
-            } catch (e: IOException) {
-                throw RuntimeException("Unable to copy database file during version migration", e)
-            }
+            tryCopyDatabaseFile(dbFile, writable)
         } else {
-            throw RuntimeException("Failed to delete old version of the database file $databaseName")
+            throw DatabaseCopyException("Failed to delete old version of the database file $databaseName")
+        }
+    }
+
+    private fun tryCopyDatabaseFile(dbFile: File, writable: Boolean) {
+        try {
+            copyDatabaseFileFromAssets(dbFile, writable)
+        } catch (e: IOException) {
+            throw DatabaseCopyException("Unable to copy database file", e)
+        }
+    }
+
+    private fun copyDatabaseFileFromAssets(destinationFile: File, writable: Boolean) {
+        Timber.i("Attempting to copy the database from the assets")
+
+        val tempFile = File.createTempFile(
+                "database",
+                ".tmp",
+                context.cacheDir
+        ).also { it.deleteOnExit() }
+
+        context.assets.open(assetsPath).use { inputStream ->
+            FileOutputStream(tempFile).use { outputStream ->
+                val byteCount = inputStream.copyTo(outputStream)
+                Timber.i("Copied $byteCount B from assets to temp file")
+            }
+        }
+
+        val parent = destinationFile.parentFile
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw IOException("Failed to create parent directories for ${destinationFile.absolutePath}")
+        }
+
+        // TODO: try to open the db?
+
+        if (!tempFile.renameTo(destinationFile)) {
+            throw IOException("Failed to move temp file ${tempFile.absolutePath} to ${destinationFile.absolutePath}")
+        }
+        Timber.i("Database has been successfully copied from assets")
+    }
+
+    private fun tryReadDatabaseVersion(dbFile: File): Int {
+        return try {
+            readVersion(dbFile)
+        } catch (e: IOException) {
+            throw DatabaseCopyException("Unable to read database version", e)
         }
     }
 
@@ -91,33 +119,6 @@ class CopyOpenHelper(
             }
             buffer.rewind()
             buffer.int
-        }
-    }
-
-    private fun copyDatabaseFile(destinationFile: File, writable: Boolean) {
-        Timber.i("Attempting to copy the database from the assets")
-
-        val tempFile = File.createTempFile(
-                "database",
-                ".tmp",
-                context.cacheDir
-        ).also { it.deleteOnExit() }
-
-        context.assets.open(assetsPath).use { inputStream ->
-            FileOutputStream(tempFile).use { outputStream ->
-                inputStream.copyTo(outputStream)
-            }
-        }
-
-        val parent = destinationFile.parentFile
-        if (parent != null && !parent.exists() && !parent.mkdirs()) {
-            throw IOException("Failed to create parent directories for ${destinationFile.absolutePath}")
-        }
-
-        // TODO: try to open the db?
-
-        if (!tempFile.renameTo(destinationFile)) {
-            throw IOException("Failed to move intermediate file ${tempFile.absolutePath} to ${destinationFile.absolutePath}")
         }
     }
 
