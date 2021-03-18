@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.data.rules
+package me.alex.pet.apps.zhishi.data.common
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
