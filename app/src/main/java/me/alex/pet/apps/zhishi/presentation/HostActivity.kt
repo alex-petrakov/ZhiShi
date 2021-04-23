@@ -5,7 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ActivityHostBinding
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsFragment
-import me.alex.pet.apps.zhishi.presentation.rule.RuleFragment
+import me.alex.pet.apps.zhishi.presentation.rules.RulesFragment
+import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 import me.alex.pet.apps.zhishi.presentation.search.SearchFragment
 import me.alex.pet.apps.zhishi.presentation.section.SectionFragment
 
@@ -34,7 +35,14 @@ class HostActivity : AppCompatActivity() {
 
     fun navigateToRule(ruleId: Long) {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, RuleFragment.newInstance(ruleId))
+                .replace(R.id.fragment_container, RulesFragment.newInstance(ruleId))
+                .addToBackStack("RULE")
+                .commit()
+    }
+
+    fun navigateToRule(rulesToDisplay: RulesToDisplay) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, RulesFragment.newInstance(rulesToDisplay))
                 .addToBackStack("RULE")
                 .commit()
     }

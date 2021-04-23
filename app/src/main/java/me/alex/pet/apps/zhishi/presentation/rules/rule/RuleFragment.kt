@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.rule
+package me.alex.pet.apps.zhishi.presentation.rules.rule
 
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.observe
@@ -42,7 +41,7 @@ class RuleFragment : Fragment() {
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRuleBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -54,10 +53,6 @@ class RuleFragment : Fragment() {
     }
 
     private fun prepareView() = with(binding) {
-        toolbar.apply {
-            setNavigationIcon(R.drawable.ic_action_up)
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
-        }
         ruleContentTv.movementMethod = LinkMovementMethod() // TODO: Use BetterLinkMovementMethod
     }
 
@@ -67,7 +62,6 @@ class RuleFragment : Fragment() {
     }
 
     private fun render(state: ViewState) = with(binding) {
-        toolbar.title = getString(R.string.rule_rule_number, state.ruleNumber)
         styledTextConverter.render(state.ruleContent, ruleContentTv)
     }
 
@@ -75,6 +69,10 @@ class RuleFragment : Fragment() {
         when (effect) {
             is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.ruleId)
         }
+    }
+
+    fun resetScroll() {
+        binding.scrollView.scrollTo(0, 0)
     }
 
     override fun onDestroyView() {

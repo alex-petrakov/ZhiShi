@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.rule
+package me.alex.pet.apps.zhishi.presentation.rules.rule
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,7 @@ class RuleViewModel(
     val viewState: LiveData<ViewState> = liveData {
         val rule = rulesRepository.getRule(ruleId)
                 ?: throw IllegalStateException("Rule with ID $ruleId was not found") // TODO: Consider showing an empty view instead
-        emit(ViewState(rule.number, rule.content))
+        emit(ViewState(rule.content))
     }
 
     private val _viewEffect = SingleLiveEvent<ViewEffect>()

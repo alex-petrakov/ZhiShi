@@ -14,7 +14,9 @@ import me.alex.pet.apps.zhishi.domain.search.SearchRules
 import me.alex.pet.apps.zhishi.domain.search.SuggestionsRepository
 import me.alex.pet.apps.zhishi.domain.search.stemming.Stemmer
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsViewModel
-import me.alex.pet.apps.zhishi.presentation.rule.RuleViewModel
+import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
+import me.alex.pet.apps.zhishi.presentation.rules.RulesViewModel
+import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleViewModel
 import me.alex.pet.apps.zhishi.presentation.search.SearchViewModel
 import me.alex.pet.apps.zhishi.presentation.section.SectionViewModel
 import org.koin.android.ext.koin.androidContext
@@ -55,6 +57,7 @@ val appModule = module {
 
     viewModel { ContentsViewModel(get()) }
     viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get()) }
+    viewModel { (rulesToDisplay: RulesToDisplay) -> RulesViewModel(rulesToDisplay) }
     viewModel { (ruleId: Long) -> RuleViewModel(ruleId, get()) }
     viewModel { SearchViewModel(get(), get()) }
 }
