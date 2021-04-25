@@ -67,7 +67,7 @@ class SearchResultsAdapter(
 
         fun bind(item: SearchResultItem) = with(binding) {
             root.setOnClickListener { onRuleClick(item.ruleId) }
-            numberTv.text = context.getString(R.string.rule_rule_number, item.ruleNumber)
+            numberTv.text = context.getString(R.string.rule_rule_number, item.ruleId)
             styledTextRenderer.render(item.snippet, contentTv)
         }
     }

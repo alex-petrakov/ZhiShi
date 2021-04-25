@@ -24,6 +24,5 @@ data class SearchResults(
 
 data class SearchResultItem(
         val ruleId: Long,
-        val ruleNumber: Int,
         val snippet: StyledText
 )

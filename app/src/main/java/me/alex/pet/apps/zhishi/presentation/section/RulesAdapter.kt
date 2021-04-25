@@ -84,7 +84,7 @@ class RulesAdapter(
 
         fun bind(rule: DisplayableElement.Rule) {
             itemView.setOnClickListener { onRuleClick(rule.id) }
-            numberTextView.text = itemView.context.getString(R.string.app_rule_number, rule.number)
+            numberTextView.text = itemView.context.getString(R.string.app_rule_number, rule.id)
             styledTextRenderer.render(rule.content, contentTextView)
         }
     }

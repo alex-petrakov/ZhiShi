@@ -7,16 +7,14 @@ import androidx.lifecycle.ViewModel
 class RulesViewModel(private val rulesToDisplay: RulesToDisplay) : ViewModel() {
 
     private val _viewState = MutableLiveData<ViewState>().apply {
-        // TODO: load and show rule number instead of rule ID
-        value = ViewState(rulesToDisplay.ids[rulesToDisplay.selectionIndex].toInt())
+        value = ViewState(rulesToDisplay.ids[rulesToDisplay.selectionIndex])
     }
 
     val viewState: LiveData<ViewState> get() = _viewState
 
     fun onRuleSelected(position: Int) {
-        // TODO: load and show rule number instead of rule ID
-        _viewState.value = ViewState(rulesToDisplay.ids[position].toInt())
+        _viewState.value = ViewState(rulesToDisplay.ids[position])
     }
 }
 
-data class ViewState(val selectedRuleNumber: Int)
+data class ViewState(val selectedRuleNumber: Long)

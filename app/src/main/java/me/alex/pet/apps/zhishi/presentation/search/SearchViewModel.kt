@@ -60,5 +60,5 @@ class SearchViewModel(
 }
 
 private fun SearchResult.toUiModel(): SearchResultItem {
-    return SearchResultItem(ruleId, ruleNumber, snippet)
+    return SearchResultItem(ruleId, snippet)
 }

@@ -36,10 +36,10 @@ class SectionViewModel(
     }
 }
 
-private val Section.ruleNumbersRange: IntRange
+private val Section.ruleNumbersRange: LongRange
     get() {
-        val first = this.rules.first().number
-        val last = this.rules.last().number
+        val first = this.rules.first().id
+        val last = this.rules.last().id
         return first..last
     }
 
@@ -57,7 +57,6 @@ private fun Section.toUiModel(): List<DisplayableElement> {
 private fun Rule.toUiModel(): DisplayableElement {
     return DisplayableElement.Rule(
             this.id,
-            this.number,
             this.annotation
     )
 }
