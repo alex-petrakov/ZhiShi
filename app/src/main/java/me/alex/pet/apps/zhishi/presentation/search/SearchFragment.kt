@@ -105,7 +105,7 @@ class SearchFragment : Fragment() {
 
     private fun handle(effect: ViewEffect) {
         when (effect) {
-            is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.ruleId)
+            is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.rulesToDisplay)
         }
     }
 

@@ -1,63 +1,54 @@
 package me.alex.pet.apps.zhishi.presentation.search
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import androidx.lifecycle.*
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
 import me.alex.pet.apps.zhishi.domain.search.SuggestionsRepository
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
+import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 
 class SearchViewModel(
         private val searchRules: SearchRules,
         private val suggestionsRepo: SuggestionsRepository
 ) : ViewModel() {
 
-    private val _viewState = MutableLiveData<ViewState>().apply {
-        val searchSuggestions = suggestionsRepo.getSuggestions()
-        val viewState = ViewState(
-                SearchResults(false, emptyList()),
-                EmptyView(false),
-                SuggestionsView(true, searchSuggestions)
-        )
-        value = viewState
+    private val query = MutableLiveData<String>().apply {
+        value = ""
     }
 
-    val viewState: LiveData<ViewState> get() = _viewState
+    private val searchResults = Transformations.switchMap(query) { query ->
+        liveData { emit(searchRules(query)) }
+    }
+
+    val viewState: LiveData<ViewState> = Transformations.switchMap(searchResults) { searchResults: List<SearchResult> ->
+        liveData {
+            val newState = ViewState(
+                    SearchResults(searchResults.isNotEmpty(), searchResults.toUiModel()),
+                    EmptyView(searchResults.isEmpty() && !query.value.isNullOrEmpty()),
+                    SuggestionsView(searchResults.isEmpty() && query.value.isNullOrEmpty(), suggestionsRepo.getSuggestions())
+            )
+            emit(newState)
+        }
+    }
 
     private val _viewEffect = SingleLiveEvent<ViewEffect>()
 
     val viewEffect: LiveData<ViewEffect> get() = _viewEffect
 
     fun onUpdateQuery(query: String) {
-        if (query.isEmpty()) {
-            _viewState.value = ViewState(
-                    SearchResults(false, emptyList()),
-                    EmptyView(false),
-                    _viewState.value!!.suggestionsView.copy(isVisible = true)
-            )
-            return
-        }
-
-        viewModelScope.launch {
-            val results = searchRules(query)
-            val uiModel = withContext(Dispatchers.Default) { results.map { it.toUiModel() } }
-            _viewState.value = ViewState(
-                    SearchResults(uiModel.isNotEmpty(), uiModel),
-                    EmptyView(uiModel.isEmpty()),
-                    _viewState.value!!.suggestionsView.copy(isVisible = false)
-            )
-        }
+        this.query.value = query
     }
 
     fun onClickRule(ruleId: Long) {
-        _viewEffect.value = ViewEffect.NavigateToRule(ruleId)
+        val ruleIds = searchResults.value!!.ruleIds
+        check(ruleId in ruleIds)
+        _viewEffect.value = ViewEffect.NavigateToRule(RulesToDisplay(ruleIds, ruleIds.indexOf(ruleId)))
     }
 }
+
+private val List<SearchResult>.ruleIds get() = map { it.ruleId }
+
+private fun List<SearchResult>.toUiModel() = map { it.toUiModel() }
 
 private fun SearchResult.toUiModel(): SearchResultItem {
     return SearchResultItem(ruleId, snippet)
