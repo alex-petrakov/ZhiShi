@@ -13,17 +13,14 @@ data class RulesToDisplay(val ids: List<Long>, val selectionIndex: Int) : Parcel
     constructor(ruleId: Long) : this(listOf(ruleId), 0)
 
     private constructor(parcel: Parcel) : this(
-            LongArray(parcel.readInt()).toList(),
+            parcel.readListOfLong(),
             parcel.readInt()
     )
 
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        ids.toLongArray().let { arr ->
-            dest.writeInt(arr.size)
-            dest.writeLongArray(arr)
-        }
+        dest.writeListOfLong(ids)
         dest.writeInt(selectionIndex)
     }
 
@@ -36,4 +33,16 @@ data class RulesToDisplay(val ids: List<Long>, val selectionIndex: Int) : Parcel
             return arrayOfNulls(size)
         }
     }
+}
+
+private fun Parcel.readListOfLong(): List<Long> {
+    val size = readInt()
+    val arr = LongArray(size)
+    readLongArray(arr)
+    return arr.toList()
+}
+
+private fun Parcel.writeListOfLong(list: List<Long>) {
+    writeInt(list.size)
+    writeLongArray(list.toLongArray())
 }
