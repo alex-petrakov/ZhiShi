@@ -32,7 +32,7 @@ class RulesDataStore(
     }
 
     private fun findRulesBySectionId(sectionId: Long): List<Rule> {
-        return ruleQueries.findBySectionId(sectionId) { id, _, _, annotation, annotationMarkup, content, contentMarkup ->
+        return ruleQueries.findBySectionId(sectionId) { id, _, annotation, annotationMarkup, content, contentMarkup ->
             val annotationMarkupDto = markupAdapter.fromJson(annotationMarkup)
                     ?: throw IllegalStateException("Unable to parse markup")
             val contentMarkupDto = markupAdapter.fromJson(contentMarkup)
@@ -42,7 +42,7 @@ class RulesDataStore(
     }
 
     override suspend fun getRule(ruleId: Long): Rule? = withContext(Dispatchers.IO) {
-        ruleQueries.findById(ruleId) { id, _, _, annotation, annotationMarkup, content, contentMarkup ->
+        ruleQueries.findById(ruleId) { id, _, annotation, annotationMarkup, content, contentMarkup ->
             val annotationMarkupDto = markupAdapter.fromJson(annotationMarkup)
                     ?: throw IllegalStateException("Unable to parse markup")
             val contentMarkupDto = markupAdapter.fromJson(contentMarkup)
@@ -51,8 +51,8 @@ class RulesDataStore(
         }.executeAsOneOrNull()
     }
 
-    override suspend fun queryRulesByNumber(numbers: List<Int>): List<SearchResult> = withContext(Dispatchers.IO) {
-        ruleQueries.queryByNumber(numbers) { id, _, _, _, _, content, _ ->
+    override suspend fun queryRulesById(numbers: List<Long>): List<SearchResult> = withContext(Dispatchers.IO) {
+        ruleQueries.queryById(numbers) { id, _, _, _, content, _ ->
             SearchResult(id, StyledText(content))
         }.executeAsList()
     }
@@ -60,7 +60,7 @@ class RulesDataStore(
     override suspend fun queryRulesByContent(searchTerms: List<String>, limit: Int): List<SearchResult> = withContext(Dispatchers.IO) {
         require(limit > 0) { "Limit must be > 0, but it was $limit" }
         val query = searchTerms.joinToString(separator = " OR ", transform = { term -> "$term*" })
-        ruleQueries.queryByContent(query, 30) { id, _, _, snippet, _ ->
+        ruleQueries.queryByContent(query, 30) { id, _, snippet, _ ->
             SearchResult(id, StyledText(snippet!!))
         }.executeAsList()
     }

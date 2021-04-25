@@ -1,7 +1,6 @@
 CREATE TABLE rule_core (
 	id INTEGER PRIMARY KEY,
 	section_id INTEGER NOT NULL,
-	number INTEGER as Int UNIQUE NOT NULL,
 	annotation TEXT NOT NULL,
 	annotation_markup TEXT NOT NULL,
     content TEXT NOT NULL,
@@ -32,7 +31,6 @@ CREATE VIEW rule AS
 SELECT
     rule_core.id AS id,
     rule_core.section_id AS section_id,
-    rule_core.number AS number,
     rule_core.annotation AS annotation,
     rule_core.annotation_markup AS annotation_markup,
     rule_content_fts.content AS content,
@@ -41,8 +39,8 @@ FROM rule_core JOIN rule_content_fts ON rule_core.rowid = rule_content_fts.rowid
 
 CREATE TRIGGER on_rule_insert INSTEAD OF INSERT ON rule
 BEGIN
-	INSERT INTO rule_core(id, section_id, number, annotation, annotation_markup, content, content_markup)
-    VALUES (new.id, new.section_id, new.number, new.annotation, new.annotation_markup, new.content, new.content_markup);
+	INSERT INTO rule_core(id, section_id, annotation, annotation_markup, content, content_markup)
+    VALUES (new.id, new.section_id, new.annotation, new.annotation_markup, new.content, new.content_markup);
 END;
 
 CREATE TRIGGER on_rule_del INSTEAD OF DELETE ON rule
@@ -56,15 +54,12 @@ BEGIN
     SET
         id = new.id,
         section_id = new.section_id,
-        number = new.number,
         annotation = new.annotation,
         annotation_markup = new.annotation_markup,
         content = new.content,
         content_markup = new.content_markup
     WHERE id = old.id;
 END;
-
-CREATE INDEX number_index ON rule_core (number);
 
 CREATE INDEX section_id_index ON rule_core (section_id);
 
@@ -73,17 +68,16 @@ findById:
 SELECT * FROM rule WHERE id = ?;
 
 findBySectionId:
-SELECT * FROM rule WHERE section_id = ? ORDER BY number;
+SELECT * FROM rule WHERE section_id = ? ORDER BY id ASC;
 
-queryByNumber:
-SELECT * FROM rule WHERE number IN :numbers
-ORDER BY number ASC;
+queryById:
+SELECT * FROM rule WHERE id IN :ids
+ORDER BY id ASC;
 
 queryByContent:
 SELECT
 	rule_core.id,
 	rule_core.section_id,
-	rule_core.number,
 	snippet(rule_content_fts, '', '', '...') AS snippet,
 	rule_core.content_markup
 FROM rule_content_fts INNER JOIN rule_core ON rule_content_fts.rowid = rule_core.rowid
