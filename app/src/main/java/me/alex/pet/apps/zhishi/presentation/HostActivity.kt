@@ -33,13 +33,6 @@ class HostActivity : AppCompatActivity() {
                 .commit()
     }
 
-    fun navigateToRule(ruleId: Long) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, RulesFragment.newInstance(ruleId))
-                .addToBackStack("RULE")
-                .commit()
-    }
-
     fun navigateToRule(rulesToDisplay: RulesToDisplay) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, RulesFragment.newInstance(rulesToDisplay))

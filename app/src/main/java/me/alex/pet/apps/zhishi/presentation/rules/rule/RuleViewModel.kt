@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
+import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 
 class RuleViewModel(
         private val ruleId: Long,
@@ -22,6 +23,6 @@ class RuleViewModel(
     val viewEffect: LiveData<ViewEffect> get() = _viewEffect
 
     fun onRuleLinkClick(ruleId: Long) {
-        _viewEffect.value = ViewEffect.NavigateToRule(ruleId)
+        _viewEffect.value = ViewEffect.NavigateToRule(RulesToDisplay(ruleId))
     }
 }
