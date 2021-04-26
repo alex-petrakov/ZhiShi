@@ -5,15 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
-import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -22,6 +21,8 @@ import kotlinx.coroutines.flow.onEach
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSearchBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
+import me.alex.pet.apps.zhishi.presentation.common.extensions.focusAndShowKeyboard
+import me.alex.pet.apps.zhishi.presentation.common.extensions.hideKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.textChanges
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -58,12 +59,20 @@ class SearchFragment : Fragment() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = searchResultsAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        requireActivity().hideKeyboard()
+                    }
+                }
+            })
         }
         toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         queryEt.textChanges()
                 .debounce(300)
                 .onEach { viewModel.onUpdateQuery(it.toString()) }
                 .launchIn(viewLifecycleOwner.lifecycle.coroutineScope)
+        queryEt.focusAndShowKeyboard()
     }
 
     private fun subscribeToModel() = with(viewModel) {
@@ -125,5 +134,3 @@ class SearchFragment : Fragment() {
         fun newInstance() = SearchFragment()
     }
 }
-
-private val ChipGroup.chips get() = this.children.mapNotNull { it as? Chip }
