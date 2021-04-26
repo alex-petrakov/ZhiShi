@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.common
+package me.alex.pet.apps.zhishi.presentation.common.extensions
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

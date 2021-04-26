@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.common
+package me.alex.pet.apps.zhishi.presentation.common.extensions
 
 import android.content.res.Resources
 import android.util.TypedValue

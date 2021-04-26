@@ -5,7 +5,7 @@ import android.text.TextPaint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.common.ParagraphStyle
 import me.alex.pet.apps.zhishi.domain.common.ParagraphStyleType
-import me.alex.pet.apps.zhishi.presentation.common.resolveColorAttr
+import me.alex.pet.apps.zhishi.presentation.common.extensions.resolveColorAttr
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.QuotationSpan
 import kotlin.math.roundToInt

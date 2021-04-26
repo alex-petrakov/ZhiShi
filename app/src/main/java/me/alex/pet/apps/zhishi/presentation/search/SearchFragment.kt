@@ -23,7 +23,7 @@ import me.alex.pet.apps.zhishi.databinding.FragmentSearchBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.extensions.focusAndShowKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.hideKeyboard
-import me.alex.pet.apps.zhishi.presentation.common.textChanges
+import me.alex.pet.apps.zhishi.presentation.common.extensions.textChanges
 import org.koin.android.viewmodel.ext.android.viewModel
 
 @FlowPreview

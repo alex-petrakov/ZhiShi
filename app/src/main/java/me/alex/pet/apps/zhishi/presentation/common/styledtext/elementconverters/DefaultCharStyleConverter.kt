@@ -8,7 +8,7 @@ import android.text.style.StyleSpan
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.common.CharacterStyle
 import me.alex.pet.apps.zhishi.domain.common.CharacterStyleType
-import me.alex.pet.apps.zhishi.presentation.common.resolveColorAttr
+import me.alex.pet.apps.zhishi.presentation.common.extensions.resolveColorAttr
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.ColoredUnderlineSpan
 
