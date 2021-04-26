@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -72,7 +73,11 @@ class SearchFragment : Fragment() {
 
     private fun render(state: ViewState) = with(binding) {
         if (lastRenderedState != null) {
-            TransitionManager.beginDelayedTransition(contentFrame)
+            val autoTransition = AutoTransition().apply {
+                duration = 150
+                removeTarget(R.id.suggestions_chip_group)
+            }
+            TransitionManager.beginDelayedTransition(contentFrame, autoTransition)
         }
 
         recyclerView.isVisible = state.searchResults.isVisible
