@@ -71,7 +71,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun render(state: ViewState) = with(binding) {
-        TransitionManager.beginDelayedTransition(contentFrame)
+        if (lastRenderedState != null) {
+            TransitionManager.beginDelayedTransition(contentFrame)
+        }
 
         recyclerView.isVisible = state.searchResults.isVisible
         searchResultsAdapter.items = state.searchResults.items
@@ -81,26 +83,31 @@ class SearchFragment : Fragment() {
         suggestionsView.isVisible = state.suggestionsView.isVisible
 
         if (state.suggestionsView != lastRenderedState?.suggestionsView) {
+            val chips = inflateSuggestionChips(state.suggestionsView.suggestions)
             suggestionsChipGroup.removeAllViews()
-            state.suggestionsView.suggestions.forEach { suggestion ->
-                val chip = layoutInflater.inflate(
-                        R.layout.view_suggestion_chip,
-                        suggestionsChipGroup,
-                        false
-                ) as Chip
-                chip.apply {
-                    text = suggestion
-                    id = ViewCompat.generateViewId()
-                    setOnClickListener { view ->
-                        val chipText = (view as Chip).text
-                        queryEt.setText(chipText)
-                        queryEt.setSelection(chipText.length)
-                    }
+            chips.forEach { suggestionsChipGroup.addView(it) }
+        }
+
+        lastRenderedState = state
+    }
+
+    private fun inflateSuggestionChips(suggestions: List<String>) = with(binding) {
+        suggestions.map { suggestion ->
+            val chip = layoutInflater.inflate(
+                    R.layout.view_suggestion_chip,
+                    suggestionsChipGroup,
+                    false
+            ) as Chip
+            chip.apply {
+                text = suggestion
+                id = ViewCompat.generateViewId()
+                setOnClickListener { view ->
+                    val chipText = (view as Chip).text
+                    queryEt.setText(chipText)
+                    queryEt.setSelection(chipText.length)
                 }
-                suggestionsChipGroup.addView(chip)
             }
         }
-        lastRenderedState = state
     }
 
     private fun handle(effect: ViewEffect) {

@@ -22,10 +22,11 @@ class SearchViewModel(
 
     val viewState: LiveData<ViewState> = Transformations.switchMap(searchResults) { searchResults: List<SearchResult> ->
         liveData {
+            val query = query.value!!
             val newState = ViewState(
-                    SearchResults(searchResults.isNotEmpty(), searchResults.toUiModel()),
-                    EmptyView(searchResults.isEmpty() && !query.value.isNullOrEmpty()),
-                    SuggestionsView(searchResults.isEmpty() && query.value.isNullOrEmpty(), suggestionsRepo.getSuggestions())
+                    SearchResults(query.isNotEmpty() && searchResults.isNotEmpty(), searchResults.toUiModel()),
+                    EmptyView(query.isNotEmpty() && searchResults.isEmpty()),
+                    SuggestionsView(query.isEmpty(), suggestionsRepo.getSuggestions())
             )
             emit(newState)
         }
