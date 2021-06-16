@@ -3,17 +3,17 @@ package me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters
 import android.graphics.Typeface
 import android.text.TextPaint
 import android.text.style.StyleSpan
-import me.alex.pet.apps.zhishi.domain.common.CharacterStyle
-import me.alex.pet.apps.zhishi.domain.common.CharacterStyleType
+import me.alex.pet.apps.zhishi.domain.common.CharacterAppearance
+import me.alex.pet.apps.zhishi.domain.common.CharacterSpan
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
 
-class BasicCharStyleConverter : ElementConverter<CharacterStyle> {
+class BasicCharStyleConverter : ElementConverter<CharacterSpan> {
 
-    override fun convertToSpan(element: CharacterStyle, textPaint: TextPaint): PositionAwareSpan? {
-        val span = when (element.type) {
-            CharacterStyleType.EMPHASIS -> StyleSpan(Typeface.ITALIC)
-            CharacterStyleType.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)
-            CharacterStyleType.MISSPELL -> null
+    override fun convertToSpan(element: CharacterSpan, textPaint: TextPaint): PositionAwareSpan? {
+        val span = when (element.appearance) {
+            CharacterAppearance.EMPHASIS -> StyleSpan(Typeface.ITALIC)
+            CharacterAppearance.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)
+            CharacterAppearance.MISSPELL -> null
         }
         return span?.let { PositionAwareSpan(span, element.start, element.end) }
     }

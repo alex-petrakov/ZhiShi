@@ -10,7 +10,6 @@ import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.BasicCharStyleConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultIndentConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
 
 class RulesAdapter(
@@ -26,7 +25,6 @@ class RulesAdapter(
 
     private val ruleContentStyledTextConverter = StyledTextRenderer(
             paragraphStyleConverter = DefaultParagraphStyleConverter(theme),
-            indentConverter = DefaultIndentConverter(),
             characterStyleConverter = DefaultCharStyleConverter(theme)
     )
 

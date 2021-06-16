@@ -6,39 +6,61 @@ import me.alex.pet.apps.zhishi.domain.common.*
 
 @JsonClass(generateAdapter = true)
 data class MarkupDto(
-        @Json(name = "paragraphSpans") val paragraphSpans: List<ParagraphSpanDto>,
-        @Json(name = "indentSpans") val indentSpans: List<IndentSpanDto>,
-        @Json(name = "characterSpans") val characterSpans: List<CharacterSpanDto>,
-        @Json(name = "linkSpans") val linkSpans: List<LinkSpanDto>
+        val paragraphSpans: ParagraphSpansDto,
+        val characterSpans: List<CharacterSpanDto>,
+        val linkSpans: List<LinkSpanDto>
 )
 
 @JsonClass(generateAdapter = true)
-data class ParagraphSpanDto(
-        @Json(name = "start") val start: Int,
-        @Json(name = "end") val end: Int,
-        @Json(name = "style") val style: ParagraphSpanStyleDto
+data class ParagraphSpansDto(
+        val indents: List<IndentSpanDto>,
+        val hangingIndents: List<HangingIndentDto>,
+        val styles: List<ParagraphStyleDto>
 )
 
-enum class ParagraphSpanStyleDto {
+interface Sortable {
+    val globalOrder: Int
+}
+
+@JsonClass(generateAdapter = true)
+data class IndentSpanDto(
+        val start: Int,
+        val end: Int,
+        val level: Int,
+        override val globalOrder: Int
+) : Sortable
+
+@JsonClass(generateAdapter = true)
+data class HangingIndentDto(
+        val start: Int,
+        val end: Int,
+        val hangingText: String,
+        override val globalOrder: Int
+) : Sortable
+
+@JsonClass(generateAdapter = true)
+data class ParagraphStyleDto(
+        val start: Int,
+        val end: Int,
+        // TODO: remove @Json annotation once JSON fields are renamed from 'style' to 'appearance'
+        @Json(name = "style") val appearance: ParagraphAppearanceDto,
+        override val globalOrder: Int
+) : Sortable
+
+enum class ParagraphAppearanceDto {
     QUOTE,
     FOOTNOTE
 }
 
 @JsonClass(generateAdapter = true)
-data class IndentSpanDto(
-        @Json(name = "start") val start: Int,
-        @Json(name = "end") val end: Int,
-        @Json(name = "level") val level: Int
-)
-
-@JsonClass(generateAdapter = true)
 data class CharacterSpanDto(
-        @Json(name = "start") val start: Int,
-        @Json(name = "end") val end: Int,
-        @Json(name = "style") val style: CharacterSpanStyleDto
+        val start: Int,
+        val end: Int,
+        // TODO: remove @Json annotation once JSON fields are renamed from 'style' to 'appearance'
+        @Json(name = "style") val appearance: CharacterAppearanceDto
 )
 
-enum class CharacterSpanStyleDto {
+enum class CharacterAppearanceDto {
     EMPHASIS,
     STRONG_EMPHASIS,
     MISSPELL
@@ -46,16 +68,15 @@ enum class CharacterSpanStyleDto {
 
 @JsonClass(generateAdapter = true)
 data class LinkSpanDto(
-        @Json(name = "start") val start: Int,
-        @Json(name = "end") val end: Int,
-        @Json(name = "ruleId") val ruleId: Long
+        val start: Int,
+        val end: Int,
+        val ruleId: Long
 )
 
 fun styledTextOf(content: String, markup: MarkupDto): StyledText {
     return StyledText(
             content,
             markup.toParagraphStyles(),
-            markup.toIndents(),
             markup.toCharacterStyles(),
             markup.toLinks()
     )
@@ -65,29 +86,33 @@ private fun MarkupDto.toLinks(): List<Link> {
     return linkSpans.map { Link(it.start, it.end, it.ruleId) }
 }
 
-private fun MarkupDto.toCharacterStyles(): List<CharacterStyle> {
-    return characterSpans.map { CharacterStyle(it.start, it.end, it.style.toCharacterStyle()) }
+private fun MarkupDto.toCharacterStyles(): List<CharacterSpan> {
+    return characterSpans.map { CharacterSpan(it.start, it.end, it.appearance.toCharacterStyle()) }
 }
 
-private fun CharacterSpanStyleDto.toCharacterStyle(): CharacterStyleType {
+private fun CharacterAppearanceDto.toCharacterStyle(): CharacterAppearance {
     return when (this) {
-        CharacterSpanStyleDto.EMPHASIS -> CharacterStyleType.EMPHASIS
-        CharacterSpanStyleDto.STRONG_EMPHASIS -> CharacterStyleType.STRONG_EMPHASIS
-        CharacterSpanStyleDto.MISSPELL -> CharacterStyleType.MISSPELL
+        CharacterAppearanceDto.EMPHASIS -> CharacterAppearance.EMPHASIS
+        CharacterAppearanceDto.STRONG_EMPHASIS -> CharacterAppearance.STRONG_EMPHASIS
+        CharacterAppearanceDto.MISSPELL -> CharacterAppearance.MISSPELL
     }
 }
 
-private fun MarkupDto.toIndents(): List<Indent> {
-    return indentSpans.map { Indent(it.start, it.end, it.level) }
+private fun MarkupDto.toParagraphStyles(): List<ParagraphSpan> {
+    val allParagraphSpans = paragraphSpans.indents + paragraphSpans.hangingIndents + paragraphSpans.styles
+    return allParagraphSpans.sortedBy { it.globalOrder }.map { span ->
+        when (span) {
+            is IndentSpanDto -> ParagraphSpan.Indent(span.start, span.end, span.level)
+            is HangingIndentDto -> ParagraphSpan.HangingIndent(span.start, span.end, span.hangingText)
+            is ParagraphStyleDto -> ParagraphSpan.Style(span.start, span.end, span.appearance.unwrap())
+            else -> throw IllegalStateException()
+        }
+    }
 }
 
-private fun MarkupDto.toParagraphStyles(): List<ParagraphStyle> {
-    return paragraphSpans.map { ParagraphStyle(it.start, it.end, it.style.toParagraphStyle()) }
-}
-
-private fun ParagraphSpanStyleDto.toParagraphStyle(): ParagraphStyleType {
+private fun ParagraphAppearanceDto.unwrap(): ParagraphAppearance {
     return when (this) {
-        ParagraphSpanStyleDto.QUOTE -> ParagraphStyleType.QUOTE
-        ParagraphSpanStyleDto.FOOTNOTE -> ParagraphStyleType.FOOTNOTE
+        ParagraphAppearanceDto.QUOTE -> ParagraphAppearance.QUOTE
+        ParagraphAppearanceDto.FOOTNOTE -> ParagraphAppearance.FOOTNOTE
     }
 }

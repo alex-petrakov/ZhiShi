@@ -10,7 +10,6 @@ import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ItemRuleSearchResultBinding
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultIndentConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
 
 class SearchResultsAdapter(
@@ -38,7 +37,6 @@ class SearchResultsAdapter(
 
     private val ruleContentStyledTextRenderer = StyledTextRenderer(
             paragraphStyleConverter = DefaultParagraphStyleConverter(theme),
-            indentConverter = DefaultIndentConverter(),
             characterStyleConverter = DefaultCharStyleConverter(theme)
     )
 

@@ -11,7 +11,6 @@ import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.extensions.observe
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultIndentConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultLinkConverter
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -33,7 +32,6 @@ class RuleFragment : Fragment() {
     private val styledTextConverter by lazy {
         StyledTextRenderer(
                 paragraphStyleConverter = DefaultParagraphStyleConverter(requireActivity().theme),
-                indentConverter = DefaultIndentConverter(),
                 characterStyleConverter = DefaultCharStyleConverter(requireActivity().theme),
                 linkConverter = DefaultLinkConverter { clickedRuleId ->
                     viewModel.onRuleLinkClick(clickedRuleId)
