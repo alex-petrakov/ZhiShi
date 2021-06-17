@@ -2,6 +2,7 @@ package me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers
 
 import android.content.res.Resources
 import android.text.TextPaint
+import android.text.style.AbsoluteSizeSpan
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.common.ParagraphAppearance
 import me.alex.pet.apps.zhishi.domain.common.ParagraphSpan
@@ -19,13 +20,15 @@ class ParagraphSpanRenderer(theme: Resources.Theme, textPaint: TextPaint) : Span
 
     private val quoteStripeWidth = 2.dp(theme.resources)
 
+    private val footnoteTextSize = 14.sp(theme.resources)
+
     private val quoteBorderGapWidth = textPaint.measureText(gapLengthSample).roundToInt()
 
     override fun convertToSpans(elements: List<ParagraphSpan>): List<PositionAwareSpan> {
-        return elements.mapNotNull { convertToSpan(it) }
+        return elements.map { convertToSpan(it) }
     }
 
-    private fun convertToSpan(element: ParagraphSpan): PositionAwareSpan? {
+    private fun convertToSpan(element: ParagraphSpan): PositionAwareSpan {
         return when (element) {
             is ParagraphSpan.Indent -> convertIndentToSpan(element)
             is ParagraphSpan.HangingIndent -> TODO("Not implemented")
@@ -37,14 +40,16 @@ class ParagraphSpanRenderer(theme: Resources.Theme, textPaint: TextPaint) : Span
         return PositionAwareSpan(IndentSpan(indentStepWidth, element.level), element.start, element.end)
     }
 
-    private fun convertAppearanceToSpan(element: ParagraphSpan.Style): PositionAwareSpan? {
-        val span = when (element.appearance) {
-            ParagraphAppearance.QUOTE -> {
-                QuotationSpan(stripeColor, quoteStripeWidth, quoteBorderGapWidth)
-            }
-            ParagraphAppearance.FOOTNOTE -> null
+    private fun convertAppearanceToSpan(element: ParagraphSpan.Style): PositionAwareSpan {
+        val span: Any = when (element.appearance) {
+            ParagraphAppearance.QUOTE -> QuotationSpan(
+                    stripeColor,
+                    quoteStripeWidth,
+                    quoteBorderGapWidth
+            )
+            ParagraphAppearance.FOOTNOTE -> AbsoluteSizeSpan(footnoteTextSize, false)
         }
-        return span?.let { PositionAwareSpan(it, element.start, element.end) }
+        return PositionAwareSpan(span, element.start, element.end)
     }
 }
 
@@ -54,4 +59,8 @@ private const val gapLengthSample = "  "
 
 private fun Int.dp(resources: Resources): Int {
     return this * (resources.displayMetrics.density).roundToInt()
+}
+
+private fun Int.sp(resources: Resources): Int {
+    return this * (resources.displayMetrics.scaledDensity).roundToInt()
 }
