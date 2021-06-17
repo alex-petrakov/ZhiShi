@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <me.alex.pet.apps.zhishi.presentation.common.FancyTextView
+    <me.alex.pet.apps.zhishi.presentation.common.ColoredUnderlineTextView
         android:id="@+id/rule_content_tv"
         style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="match_parent"

@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ItemRuleSearchResultBinding
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
 
 class SearchResultsAdapter(
         theme: Resources.Theme,
@@ -36,8 +36,8 @@ class SearchResultsAdapter(
     private val listDiffer = AsyncListDiffer(this, diffCallback)
 
     private val ruleContentStyledTextRenderer = StyledTextRenderer(
-            paragraphStyleConverter = DefaultParagraphStyleConverter(theme),
-            characterStyleConverter = DefaultCharStyleConverter(theme)
+            paragraphSpansRenderer = ParagraphSpanRenderer(theme),
+            characterSpansRenderer = CharSpanRenderer(theme)
     )
 
     override fun getItemCount() = items.size

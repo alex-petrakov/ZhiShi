@@ -9,9 +9,9 @@ import android.util.AttributeSet
 import androidx.annotation.Px
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.graphics.withTranslation
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.ColoredUnderlineSpan
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans.ColoredUnderlineSpan
 
-class FancyTextView @JvmOverloads constructor(
+class ColoredUnderlineTextView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = android.R.attr.textViewStyle

@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.common.styledtext.spans
+package me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans
 
 import android.text.style.ClickableSpan
 import android.view.View

@@ -8,9 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.BasicCharStyleConverter
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
 
 class RulesAdapter(
         theme: Resources.Theme,
@@ -24,12 +24,12 @@ class RulesAdapter(
         }
 
     private val ruleContentStyledTextConverter = StyledTextRenderer(
-            paragraphStyleConverter = DefaultParagraphStyleConverter(theme),
-            characterStyleConverter = DefaultCharStyleConverter(theme)
+            paragraphSpansRenderer = ParagraphSpanRenderer(theme),
+            characterSpansRenderer = CharSpanRenderer(theme)
     )
 
     private val headingStyledTextConverter = StyledTextRenderer(
-            characterStyleConverter = BasicCharStyleConverter()
+            characterSpansRenderer = BasicCharSpanRenderer()
     )
 
     override fun getItemViewType(position: Int): Int {

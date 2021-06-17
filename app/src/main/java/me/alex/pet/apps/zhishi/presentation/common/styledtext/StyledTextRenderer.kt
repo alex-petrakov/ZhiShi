@@ -9,12 +9,12 @@ import me.alex.pet.apps.zhishi.domain.common.CharacterSpan
 import me.alex.pet.apps.zhishi.domain.common.Link
 import me.alex.pet.apps.zhishi.domain.common.ParagraphSpan
 import me.alex.pet.apps.zhishi.domain.common.StyledText
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.ElementConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.SpanRenderer
 
 class StyledTextRenderer(
-        private val paragraphStyleConverter: ElementConverter<ParagraphSpan>? = null,
-        private val characterStyleConverter: ElementConverter<CharacterSpan>? = null,
-        private val linkConverter: ElementConverter<Link>? = null
+        private val paragraphSpansRenderer: SpanRenderer<ParagraphSpan>? = null,
+        private val characterSpansRenderer: SpanRenderer<CharacterSpan>? = null,
+        private val linksRenderer: SpanRenderer<Link>? = null
 ) {
 
     fun render(styledText: StyledText, textView: TextView) {
@@ -23,18 +23,17 @@ class StyledTextRenderer(
     }
 
     fun convertToSpanned(styledText: StyledText, textPaint: TextPaint): Spanned {
-        val spans = mutableListOf<PositionAwareSpan>()
-        styledText.run {
-            characterSpans.mapNotNullTo(spans) { characterStyleConverter?.convertToSpan(it, textPaint) }
-            links.mapNotNullTo(spans) { linkConverter?.convertToSpan(it, textPaint) }
-            // Indents must be rendered before paragraph spans in order for QuotationSpans to be
-            // applied correctly
-//            indents.mapNotNullTo(spans) { indentConverter?.convertToSpan(it, textPaint) }
-            paragraphSpans.mapNotNullTo(spans) { paragraphStyleConverter?.convertToSpan(it, textPaint) }
-        }
-
+        val characterSpans = characterSpansRenderer?.convertToSpans(
+                styledText.characterSpans,
+                textPaint
+        ) ?: emptyList()
+        val linkSpans = linksRenderer?.convertToSpans(styledText.links, textPaint) ?: emptyList()
+        val paragraphSpans = paragraphSpansRenderer?.convertToSpans(
+                styledText.paragraphSpans,
+                textPaint
+        ) ?: emptyList()
         return SpannableString(styledText.string).apply {
-            setSpans(spans)
+            setSpans(characterSpans + linkSpans + paragraphSpans)
         }
     }
 }

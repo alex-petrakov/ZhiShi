@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.BasicCharStyleConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
 
 class ContentsAdapter(
         private val onSectionClick: (Long) -> Unit
@@ -20,7 +20,7 @@ class ContentsAdapter(
         }
 
     private val sectionStyledTextConverter = StyledTextRenderer(
-            characterStyleConverter = BasicCharStyleConverter()
+            characterSpansRenderer = BasicCharSpanRenderer()
     )
 
     override fun getItemViewType(position: Int): Int {

@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters
+package me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers
 
 import android.content.res.Resources
 import android.text.TextPaint
@@ -7,17 +7,21 @@ import me.alex.pet.apps.zhishi.domain.common.ParagraphAppearance
 import me.alex.pet.apps.zhishi.domain.common.ParagraphSpan
 import me.alex.pet.apps.zhishi.presentation.common.extensions.resolveColorAttr
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.IndentSpan
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.QuotationSpan
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans.IndentSpan
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans.QuotationSpan
 import kotlin.math.roundToInt
 
-class DefaultParagraphStyleConverter(theme: Resources.Theme) : ElementConverter<ParagraphSpan> {
+class ParagraphSpanRenderer(theme: Resources.Theme) : SpanRenderer<ParagraphSpan> {
 
     private val stripeColor by lazy { theme.resolveColorAttr(R.attr.colorPrimary) }
 
     private val stripeWidth = 2.dp(theme.resources)
 
-    override fun convertToSpan(element: ParagraphSpan, textPaint: TextPaint): PositionAwareSpan? {
+    override fun convertToSpans(elements: List<ParagraphSpan>, textPaint: TextPaint): List<PositionAwareSpan> {
+        return elements.mapNotNull { convertToSpan(it, textPaint) }
+    }
+
+    private fun convertToSpan(element: ParagraphSpan, textPaint: TextPaint): PositionAwareSpan? {
         return when (element) {
             is ParagraphSpan.Indent -> convertIndentToSpan(element, textPaint)
             is ParagraphSpan.HangingIndent -> TODO("Not implemented")

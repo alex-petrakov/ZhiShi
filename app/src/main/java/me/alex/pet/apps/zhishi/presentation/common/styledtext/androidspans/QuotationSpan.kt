@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.common.styledtext.spans
+package me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans
 
 import android.graphics.Canvas
 import android.graphics.Paint

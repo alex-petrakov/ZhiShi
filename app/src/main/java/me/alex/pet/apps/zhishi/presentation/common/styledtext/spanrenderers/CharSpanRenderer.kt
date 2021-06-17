@@ -1,4 +1,4 @@
-package me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters
+package me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers
 
 import android.content.res.Resources
 import android.graphics.Typeface
@@ -10,15 +10,19 @@ import me.alex.pet.apps.zhishi.domain.common.CharacterAppearance
 import me.alex.pet.apps.zhishi.domain.common.CharacterSpan
 import me.alex.pet.apps.zhishi.presentation.common.extensions.resolveColorAttr
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.spans.ColoredUnderlineSpan
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans.ColoredUnderlineSpan
 
-class DefaultCharStyleConverter(private val theme: Resources.Theme) : ElementConverter<CharacterSpan> {
+class CharSpanRenderer(private val theme: Resources.Theme) : SpanRenderer<CharacterSpan> {
 
     private val emphasisColor by lazy { theme.resolveColorAttr(R.attr.colorTextEmphasis) }
 
     private val underlineColor by lazy { theme.resolveColorAttr(R.attr.colorMisspelledTextUnderline) }
 
-    override fun convertToSpan(element: CharacterSpan, textPaint: TextPaint): PositionAwareSpan? {
+    override fun convertToSpans(elements: List<CharacterSpan>, textPaint: TextPaint): List<PositionAwareSpan> {
+        return elements.map { convertToSpan(it, textPaint) }
+    }
+
+    private fun convertToSpan(element: CharacterSpan, textPaint: TextPaint): PositionAwareSpan {
         val span = when (element.appearance) {
             CharacterAppearance.EMPHASIS -> ForegroundColorSpan(emphasisColor)
             CharacterAppearance.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)

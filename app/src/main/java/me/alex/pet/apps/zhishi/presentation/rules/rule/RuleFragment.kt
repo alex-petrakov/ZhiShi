@@ -10,9 +10,9 @@ import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.extensions.observe
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultCharStyleConverter
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultLinkConverter
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.elementconverters.DefaultParagraphStyleConverter
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.LinkRenderer
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -31,9 +31,9 @@ class RuleFragment : Fragment() {
 
     private val styledTextConverter by lazy {
         StyledTextRenderer(
-                paragraphStyleConverter = DefaultParagraphStyleConverter(requireActivity().theme),
-                characterStyleConverter = DefaultCharStyleConverter(requireActivity().theme),
-                linkConverter = DefaultLinkConverter { clickedRuleId ->
+                paragraphSpansRenderer = ParagraphSpanRenderer(requireActivity().theme),
+                characterSpansRenderer = CharSpanRenderer(requireActivity().theme),
+                linksRenderer = LinkRenderer { clickedRuleId ->
                     viewModel.onRuleLinkClick(clickedRuleId)
                 }
         )
