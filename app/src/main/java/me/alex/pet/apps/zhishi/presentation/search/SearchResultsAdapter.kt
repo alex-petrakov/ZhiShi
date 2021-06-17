@@ -41,7 +41,7 @@ class SearchResultsAdapter(
                 parent,
                 false
         )
-        return Holder(binding, onRuleClick)
+        return Holder(binding) { adapterPosition -> onRuleClick(items[adapterPosition].ruleId) }
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -50,7 +50,7 @@ class SearchResultsAdapter(
 
     class Holder(
             private val binding: ItemRuleSearchResultBinding,
-            private val onRuleClick: (Long) -> Unit
+            private val onClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val styledTextRenderer = StyledTextRenderer(
@@ -62,8 +62,11 @@ class SearchResultsAdapter(
 
         private val theme get() = context.theme
 
+        init {
+            binding.root.setOnClickListener { onClick(adapterPosition) }
+        }
+
         fun bind(item: SearchResultItem) = with(binding) {
-            root.setOnClickListener { onRuleClick(item.ruleId) }
             numberTv.text = context.getString(R.string.rule_rule_number, item.ruleId)
             styledTextRenderer.render(item.snippet, contentTv)
         }

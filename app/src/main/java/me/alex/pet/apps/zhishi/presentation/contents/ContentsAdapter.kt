@@ -1,11 +1,12 @@
 package me.alex.pet.apps.zhishi.presentation.contents
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
+import me.alex.pet.apps.zhishi.databinding.ItemClickableSectionBinding
+import me.alex.pet.apps.zhishi.databinding.ItemGenericSubtitleBinding
+import me.alex.pet.apps.zhishi.databinding.ItemGenericTitleBinding
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
 
@@ -36,9 +37,12 @@ class ContentsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.item_generic_title -> PartHolder(view)
-            R.layout.item_generic_subtitle -> ChapterHolder(view)
-            R.layout.item_clickable_section -> SectionHolder(view, sectionStyledTextConverter, onSectionClick)
+            R.layout.item_generic_title -> PartHolder(ItemGenericTitleBinding.bind(view))
+            R.layout.item_generic_subtitle -> ChapterHolder(ItemGenericSubtitleBinding.bind(view))
+            R.layout.item_clickable_section -> SectionHolder(
+                    ItemClickableSectionBinding.bind(view),
+                    sectionStyledTextConverter
+            ) { adapterPosition -> onSectionClick((items[adapterPosition] as ContentsElement.Section).id) }
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -54,35 +58,36 @@ class ContentsAdapter(
     }
 
 
-    private class PartHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val textView = itemView.findViewById<TextView>(R.id.content_tv)
+    private class PartHolder(
+            private val binding: ItemGenericTitleBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ContentsElement.Part) {
-            textView.text = item.name
+            binding.contentTv.text = item.name
         }
     }
 
-    private class ChapterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val textView = itemView.findViewById<TextView>(R.id.content_tv)
+    private class ChapterHolder(
+            private val binding: ItemGenericSubtitleBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ContentsElement.Chapter) {
-            textView.text = item.name
+            binding.contentTv.text = item.name
         }
     }
 
     private class SectionHolder(
-            itemView: View,
+            private val binding: ItemClickableSectionBinding,
             private val styledTextRenderer: StyledTextRenderer,
-            private val onSectionClick: (Long) -> Unit
-    ) : RecyclerView.ViewHolder(itemView) {
+            private val onClick: (Int) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val textView = itemView.findViewById<TextView>(R.id.content_tv)
+        init {
+            binding.root.setOnClickListener { onClick(adapterPosition) }
+        }
 
         fun bind(item: ContentsElement.Section) {
-            textView.setOnClickListener { onSectionClick.invoke(item.id) }
-            styledTextRenderer.render(item.name, textView)
+            styledTextRenderer.render(item.name, binding.contentTv)
         }
     }
 }

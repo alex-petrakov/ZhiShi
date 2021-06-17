@@ -1,11 +1,11 @@
 package me.alex.pet.apps.zhishi.presentation.section
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
+import me.alex.pet.apps.zhishi.databinding.ItemGenericIndentedSubtitleBinding
+import me.alex.pet.apps.zhishi.databinding.ItemRuleNumberedBinding
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
@@ -33,8 +33,14 @@ class RulesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.item_generic_indented_subtitle -> HeadingHolder(view)
-            R.layout.item_rule_numbered -> RuleHolder(view, onRuleClick)
+            R.layout.item_generic_indented_subtitle -> {
+                HeadingHolder(ItemGenericIndentedSubtitleBinding.bind(view))
+            }
+            R.layout.item_rule_numbered -> {
+                RuleHolder(ItemRuleNumberedBinding.bind(view)) { adapterPosition ->
+                    onRuleClick((items[adapterPosition] as DisplayableElement.Rule).id)
+                }
+            }
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -49,30 +55,25 @@ class RulesAdapter(
     }
 
     private class HeadingHolder(
-            itemView: View
-    ) : RecyclerView.ViewHolder(itemView) {
+            private val binding: ItemGenericIndentedSubtitleBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         private val styledTextRenderer = StyledTextRenderer(
                 characterSpansRenderer = BasicCharSpanRenderer()
         )
 
-        private val contentTextView = itemView.findViewById<TextView>(R.id.content_tv)
-
-        fun bind(heading: DisplayableElement.Heading) {
-            styledTextRenderer.render(heading.content, contentTextView)
+        fun bind(heading: DisplayableElement.Heading): Unit = with(binding) {
+            styledTextRenderer.render(heading.content, contentTv)
         }
     }
 
     private class RuleHolder(
-            itemView: View,
-            private val onRuleClick: (Long) -> Unit
-    ) : RecyclerView.ViewHolder(itemView) {
-
-        private val numberTextView = itemView.findViewById<TextView>(R.id.number_tv)
-        private val contentTextView = itemView.findViewById<TextView>(R.id.content_tv)
+            private val binding: ItemRuleNumberedBinding,
+            private val onClick: (Int) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         private val styledTextRenderer = StyledTextRenderer(
-                paragraphSpansRenderer = ParagraphSpanRenderer(theme, contentTextView.paint),
+                paragraphSpansRenderer = ParagraphSpanRenderer(theme, binding.contentTv.paint),
                 characterSpansRenderer = CharSpanRenderer(theme)
         )
 
@@ -80,10 +81,13 @@ class RulesAdapter(
 
         private val theme get() = context.theme
 
-        fun bind(rule: DisplayableElement.Rule) {
-            itemView.setOnClickListener { onRuleClick(rule.id) }
-            numberTextView.text = itemView.context.getString(R.string.app_rule_number, rule.id)
-            styledTextRenderer.render(rule.content, contentTextView)
+        init {
+            binding.root.setOnClickListener { onClick(adapterPosition) }
+        }
+
+        fun bind(rule: DisplayableElement.Rule): Unit = with(binding) {
+            numberTv.text = itemView.context.getString(R.string.app_rule_number, rule.id)
+            styledTextRenderer.render(rule.content, contentTv)
         }
     }
 }
