@@ -27,7 +27,7 @@ class SectionFragment : Fragment() {
     }
 
     private val rulesAdapter by lazy {
-        RulesAdapter(requireActivity().theme) { clickedRuleId ->
+        RulesAdapter() { clickedRuleId ->
             viewModel.onClickRule(clickedRuleId)
         }
     }

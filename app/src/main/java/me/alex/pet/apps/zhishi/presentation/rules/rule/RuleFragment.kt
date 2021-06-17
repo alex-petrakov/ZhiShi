@@ -31,7 +31,7 @@ class RuleFragment : Fragment() {
 
     private val styledTextConverter by lazy {
         StyledTextRenderer(
-                paragraphSpansRenderer = ParagraphSpanRenderer(requireActivity().theme),
+                paragraphSpansRenderer = ParagraphSpanRenderer(requireActivity().theme, binding.ruleContentTv.paint),
                 characterSpansRenderer = CharSpanRenderer(requireActivity().theme),
                 linksRenderer = LinkRenderer { clickedRuleId ->
                     viewModel.onRuleLinkClick(clickedRuleId)

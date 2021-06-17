@@ -1,6 +1,5 @@
 package me.alex.pet.apps.zhishi.presentation.section
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.Char
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
 
 class RulesAdapter(
-        theme: Resources.Theme,
         private val onRuleClick: (Long) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -22,15 +20,6 @@ class RulesAdapter(
             field = value
             notifyDataSetChanged()
         }
-
-    private val ruleContentStyledTextConverter = StyledTextRenderer(
-            paragraphSpansRenderer = ParagraphSpanRenderer(theme),
-            characterSpansRenderer = CharSpanRenderer(theme)
-    )
-
-    private val headingStyledTextConverter = StyledTextRenderer(
-            characterSpansRenderer = BasicCharSpanRenderer()
-    )
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
@@ -44,8 +33,8 @@ class RulesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.item_generic_indented_subtitle -> HeadingHolder(view, headingStyledTextConverter)
-            R.layout.item_rule_numbered -> RuleHolder(view, ruleContentStyledTextConverter, onRuleClick)
+            R.layout.item_generic_indented_subtitle -> HeadingHolder(view)
+            R.layout.item_rule_numbered -> RuleHolder(view, onRuleClick)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -60,9 +49,12 @@ class RulesAdapter(
     }
 
     private class HeadingHolder(
-            itemView: View,
-            private val styledTextRenderer: StyledTextRenderer
+            itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
+
+        private val styledTextRenderer = StyledTextRenderer(
+                characterSpansRenderer = BasicCharSpanRenderer()
+        )
 
         private val contentTextView = itemView.findViewById<TextView>(R.id.content_tv)
 
@@ -73,12 +65,20 @@ class RulesAdapter(
 
     private class RuleHolder(
             itemView: View,
-            private val styledTextRenderer: StyledTextRenderer,
             private val onRuleClick: (Long) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val numberTextView = itemView.findViewById<TextView>(R.id.number_tv)
         private val contentTextView = itemView.findViewById<TextView>(R.id.content_tv)
+
+        private val styledTextRenderer = StyledTextRenderer(
+                paragraphSpansRenderer = ParagraphSpanRenderer(theme, contentTextView.paint),
+                characterSpansRenderer = CharSpanRenderer(theme)
+        )
+
+        private val context get() = itemView.context
+
+        private val theme get() = context.theme
 
         fun bind(rule: DisplayableElement.Rule) {
             itemView.setOnClickListener { onRuleClick(rule.id) }

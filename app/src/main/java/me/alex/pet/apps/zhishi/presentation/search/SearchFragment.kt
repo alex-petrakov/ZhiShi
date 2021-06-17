@@ -39,7 +39,7 @@ class SearchFragment : Fragment() {
     private var lastRenderedState: ViewState? = null
 
     private val searchResultsAdapter by lazy {
-        SearchResultsAdapter(requireActivity().theme) { ruleId ->
+        SearchResultsAdapter() { ruleId ->
             viewModel.onClickRule(ruleId)
         }
     }

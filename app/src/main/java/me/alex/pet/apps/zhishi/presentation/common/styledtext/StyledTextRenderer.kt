@@ -3,7 +3,6 @@ package me.alex.pet.apps.zhishi.presentation.common.styledtext
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.TextPaint
 import android.widget.TextView
 import me.alex.pet.apps.zhishi.domain.common.CharacterSpan
 import me.alex.pet.apps.zhishi.domain.common.Link
@@ -18,19 +17,17 @@ class StyledTextRenderer(
 ) {
 
     fun render(styledText: StyledText, textView: TextView) {
-        val spanned = convertToSpanned(styledText, textView.paint)
+        val spanned = convertToSpanned(styledText)
         textView.text = spanned
     }
 
-    fun convertToSpanned(styledText: StyledText, textPaint: TextPaint): Spanned {
+    fun convertToSpanned(styledText: StyledText): Spanned {
         val characterSpans = characterSpansRenderer?.convertToSpans(
-                styledText.characterSpans,
-                textPaint
+                styledText.characterSpans
         ) ?: emptyList()
-        val linkSpans = linksRenderer?.convertToSpans(styledText.links, textPaint) ?: emptyList()
+        val linkSpans = linksRenderer?.convertToSpans(styledText.links) ?: emptyList()
         val paragraphSpans = paragraphSpansRenderer?.convertToSpans(
-                styledText.paragraphSpans,
-                textPaint
+                styledText.paragraphSpans
         ) ?: emptyList()
         return SpannableString(styledText.string).apply {
             setSpans(characterSpans + linkSpans + paragraphSpans)

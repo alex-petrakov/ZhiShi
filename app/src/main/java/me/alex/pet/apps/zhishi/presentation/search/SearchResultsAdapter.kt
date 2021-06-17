@@ -1,6 +1,5 @@
 package me.alex.pet.apps.zhishi.presentation.search
 
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -13,7 +12,6 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.Char
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
 
 class SearchResultsAdapter(
-        theme: Resources.Theme,
         private val onRuleClick: (Long) -> Unit
 ) : RecyclerView.Adapter<SearchResultsAdapter.Holder>() {
 
@@ -35,11 +33,6 @@ class SearchResultsAdapter(
 
     private val listDiffer = AsyncListDiffer(this, diffCallback)
 
-    private val ruleContentStyledTextRenderer = StyledTextRenderer(
-            paragraphSpansRenderer = ParagraphSpanRenderer(theme),
-            characterSpansRenderer = CharSpanRenderer(theme)
-    )
-
     override fun getItemCount() = items.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -48,7 +41,7 @@ class SearchResultsAdapter(
                 parent,
                 false
         )
-        return Holder(binding, ruleContentStyledTextRenderer, onRuleClick)
+        return Holder(binding, onRuleClick)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -57,11 +50,17 @@ class SearchResultsAdapter(
 
     class Holder(
             private val binding: ItemRuleSearchResultBinding,
-            private val styledTextRenderer: StyledTextRenderer,
             private val onRuleClick: (Long) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private val styledTextRenderer = StyledTextRenderer(
+                paragraphSpansRenderer = ParagraphSpanRenderer(theme, binding.contentTv.paint),
+                characterSpansRenderer = CharSpanRenderer(theme)
+        )
+
         private val context get() = binding.root.context
+
+        private val theme get() = context.theme
 
         fun bind(item: SearchResultItem) = with(binding) {
             root.setOnClickListener { onRuleClick(item.ruleId) }

@@ -11,40 +11,40 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans.Inden
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans.QuotationSpan
 import kotlin.math.roundToInt
 
-class ParagraphSpanRenderer(theme: Resources.Theme) : SpanRenderer<ParagraphSpan> {
+class ParagraphSpanRenderer(theme: Resources.Theme, textPaint: TextPaint) : SpanRenderer<ParagraphSpan> {
 
     private val stripeColor by lazy { theme.resolveColorAttr(R.attr.colorPrimary) }
 
-    private val stripeWidth = 2.dp(theme.resources)
+    private val indentStepWidth = textPaint.measureText(indentStepLengthSample).roundToInt()
 
-    override fun convertToSpans(elements: List<ParagraphSpan>, textPaint: TextPaint): List<PositionAwareSpan> {
-        return elements.mapNotNull { convertToSpan(it, textPaint) }
+    private val quoteStripeWidth = 2.dp(theme.resources)
+
+    private val quoteBorderGapWidth = textPaint.measureText(gapLengthSample).roundToInt()
+
+    override fun convertToSpans(elements: List<ParagraphSpan>): List<PositionAwareSpan> {
+        return elements.mapNotNull { convertToSpan(it) }
     }
 
-    private fun convertToSpan(element: ParagraphSpan, textPaint: TextPaint): PositionAwareSpan? {
+    private fun convertToSpan(element: ParagraphSpan): PositionAwareSpan? {
         return when (element) {
-            is ParagraphSpan.Indent -> convertIndentToSpan(element, textPaint)
+            is ParagraphSpan.Indent -> convertIndentToSpan(element)
             is ParagraphSpan.HangingIndent -> TODO("Not implemented")
-            is ParagraphSpan.Style -> convertAppearanceToSpan(element, textPaint)
+            is ParagraphSpan.Style -> convertAppearanceToSpan(element)
         }
     }
 
-    private fun convertIndentToSpan(element: ParagraphSpan.Indent, textPaint: TextPaint): PositionAwareSpan {
-        // TODO: Measuring the text each time is expensive. Consider adding some kind of caching.
-        val indentStepWidth = textPaint.measureText(indentStepLengthSample).roundToInt()
+    private fun convertIndentToSpan(element: ParagraphSpan.Indent): PositionAwareSpan {
         return PositionAwareSpan(IndentSpan(indentStepWidth, element.level), element.start, element.end)
     }
 
-    private fun convertAppearanceToSpan(element: ParagraphSpan.Style, textPaint: TextPaint): PositionAwareSpan? {
+    private fun convertAppearanceToSpan(element: ParagraphSpan.Style): PositionAwareSpan? {
         val span = when (element.appearance) {
             ParagraphAppearance.QUOTE -> {
-                // TODO: Measuring the text each time is expensive. Consider adding some kind of caching.
-                val gapWidth = textPaint.measureText(gapLengthSample).roundToInt()
-                QuotationSpan(stripeColor, stripeWidth, gapWidth)
+                QuotationSpan(stripeColor, quoteStripeWidth, quoteBorderGapWidth)
             }
             ParagraphAppearance.FOOTNOTE -> null
         }
-        return span?.let { PositionAwareSpan(span, element.start, element.end) }
+        return span?.let { PositionAwareSpan(it, element.start, element.end) }
     }
 }
 

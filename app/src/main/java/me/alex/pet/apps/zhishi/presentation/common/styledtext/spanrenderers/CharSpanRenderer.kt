@@ -2,7 +2,6 @@ package me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers
 
 import android.content.res.Resources
 import android.graphics.Typeface
-import android.text.TextPaint
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import me.alex.pet.apps.zhishi.R
@@ -18,11 +17,11 @@ class CharSpanRenderer(private val theme: Resources.Theme) : SpanRenderer<Charac
 
     private val underlineColor by lazy { theme.resolveColorAttr(R.attr.colorMisspelledTextUnderline) }
 
-    override fun convertToSpans(elements: List<CharacterSpan>, textPaint: TextPaint): List<PositionAwareSpan> {
-        return elements.map { convertToSpan(it, textPaint) }
+    override fun convertToSpans(elements: List<CharacterSpan>): List<PositionAwareSpan> {
+        return elements.map { convertToSpan(it) }
     }
 
-    private fun convertToSpan(element: CharacterSpan, textPaint: TextPaint): PositionAwareSpan {
+    private fun convertToSpan(element: CharacterSpan): PositionAwareSpan {
         val span = when (element.appearance) {
             CharacterAppearance.EMPHASIS -> ForegroundColorSpan(emphasisColor)
             CharacterAppearance.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)
