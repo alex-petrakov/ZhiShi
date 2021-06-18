@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
-import me.alex.pet.apps.zhishi.presentation.common.extensions.observe
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.LinkRenderer
