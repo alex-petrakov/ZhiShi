@@ -14,7 +14,6 @@ data class MarkupDto(
 @JsonClass(generateAdapter = true)
 data class ParagraphSpansDto(
         val indents: List<IndentSpanDto>,
-        val hangingIndents: List<HangingIndentDto>,
         val styles: List<ParagraphStyleDto>
 )
 
@@ -27,13 +26,6 @@ data class IndentSpanDto(
         val start: Int,
         val end: Int,
         val level: Int,
-        override val globalOrder: Int
-) : Sortable
-
-@JsonClass(generateAdapter = true)
-data class HangingIndentDto(
-        val start: Int,
-        val end: Int,
         val hangingText: String,
         override val globalOrder: Int
 ) : Sortable
@@ -99,11 +91,10 @@ private fun CharacterAppearanceDto.toCharacterStyle(): CharacterAppearance {
 }
 
 private fun MarkupDto.toParagraphStyles(): List<ParagraphSpan> {
-    val allParagraphSpans = paragraphSpans.indents + paragraphSpans.hangingIndents + paragraphSpans.styles
+    val allParagraphSpans = paragraphSpans.indents + paragraphSpans.styles
     return allParagraphSpans.sortedBy { it.globalOrder }.map { span ->
         when (span) {
-            is IndentSpanDto -> ParagraphSpan.Indent(span.start, span.end, span.level)
-            is HangingIndentDto -> ParagraphSpan.HangingIndent(span.start, span.end, span.hangingText)
+            is IndentSpanDto -> ParagraphSpan.Indent(span.start, span.end, span.level, span.hangingText)
             is ParagraphStyleDto -> ParagraphSpan.Style(span.start, span.end, span.appearance.unwrap())
             else -> throw IllegalStateException()
         }

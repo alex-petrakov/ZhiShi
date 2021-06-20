@@ -7,13 +7,11 @@ sealed class ParagraphSpan(val start: Int, val end: Int) {
         require(end > start)
     }
 
-    class Indent(start: Int, end: Int, val level: Int) : ParagraphSpan(start, end) {
+    class Indent(start: Int, end: Int, val level: Int, val hangingText: String) : ParagraphSpan(start, end) {
         init {
-            require(level > 0)
+            require(level >= 0)
         }
     }
-
-    class HangingIndent(start: Int, end: Int, val hangingText: String) : ParagraphSpan(start, end)
 
     class Style(start: Int, end: Int, val appearance: ParagraphAppearance) : ParagraphSpan(start, end)
 }
