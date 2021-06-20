@@ -62,7 +62,13 @@ class ParagraphSpanRenderer(theme: Resources.Theme, private val textPaint: TextP
             )
             ParagraphAppearance.FOOTNOTE -> AbsoluteSizeSpan(footnoteTextSize, false)
         }
-        return PositionAwareSpan(span, element.start, element.end)
+        // AbsoluteSizeSpan must be also applied to the newline character at the end of the line,
+        // otherwise the last line in a paragraph might have incorrect line height.
+        val end = when (element.appearance) {
+            ParagraphAppearance.QUOTE -> element.end
+            ParagraphAppearance.FOOTNOTE -> element.end + 1
+        }
+        return PositionAwareSpan(span, element.start, end)
     }
 }
 
