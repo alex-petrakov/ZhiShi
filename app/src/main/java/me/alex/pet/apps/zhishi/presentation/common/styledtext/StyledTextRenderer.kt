@@ -22,11 +22,11 @@ class StyledTextRenderer(
     }
 
     fun convertToSpanned(styledText: StyledText): Spanned {
-        val characterSpans = characterSpansRenderer?.convertToSpans(
+        val characterSpans = characterSpansRenderer?.convertToAndroidSpans(
                 styledText.characterSpans
         ) ?: emptyList()
-        val linkSpans = linksRenderer?.convertToSpans(styledText.links) ?: emptyList()
-        val paragraphSpans = paragraphSpansRenderer?.convertToSpans(
+        val linkSpans = linksRenderer?.convertToAndroidSpans(styledText.links) ?: emptyList()
+        val paragraphSpans = paragraphSpansRenderer?.convertToAndroidSpans(
                 styledText.paragraphSpans
         ) ?: emptyList()
         return SpannableString(styledText.string).apply {

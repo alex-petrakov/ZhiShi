@@ -8,16 +8,16 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.PositionAwareSpan
 
 class BasicCharSpanRenderer : SpanRenderer<CharacterSpan> {
 
-    override fun convertToSpans(elements: List<CharacterSpan>): List<PositionAwareSpan> {
-        return elements.mapNotNull { convertToSpan(it) }
+    override fun convertToAndroidSpans(spans: List<CharacterSpan>): List<PositionAwareSpan> {
+        return spans.mapNotNull { convertToAndroidSpan(it) }
     }
 
-    private fun convertToSpan(element: CharacterSpan): PositionAwareSpan? {
-        val span = when (element.appearance) {
+    private fun convertToAndroidSpan(span: CharacterSpan): PositionAwareSpan? {
+        val androidSpan = when (span.appearance) {
             CharacterAppearance.EMPHASIS -> StyleSpan(Typeface.ITALIC)
             CharacterAppearance.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)
             CharacterAppearance.MISSPELL -> null
         }
-        return span?.let { PositionAwareSpan(it, element.start, element.end) }
+        return androidSpan?.let { PositionAwareSpan(it, span.start, span.end) }
     }
 }

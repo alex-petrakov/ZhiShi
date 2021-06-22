@@ -6,15 +6,15 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans.LinkS
 
 class LinkRenderer(private val onClickDelegate: (Long) -> Unit) : SpanRenderer<Link> {
 
-    override fun convertToSpans(elements: List<Link>): List<PositionAwareSpan> {
-        return elements.map { convertToSpan(it) }
+    override fun convertToAndroidSpans(spans: List<Link>): List<PositionAwareSpan> {
+        return spans.map { convertToAndroidSpan(it) }
     }
 
-    private fun convertToSpan(element: Link): PositionAwareSpan {
+    private fun convertToAndroidSpan(span: Link): PositionAwareSpan {
         return PositionAwareSpan(
-                LinkSpan(element.ruleId, onClickDelegate),
-                element.start,
-                element.end
+                LinkSpan(span.ruleId, onClickDelegate),
+                span.start,
+                span.end
         )
     }
 }

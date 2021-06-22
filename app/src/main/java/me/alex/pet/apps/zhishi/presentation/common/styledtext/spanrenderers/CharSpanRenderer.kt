@@ -17,16 +17,16 @@ class CharSpanRenderer(private val theme: Resources.Theme) : SpanRenderer<Charac
 
     private val underlineColor by lazy { theme.resolveColorAttr(R.attr.colorMisspelledTextUnderline) }
 
-    override fun convertToSpans(elements: List<CharacterSpan>): List<PositionAwareSpan> {
-        return elements.map { convertToSpan(it) }
+    override fun convertToAndroidSpans(spans: List<CharacterSpan>): List<PositionAwareSpan> {
+        return spans.map { convertToAndroidSpan(it) }
     }
 
-    private fun convertToSpan(element: CharacterSpan): PositionAwareSpan {
-        val span = when (element.appearance) {
+    private fun convertToAndroidSpan(span: CharacterSpan): PositionAwareSpan {
+        val androidSpan = when (span.appearance) {
             CharacterAppearance.EMPHASIS -> ForegroundColorSpan(emphasisColor)
             CharacterAppearance.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)
             CharacterAppearance.MISSPELL -> ColoredUnderlineSpan(underlineColor)
         }
-        return PositionAwareSpan(span, element.start, element.end)
+        return PositionAwareSpan(androidSpan, span.start, span.end)
     }
 }
