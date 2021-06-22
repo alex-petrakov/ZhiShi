@@ -1,6 +1,5 @@
 package me.alex.pet.apps.zhishi.data.common
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import me.alex.pet.apps.zhishi.domain.common.*
 
@@ -34,8 +33,7 @@ data class IndentSpanDto(
 data class ParagraphStyleDto(
         val start: Int,
         val end: Int,
-        // TODO: remove @Json annotation once JSON fields are renamed from 'style' to 'appearance'
-        @Json(name = "style") val appearance: ParagraphAppearanceDto,
+        val appearance: ParagraphAppearanceDto,
         override val globalOrder: Int
 ) : Sortable
 
@@ -48,8 +46,7 @@ enum class ParagraphAppearanceDto {
 data class CharacterSpanDto(
         val start: Int,
         val end: Int,
-        // TODO: remove @Json annotation once JSON fields are renamed from 'style' to 'appearance'
-        @Json(name = "style") val appearance: CharacterAppearanceDto
+        val appearance: CharacterAppearanceDto
 )
 
 enum class CharacterAppearanceDto {
