@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
 import me.alex.pet.apps.zhishi.presentation.HostActivity
@@ -17,10 +18,6 @@ import org.koin.core.parameter.parametersOf
 
 class RuleFragment : Fragment() {
 
-    private var _binding: FragmentRuleBinding? = null
-
-    private val binding get() = _binding!!
-
     private val viewModel by viewModel<RuleViewModel> {
         val args = requireArguments()
         check(args.containsKey(ARG_RULE_ID)) { "Required rule ID argument is missing" }
@@ -28,9 +25,16 @@ class RuleFragment : Fragment() {
         parametersOf(ruleId)
     }
 
+    private var _binding: FragmentRuleBinding? = null
+
+    private val binding get() = _binding!!
+
     private val styledTextConverter by lazy {
         StyledTextRenderer(
-                paragraphSpansRenderer = ParagraphSpanRenderer(requireActivity().theme, binding.ruleContentTv.paint),
+                paragraphSpansRenderer = ParagraphSpanRenderer(
+                        requireActivity().theme,
+                        binding.ruleContentTv.paint
+                ),
                 characterSpansRenderer = CharSpanRenderer(requireActivity().theme),
                 linksRenderer = LinkRenderer { clickedRuleId ->
                     viewModel.onRuleLinkClick(clickedRuleId)
@@ -49,16 +53,16 @@ class RuleFragment : Fragment() {
         subscribeToModel()
     }
 
-    private fun prepareView() = with(binding) {
+    private fun prepareView(): Unit = with(binding) {
         ruleContentTv.movementMethod = LinkMovementMethod() // TODO: Use BetterLinkMovementMethod
     }
 
-    private fun subscribeToModel() = with(viewModel) {
+    private fun subscribeToModel(): Unit = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
         viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
-    private fun render(state: ViewState) = with(binding) {
+    private fun render(state: ViewState): Unit = with(binding) {
         styledTextConverter.render(state.ruleContent, ruleContentTv)
     }
 
@@ -82,11 +86,8 @@ class RuleFragment : Fragment() {
         private const val ARG_RULE_ID = "RULE_ID"
 
         fun newInstance(ruleId: Long): RuleFragment {
-            val args = Bundle().apply {
-                putLong(ARG_RULE_ID, ruleId)
-            }
             return RuleFragment().apply {
-                arguments = args
+                arguments = bundleOf(ARG_RULE_ID to ruleId)
             }
         }
     }
