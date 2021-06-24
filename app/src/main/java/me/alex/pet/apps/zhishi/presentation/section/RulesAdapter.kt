@@ -15,7 +15,7 @@ class RulesAdapter(
         private val onRuleClick: (Long) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var items: List<DisplayableElement> = emptyList()
+    var items: List<DisplayableItem> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -23,8 +23,8 @@ class RulesAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is DisplayableElement.Heading -> R.layout.item_generic_indented_subtitle
-            is DisplayableElement.Rule -> R.layout.item_rule_numbered
+            is DisplayableItem.Heading -> R.layout.item_generic_indented_subtitle
+            is DisplayableItem.Rule -> R.layout.item_rule_numbered
         }
     }
 
@@ -38,7 +38,7 @@ class RulesAdapter(
             }
             R.layout.item_rule_numbered -> {
                 RuleHolder(ItemRuleNumberedBinding.bind(view)) { adapterPosition ->
-                    onRuleClick((items[adapterPosition] as DisplayableElement.Rule).id)
+                    onRuleClick((items[adapterPosition] as DisplayableItem.Rule).id)
                 }
             }
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
@@ -48,8 +48,8 @@ class RulesAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
         when (holder) {
-            is HeadingHolder -> holder.bind(item as DisplayableElement.Heading)
-            is RuleHolder -> holder.bind(item as DisplayableElement.Rule)
+            is HeadingHolder -> holder.bind(item as DisplayableItem.Heading)
+            is RuleHolder -> holder.bind(item as DisplayableItem.Rule)
             else -> throw IllegalArgumentException("Unknown holder type: ${holder::class.java}")
         }
     }
@@ -62,7 +62,7 @@ class RulesAdapter(
                 characterSpansRenderer = BasicCharSpanRenderer()
         )
 
-        fun bind(heading: DisplayableElement.Heading): Unit = with(binding) {
+        fun bind(heading: DisplayableItem.Heading): Unit = with(binding) {
             styledTextRenderer.render(heading.content, contentTv)
         }
     }
@@ -85,7 +85,7 @@ class RulesAdapter(
             binding.root.setOnClickListener { onClick(adapterPosition) }
         }
 
-        fun bind(rule: DisplayableElement.Rule): Unit = with(binding) {
+        fun bind(rule: DisplayableItem.Rule): Unit = with(binding) {
             numberTv.text = itemView.context.getString(R.string.app_rule_number, rule.id)
             styledTextRenderer.render(rule.content, contentTv)
         }
