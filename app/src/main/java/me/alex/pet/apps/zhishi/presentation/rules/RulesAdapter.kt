@@ -5,7 +5,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
 import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleFragment
 
-class RulesAdapter(val fragment: Fragment) : FragmentStateAdapter(fragment) {
+class RulesAdapter(private val fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     var ruleIds: List<Long> = emptyList()
         set(value) {
@@ -19,7 +19,8 @@ class RulesAdapter(val fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     override fun onViewDetachedFromWindow(holder: FragmentViewHolder) {
         super.onViewDetachedFromWindow(holder)
-        val fragment = fragment.childFragmentManager.findFragmentByTag("f${holder.adapterPosition}") as RuleFragment
+        val fragment = fragment.childFragmentManager
+                .findFragmentByTag("f${holder.adapterPosition}") as RuleFragment
         fragment.resetScroll()
     }
 }

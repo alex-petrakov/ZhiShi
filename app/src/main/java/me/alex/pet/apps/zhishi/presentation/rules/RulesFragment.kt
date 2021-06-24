@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import me.alex.pet.apps.zhishi.R
@@ -36,13 +37,13 @@ class RulesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareView(savedInstanceState)
         subscribeToModel()
     }
 
-    private fun prepareView(savedInstanceState: Bundle?) = with(binding) {
+    private fun prepareView(savedInstanceState: Bundle?): Unit = with(binding) {
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_action_up)
             setNavigationOnClickListener { requireActivity().onBackPressed() }
@@ -60,12 +61,12 @@ class RulesFragment : Fragment() {
         }
     }
 
-    private fun subscribeToModel() = with(viewModel) {
+    private fun subscribeToModel(): Unit = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { state -> render(state) }
     }
 
-    private fun render(state: ViewState) = with(binding) {
-        toolbar.title = getString(R.string.rule_rule_number, state.selectedRuleNumber)
+    private fun render(state: ViewState): Unit = with(binding) {
+        toolbar.title = getString(R.string.rule_rule_number, state.selectedRuleId)
     }
 
     override fun onDestroyView() {
@@ -78,16 +79,9 @@ class RulesFragment : Fragment() {
         private const val ARG_RULES_TO_DISPLAY = "RULES_TO_DISPLAY"
 
         fun newInstance(rulesToDisplay: RulesToDisplay): RulesFragment {
-            val argsBundle = Bundle().apply {
-                putParcelable(ARG_RULES_TO_DISPLAY, rulesToDisplay)
-            }
             return RulesFragment().apply {
-                arguments = argsBundle
+                arguments = bundleOf(ARG_RULES_TO_DISPLAY to rulesToDisplay)
             }
-        }
-
-        fun newInstance(ruleId: Long): RulesFragment {
-            return newInstance(RulesToDisplay(ruleId))
         }
     }
 }

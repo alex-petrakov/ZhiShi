@@ -16,5 +16,3 @@ class RulesViewModel(private val rulesToDisplay: RulesToDisplay) : ViewModel() {
         _viewState.value = ViewState(rulesToDisplay.ids[position])
     }
 }
-
-data class ViewState(val selectedRuleNumber: Long)
