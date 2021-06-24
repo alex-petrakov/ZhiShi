@@ -24,18 +24,18 @@ class ContentsFragment : Fragment() {
         viewModel.onClickSection(clickedSectionId)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentContentsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareView()
         subscribeToModel()
     }
 
-    private fun prepareView() = with(binding) {
+    private fun prepareView(): Unit = with(binding) {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = contentsAdapter
@@ -46,12 +46,12 @@ class ContentsFragment : Fragment() {
         }
     }
 
-    private fun subscribeToModel() = with(viewModel) {
-        viewState.observe(viewLifecycleOwner) { newState -> renderState(newState) }
-        viewEffect.observe(viewLifecycleOwner) { effect -> handleEffect(effect) }
+    private fun subscribeToModel(): Unit = with(viewModel) {
+        viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
+        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
-    private fun handleEffect(effect: ViewEffect) {
+    private fun handle(effect: ViewEffect) {
         val navigator = requireActivity() as HostActivity
         when (effect) {
             is ViewEffect.NavigateToSection -> navigator.navigateToSection(effect.sectionId)
@@ -59,8 +59,8 @@ class ContentsFragment : Fragment() {
         }
     }
 
-    private fun renderState(state: ViewState) = with(binding) {
-        contentsAdapter.items = state.contents
+    private fun render(state: ViewState) {
+        contentsAdapter.items = state.listItems
     }
 
     private fun handleMenuClick(item: MenuItem): Boolean {
@@ -74,8 +74,8 @@ class ContentsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
     }
 
     companion object {

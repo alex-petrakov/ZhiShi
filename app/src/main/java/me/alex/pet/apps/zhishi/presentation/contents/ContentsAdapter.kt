@@ -14,7 +14,7 @@ class ContentsAdapter(
         private val onSectionClick: (Long) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var items: List<ContentsElement> = emptyList()
+    var items: List<DisplayableItem> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -26,9 +26,9 @@ class ContentsAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is ContentsElement.Part -> R.layout.item_generic_title
-            is ContentsElement.Chapter -> R.layout.item_generic_subtitle
-            is ContentsElement.Section -> R.layout.item_clickable_section
+            is DisplayableItem.Part -> R.layout.item_generic_title
+            is DisplayableItem.Chapter -> R.layout.item_generic_subtitle
+            is DisplayableItem.Section -> R.layout.item_clickable_section
         }
     }
 
@@ -42,7 +42,7 @@ class ContentsAdapter(
             R.layout.item_clickable_section -> SectionHolder(
                     ItemClickableSectionBinding.bind(view),
                     sectionStyledTextConverter
-            ) { adapterPosition -> onSectionClick((items[adapterPosition] as ContentsElement.Section).id) }
+            ) { adapterPosition -> onSectionClick((items[adapterPosition] as DisplayableItem.Section).id) }
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -50,9 +50,9 @@ class ContentsAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
         when (holder) {
-            is PartHolder -> holder.bind(item as ContentsElement.Part)
-            is ChapterHolder -> holder.bind(item as ContentsElement.Chapter)
-            is SectionHolder -> holder.bind(item as ContentsElement.Section)
+            is PartHolder -> holder.bind(item as DisplayableItem.Part)
+            is ChapterHolder -> holder.bind(item as DisplayableItem.Chapter)
+            is SectionHolder -> holder.bind(item as DisplayableItem.Section)
             else -> throw IllegalArgumentException("Unknown holder type: ${holder::class.java}")
         }
     }
@@ -62,7 +62,7 @@ class ContentsAdapter(
             private val binding: ItemGenericTitleBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ContentsElement.Part) {
+        fun bind(item: DisplayableItem.Part) {
             binding.contentTv.text = item.name
         }
     }
@@ -71,7 +71,7 @@ class ContentsAdapter(
             private val binding: ItemGenericSubtitleBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ContentsElement.Chapter) {
+        fun bind(item: DisplayableItem.Chapter) {
             binding.contentTv.text = item.name
         }
     }
@@ -86,7 +86,7 @@ class ContentsAdapter(
             binding.root.setOnClickListener { onClick(adapterPosition) }
         }
 
-        fun bind(item: ContentsElement.Section) {
+        fun bind(item: DisplayableItem.Section) {
             styledTextRenderer.render(item.name, binding.contentTv)
         }
     }

@@ -12,7 +12,7 @@ class ContentsViewModel(contentsRepository: ContentsRepository) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
         val contents = contentsRepository.getContents()
-        val newState = withContext(Dispatchers.Default) { contents.toViewState() }
+        val newState = mapContentsToViewState(contents)
         emit(newState)
     }
 
@@ -27,24 +27,26 @@ class ContentsViewModel(contentsRepository: ContentsRepository) : ViewModel() {
     fun onClickSearchAction() {
         _viewEffect.value = ViewEffect.NavigateToSearch
     }
+
+    private suspend fun mapContentsToViewState(contents: Contents): ViewState {
+        return withContext(Dispatchers.Default) {
+            ViewState(contents.toUiModel())
+        }
+    }
 }
 
-private fun Contents.toViewState(): ViewState {
-    return ViewState(toUiModel())
-}
-
-private fun Contents.toUiModel(): List<ContentsElement> {
+private fun Contents.toUiModel(): List<DisplayableItem> {
     return parts.flatMap { it.toUiModel() }
 }
 
-private fun PartNode.toUiModel(): List<ContentsElement> {
-    return listOf(ContentsElement.Part(name)) + chapters.flatMap { it.toUiModel() }
+private fun PartNode.toUiModel(): List<DisplayableItem> {
+    return listOf(DisplayableItem.Part(name)) + chapters.flatMap { it.toUiModel() }
 }
 
-private fun ChapterNode.toUiModel(): List<ContentsElement> {
-    return listOf(ContentsElement.Chapter(name)) + sections.map { it.toUiModel() }
+private fun ChapterNode.toUiModel(): List<DisplayableItem> {
+    return listOf(DisplayableItem.Chapter(name)) + sections.map { it.toUiModel() }
 }
 
-private fun SectionNode.toUiModel(): ContentsElement {
-    return ContentsElement.Section(id, name)
+private fun SectionNode.toUiModel(): DisplayableItem {
+    return DisplayableItem.Section(id, name)
 }
