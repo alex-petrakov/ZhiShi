@@ -24,8 +24,6 @@ class RulesFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val rulesAdapter by lazy { RulesAdapter(this) }
-
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             viewModel.onRuleSelected(position)
@@ -51,9 +49,8 @@ class RulesFragment : Fragment() {
 
         val rulesToDisplay = requireArguments().getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
                 ?: throw IllegalStateException("Required argument is missing")
-        rulesAdapter.ruleIds = rulesToDisplay.ids
         viewPager.apply {
-            adapter = rulesAdapter
+            adapter = RulesAdapter(this@RulesFragment, rulesToDisplay.ids)
             registerOnPageChangeCallback(onPageChangeCallback)
             if (savedInstanceState == null) {
                 setCurrentItem(rulesToDisplay.selectionIndex, false)

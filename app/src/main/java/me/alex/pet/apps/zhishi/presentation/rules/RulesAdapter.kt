@@ -5,9 +5,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
 import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleFragment
 
-class RulesAdapter(private val fragment: Fragment) : FragmentStateAdapter(fragment) {
+class RulesAdapter(
+        private val fragment: Fragment,
+        ruleIds: List<Long> = emptyList()
+) : FragmentStateAdapter(fragment) {
 
-    var ruleIds: List<Long> = emptyList()
+    var ruleIds: List<Long> = ruleIds
         set(value) {
             field = value
             notifyDataSetChanged()

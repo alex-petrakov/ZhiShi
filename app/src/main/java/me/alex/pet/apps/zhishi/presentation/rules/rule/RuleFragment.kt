@@ -73,7 +73,7 @@ class RuleFragment : Fragment() {
     }
 
     fun resetScroll() {
-        binding.scrollView.scrollTo(0, 0)
+        _binding?.scrollView?.scrollTo(0, 0)
     }
 
     override fun onDestroyView() {
