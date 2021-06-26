@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSectionBinding
-import me.alex.pet.apps.zhishi.presentation.HostActivity
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -55,7 +54,6 @@ class SectionFragment : Fragment() {
 
     private fun subscribeToModel(): Unit = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
-        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
     private fun render(state: ViewState): Unit = with(binding) {
@@ -65,12 +63,6 @@ class SectionFragment : Fragment() {
             else -> getString(R.string.section_rule_numbers_range, ruleNumbersRange.first, ruleNumbersRange.last)
         }
         rulesAdapter.items = state.listItems
-    }
-
-    private fun handle(effect: ViewEffect) {
-        when (effect) {
-            is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.rulesToDisplay)
-        }
     }
 
     override fun onDestroyView() {

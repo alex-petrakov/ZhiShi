@@ -1,20 +1,21 @@
 package me.alex.pet.apps.zhishi.presentation.section
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.sections.Rule
 import me.alex.pet.apps.zhishi.domain.sections.Section
 import me.alex.pet.apps.zhishi.domain.sections.SectionsRepository
-import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
+import me.alex.pet.apps.zhishi.presentation.AppScreens
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 
 class SectionViewModel(
         private val sectionId: Long,
-        private val sectionsRepository: SectionsRepository
+        private val sectionsRepository: SectionsRepository,
+        private val router: Router
 ) : ViewModel() {
 
     private val section = liveData {
@@ -27,14 +28,10 @@ class SectionViewModel(
         liveData { emit(mapSectionToViewState(section)) }
     }
 
-    private val _viewEffect = SingleLiveEvent<ViewEffect>()
-
-    val viewEffect: LiveData<ViewEffect> get() = _viewEffect
-
     fun onClickRule(ruleId: Long) {
         val ruleIds = section.value!!.ruleIds
-        check(ruleId in ruleIds)
-        _viewEffect.value = ViewEffect.NavigateToRule(RulesToDisplay(ruleIds.toList(), ruleIds.indexOf(ruleId)))
+        val rulesToDisplay = RulesToDisplay(ruleIds.toList(), ruleIds.indexOf(ruleId))
+        router.navigateTo(AppScreens.rules(rulesToDisplay))
     }
 
     private suspend fun mapSectionToViewState(section: Section): ViewState {

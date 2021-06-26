@@ -2,52 +2,36 @@ package me.alex.pet.apps.zhishi.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Replace
+import com.github.terrakok.cicerone.androidx.AppNavigator
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ActivityHostBinding
-import me.alex.pet.apps.zhishi.presentation.contents.ContentsFragment
-import me.alex.pet.apps.zhishi.presentation.rules.RulesFragment
-import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
-import me.alex.pet.apps.zhishi.presentation.search.SearchFragment
-import me.alex.pet.apps.zhishi.presentation.section.SectionFragment
+import org.koin.android.ext.android.inject
 
 class HostActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityHostBinding
+    private val navigator = AppNavigator(this, R.id.fragment_container)
+
+    private val navigatorHolder by inject<NavigatorHolder>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHostBinding.inflate(layoutInflater)
+        val binding = ActivityHostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, ContentsFragment.newInstance())
-                    .commit()
+            navigator.applyCommands(arrayOf(Replace(AppScreens.contents())))
         }
     }
 
-    fun navigateToSection(sectionId: Long) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SectionFragment.newInstance(sectionId))
-                .addToBackStack("SECTION")
-                .commit()
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(navigator)
     }
 
-    fun navigateToRule(rulesToDisplay: RulesToDisplay) {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, RulesFragment.newInstance(rulesToDisplay))
-                .addToBackStack("RULE")
-                .commit()
-    }
-
-    fun navigateToSearch() {
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SearchFragment.newInstance())
-                .addToBackStack("SEARCH")
-                .commit()
-    }
-
-    fun navigateBack() {
-        supportFragmentManager.popBackStack()
+    override fun onPause() {
+        navigatorHolder.removeNavigator()
+        super.onPause()
     }
 }

@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentContentsBinding
-import me.alex.pet.apps.zhishi.presentation.HostActivity
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ContentsFragment : Fragment() {
@@ -48,15 +47,6 @@ class ContentsFragment : Fragment() {
 
     private fun subscribeToModel(): Unit = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
-        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
-    }
-
-    private fun handle(effect: ViewEffect) {
-        val navigator = requireActivity() as HostActivity
-        when (effect) {
-            is ViewEffect.NavigateToSection -> navigator.navigateToSection(effect.sectionId)
-            is ViewEffect.NavigateToSearch -> navigator.navigateToSearch()
-        }
     }
 
     private fun render(state: ViewState) {

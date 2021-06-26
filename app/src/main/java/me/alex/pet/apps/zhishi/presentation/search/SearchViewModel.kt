@@ -1,15 +1,17 @@
 package me.alex.pet.apps.zhishi.presentation.search
 
 import androidx.lifecycle.*
+import com.github.terrakok.cicerone.Router
 import me.alex.pet.apps.zhishi.domain.search.SearchRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
-import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
+import me.alex.pet.apps.zhishi.presentation.AppScreens
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 
 class SearchViewModel(
         private val searchRules: SearchRules,
-        private val searchRepo: SearchRepository
+        private val searchRepo: SearchRepository,
+        private val router: Router
 ) : ViewModel() {
 
     private val query = MutableLiveData<String>().apply {
@@ -32,18 +34,14 @@ class SearchViewModel(
         }
     }
 
-    private val _viewEffect = SingleLiveEvent<ViewEffect>()
-
-    val viewEffect: LiveData<ViewEffect> get() = _viewEffect
-
     fun onUpdateQuery(query: String) {
         this.query.value = query
     }
 
     fun onClickRule(ruleId: Long) {
         val ruleIds = searchResults.value!!.ruleIds
-        check(ruleId in ruleIds)
-        _viewEffect.value = ViewEffect.NavigateToRule(RulesToDisplay(ruleIds, ruleIds.indexOf(ruleId)))
+        val rulesToDisplay = RulesToDisplay(ruleIds, ruleIds.indexOf(ruleId))
+        router.navigateTo(AppScreens.rules(rulesToDisplay))
     }
 }
 

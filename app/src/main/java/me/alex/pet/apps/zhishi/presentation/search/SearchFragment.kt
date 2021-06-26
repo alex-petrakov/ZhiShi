@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSearchBinding
-import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.extensions.focusAndShowKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.hideKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.textChanges
@@ -77,7 +76,6 @@ class SearchFragment : Fragment() {
 
     private fun subscribeToModel() = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
-        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
     private fun render(state: ViewState) = with(binding) {
@@ -121,12 +119,6 @@ class SearchFragment : Fragment() {
                     queryEt.setSelection(chipText.length)
                 }
             }
-        }
-    }
-
-    private fun handle(effect: ViewEffect) {
-        when (effect) {
-            is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.rulesToDisplay)
         }
     }
 

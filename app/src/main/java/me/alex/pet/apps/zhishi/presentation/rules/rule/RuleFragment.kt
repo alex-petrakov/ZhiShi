@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
-import me.alex.pet.apps.zhishi.presentation.HostActivity
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.LinkRenderer
@@ -59,17 +58,10 @@ class RuleFragment : Fragment() {
 
     private fun subscribeToModel(): Unit = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
-        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
     private fun render(state: ViewState): Unit = with(binding) {
         styledTextConverter.render(state.ruleContent, ruleContentTv)
-    }
-
-    private fun handle(effect: ViewEffect) {
-        when (effect) {
-            is ViewEffect.NavigateToRule -> (requireActivity() as HostActivity).navigateToRule(effect.rulesToDisplay)
-        }
     }
 
     fun resetScroll() {

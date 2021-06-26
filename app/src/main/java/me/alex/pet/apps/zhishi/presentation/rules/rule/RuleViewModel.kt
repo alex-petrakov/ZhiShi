@@ -4,14 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
 import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
-import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
+import me.alex.pet.apps.zhishi.presentation.AppScreens
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 
 class RuleViewModel(
         private val ruleId: Long,
-        private val rulesRepository: RulesRepository
+        private val rulesRepository: RulesRepository,
+        private val router: Router
 ) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
@@ -20,17 +22,12 @@ class RuleViewModel(
         emit(ViewState(rule.content))
     }
 
-    private val _viewEffect = SingleLiveEvent<ViewEffect>()
-
-    val viewEffect: LiveData<ViewEffect> get() = _viewEffect
-
     fun onRuleLinkClick(ruleId: Long) {
         viewModelScope.launch {
             val neighbours = rulesRepository.getIdsOfRulesInSameSection(ruleId)
             val selectionIndex = neighbours.indexOf(ruleId)
-            _viewEffect.value = ViewEffect.NavigateToRule(
-                    RulesToDisplay(neighbours.toList(), selectionIndex)
-            )
+            val rulesToDisplay = RulesToDisplay(neighbours.toList(), selectionIndex)
+            router.navigateTo(AppScreens.rules(rulesToDisplay))
         }
     }
 }

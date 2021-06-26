@@ -63,6 +63,7 @@ dependencies {
     implementation "org.koin:koin-android-viewmodel:$koin_version"
     implementation "com.squareup.sqldelight:android-driver:$sqldelight_version"
     implementation 'androidx.sqlite:sqlite-framework:2.1.0'
+    implementation 'com.github.terrakok:cicerone:7.0'
     implementation "com.squareup.moshi:moshi:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
     testImplementation 'junit:junit:4.12'

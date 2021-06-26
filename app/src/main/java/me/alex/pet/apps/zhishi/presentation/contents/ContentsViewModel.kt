@@ -3,12 +3,16 @@ package me.alex.pet.apps.zhishi.presentation.contents
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.contents.*
-import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
+import me.alex.pet.apps.zhishi.presentation.AppScreens
 
-class ContentsViewModel(contentsRepository: ContentsRepository) : ViewModel() {
+class ContentsViewModel(
+        contentsRepository: ContentsRepository,
+        private val router: Router
+) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {
         val contents = contentsRepository.getContents()
@@ -16,16 +20,12 @@ class ContentsViewModel(contentsRepository: ContentsRepository) : ViewModel() {
         emit(newState)
     }
 
-    private val _viewEffect = SingleLiveEvent<ViewEffect>()
-
-    val viewEffect: LiveData<ViewEffect> get() = _viewEffect
-
     fun onClickSection(sectionId: Long) {
-        _viewEffect.value = ViewEffect.NavigateToSection(sectionId)
+        router.navigateTo(AppScreens.section(sectionId))
     }
 
     fun onClickSearchAction() {
-        _viewEffect.value = ViewEffect.NavigateToSearch
+        router.navigateTo(AppScreens.search())
     }
 
     private suspend fun mapContentsToViewState(contents: Contents): ViewState {

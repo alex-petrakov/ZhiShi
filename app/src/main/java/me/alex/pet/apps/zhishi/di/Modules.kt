@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.di
 
+import com.github.terrakok.cicerone.Cicerone
 import com.squareup.moshi.Moshi
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
@@ -66,9 +67,13 @@ val appModule = module {
     factory { Stemmer() }
     factory { SearchRules(get(), get()) }
 
-    viewModel { ContentsViewModel(get()) }
-    viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get()) }
+    val cicerone = Cicerone.create()
+    single { cicerone.router }
+    single { cicerone.getNavigatorHolder() }
+
+    viewModel { ContentsViewModel(get(), get()) }
+    viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get(), get()) }
     viewModel { (rulesToDisplay: RulesToDisplay) -> RulesViewModel(rulesToDisplay) }
-    viewModel { (ruleId: Long) -> RuleViewModel(ruleId, get()) }
-    viewModel { SearchViewModel(get(), get()) }
+    viewModel { (ruleId: Long) -> RuleViewModel(ruleId, get(), get()) }
+    viewModel { SearchViewModel(get(), get(), get()) }
 }
