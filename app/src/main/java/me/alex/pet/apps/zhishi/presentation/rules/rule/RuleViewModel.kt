@@ -3,6 +3,8 @@ package me.alex.pet.apps.zhishi.presentation.rules.rule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
@@ -23,6 +25,12 @@ class RuleViewModel(
     val viewEffect: LiveData<ViewEffect> get() = _viewEffect
 
     fun onRuleLinkClick(ruleId: Long) {
-        _viewEffect.value = ViewEffect.NavigateToRule(RulesToDisplay(ruleId))
+        viewModelScope.launch {
+            val neighbours = rulesRepository.getIdsOfRulesInSameSection(ruleId)
+            val selectionIndex = neighbours.indexOf(ruleId)
+            _viewEffect.value = ViewEffect.NavigateToRule(
+                    RulesToDisplay(neighbours.toList(), selectionIndex)
+            )
+        }
     }
 }

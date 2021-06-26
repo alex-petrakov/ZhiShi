@@ -67,6 +67,9 @@ CREATE INDEX section_id_index ON rule_core (section_id);
 findById:
 SELECT * FROM rule WHERE id = ?;
 
+findIdsOfRulesInSameSection:
+SELECT id FROM rule WHERE section_id IN (SELECT section_id FROM rule WHERE id = ?) ORDER BY id ASC;
+
 findIdAndAnnotationBySectionId:
 SELECT id, annotation, annotation_markup FROM rule WHERE section_id = ? ORDER BY id ASC;
 

@@ -25,4 +25,11 @@ class RulesDataStore(
             Rule(id, styledTextOf(annotation, annotationMarkupDto), styledTextOf(content, contentMarkupDto))
         }.executeAsOneOrNull()
     }
+
+    override suspend fun getIdsOfRulesInSameSection(ruleId: Long): LongRange {
+        return withContext(Dispatchers.IO) {
+            val ids = ruleQueries.findIdsOfRulesInSameSection(ruleId).executeAsList()
+            ids.first()..ids.last()
+        }
+    }
 }
