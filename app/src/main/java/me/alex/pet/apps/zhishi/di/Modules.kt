@@ -58,7 +58,10 @@ val appModule = module {
                 get()
         )
     }
-    single<SearchRepository> { SearchProvider(get()) }
+    single<SearchRepository> {
+        val db = get<Database>()
+        SearchProvider(db.ruleQueries)
+    }
 
     factory { Stemmer() }
     factory { SearchRules(get(), get()) }
