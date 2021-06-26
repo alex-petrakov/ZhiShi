@@ -70,11 +70,11 @@ SELECT * FROM rule WHERE id = ?;
 findIdAndAnnotationBySectionId:
 SELECT id, annotation, annotation_markup FROM rule WHERE section_id = ? ORDER BY id ASC;
 
-queryById:
+findByIds:
 SELECT * FROM rule WHERE id IN :ids
 ORDER BY id ASC;
 
-queryByContent:
+findByContent:
 SELECT
 	rule_core.id,
 	rule_core.section_id,

@@ -2,12 +2,11 @@ package me.alex.pet.apps.zhishi.domain.search
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.domain.search.stemming.Stemmer
 import java.util.*
 
 class SearchRules(
-        private val repository: RulesRepository,
+        private val repository: SearchRepository,
         private val stemmer: Stemmer
 ) {
 

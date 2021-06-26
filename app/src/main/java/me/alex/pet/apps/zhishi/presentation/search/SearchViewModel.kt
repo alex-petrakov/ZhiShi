@@ -1,15 +1,15 @@
 package me.alex.pet.apps.zhishi.presentation.search
 
 import androidx.lifecycle.*
+import me.alex.pet.apps.zhishi.domain.search.SearchRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
-import me.alex.pet.apps.zhishi.domain.search.SuggestionsRepository
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 
 class SearchViewModel(
         private val searchRules: SearchRules,
-        private val suggestionsRepo: SuggestionsRepository
+        private val searchRepo: SearchRepository
 ) : ViewModel() {
 
     private val query = MutableLiveData<String>().apply {
@@ -26,7 +26,7 @@ class SearchViewModel(
             val newState = ViewState(
                     SearchResults(query.isNotEmpty() && searchResults.isNotEmpty(), searchResults.toUiModel()),
                     EmptyView(query.isNotEmpty() && searchResults.isEmpty()),
-                    SuggestionsView(query.isEmpty(), suggestionsRepo.getSuggestions())
+                    SuggestionsView(query.isEmpty(), searchRepo.getSuggestions())
             )
             emit(newState)
         }
