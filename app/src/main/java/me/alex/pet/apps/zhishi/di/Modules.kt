@@ -8,11 +8,13 @@ import me.alex.pet.apps.zhishi.data.common.CopyOpenHelperFactory
 import me.alex.pet.apps.zhishi.data.contents.ContentsDataStore
 import me.alex.pet.apps.zhishi.data.rules.RulesDataStore
 import me.alex.pet.apps.zhishi.data.search.SuggestionsProvider
+import me.alex.pet.apps.zhishi.data.sections.SectionsDataStore
 import me.alex.pet.apps.zhishi.domain.contents.ContentsRepository
 import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
 import me.alex.pet.apps.zhishi.domain.search.SuggestionsRepository
 import me.alex.pet.apps.zhishi.domain.search.stemming.Stemmer
+import me.alex.pet.apps.zhishi.domain.sections.SectionsRepository
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsViewModel
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 import me.alex.pet.apps.zhishi.presentation.rules.RulesViewModel
@@ -41,10 +43,17 @@ val appModule = module {
                 get()
         )
     }
+    single<SectionsRepository> {
+        val db = get<Database>()
+        SectionsDataStore(
+                db.sectionQueries,
+                db.ruleQueries,
+                get()
+        )
+    }
     single<RulesRepository> {
         val db = get<Database>()
         RulesDataStore(
-                db.sectionQueries,
                 db.ruleQueries,
                 get()
         )
