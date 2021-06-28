@@ -10,5 +10,5 @@
     android:paddingTop="16dp"
     android:paddingBottom="8dp"
     android:paddingEnd="16dp"
-    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+    android:textAppearance="?textAppearanceHeadline6"
     tools:text="Правописание гласных" />
