@@ -29,7 +29,7 @@ class ParagraphSpanRenderer(
 
     private val quoteBorderGapWidth = textPaint.measureText(quoteGapSample).roundToInt()
 
-    private val footnoteTextSize = 14.sp(theme.resources)
+    private val footnoteTextSize = 15.sp(theme.resources)
 
     override fun convertToAndroidSpans(spans: List<ParagraphSpan>): List<PositionAwareSpan> {
         val spansGroupedByStartIndices = spans.groupBy { it.start }
