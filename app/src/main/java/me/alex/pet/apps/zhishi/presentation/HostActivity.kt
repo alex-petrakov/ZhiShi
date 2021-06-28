@@ -22,7 +22,10 @@ class HostActivity : AppCompatActivity() {
                 currentFragment: Fragment?,
                 nextFragment: Fragment
         ) {
-            currentFragment?.apply {
+            if (currentFragment == null) {
+                return
+            }
+            currentFragment.apply {
                 exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
                 reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
             }
