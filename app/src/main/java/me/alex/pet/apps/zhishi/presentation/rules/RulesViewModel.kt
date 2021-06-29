@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 
 class RulesViewModel(private val rulesToDisplay: RulesToDisplay) : ViewModel() {
 
-    private val _viewState = MutableLiveData<ViewState>().apply {
-        value = ViewState(rulesToDisplay.ids[rulesToDisplay.selectionIndex])
-    }
+    private val _viewState = MutableLiveData(
+            ViewState(rulesToDisplay.ids[rulesToDisplay.selectionIndex])
+    )
 
     val viewState: LiveData<ViewState> get() = _viewState
 

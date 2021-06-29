@@ -14,9 +14,7 @@ class SearchViewModel(
         private val router: Router
 ) : ViewModel() {
 
-    private val query = MutableLiveData<String>().apply {
-        value = ""
-    }
+    private val query = MutableLiveData("")
 
     private val searchResults = Transformations.switchMap(query) { query ->
         liveData { emit(searchRules(query)) }
