@@ -34,20 +34,24 @@ class ParagraphSpanRenderer(
     override fun convertToAndroidSpans(spans: List<ParagraphSpan>): List<PositionAwareSpan> {
         val spansGroupedByStartIndices = spans.groupBy { it.start }
         return spans.flatMap { element ->
+            val currentParagraphSpans = spansGroupedByStartIndices.getOrElse(element.start) {
+                emptyList()
+            }
             val nextParagraphSpans = spansGroupedByStartIndices.getOrElse(element.end + 2) {
                 emptyList()
             }
-            convertToAndroidSpans(element, nextParagraphSpans)
+            convertToAndroidSpans(element, currentParagraphSpans, nextParagraphSpans)
         }
     }
 
     private fun convertToAndroidSpans(
             element: ParagraphSpan,
+            currentParagraphSpans: List<ParagraphSpan>,
             nextParagraphSpans: List<ParagraphSpan>
     ): List<PositionAwareSpan> {
         return when (element) {
             is ParagraphSpan.Indent -> convertToAndroidSpans(element)
-            is ParagraphSpan.Style -> convertToAndroidSpans(element, nextParagraphSpans)
+            is ParagraphSpan.Style -> convertToAndroidSpans(element, currentParagraphSpans, nextParagraphSpans)
         }
     }
 
@@ -64,6 +68,7 @@ class ParagraphSpanRenderer(
 
     private fun convertToAndroidSpans(
             span: ParagraphSpan.Style,
+            currentParagraphSpans: List<ParagraphSpan>,
             nextParagraphSpans: List<ParagraphSpan>
     ): List<PositionAwareSpan> {
         val mainAndroidSpan = when (span.appearance) {
@@ -77,7 +82,7 @@ class ParagraphSpanRenderer(
         val nextParagraphIsOfSameStyle = nextParagraphSpans.any { nextParaSpan ->
             nextParaSpan is ParagraphSpan.Style && nextParaSpan.appearance == span.appearance
         }
-        val additionalAndroidSpan = when {
+        val additionalStyleSpan = when {
             nextParagraphIsOfSameStyle -> when (span.appearance) {
                 ParagraphAppearance.QUOTE -> PositionAwareSpan(
                         newQuotationSpan(),
@@ -92,7 +97,21 @@ class ParagraphSpanRenderer(
             }
             else -> null
         }
-        return listOfNotNull(mainAndroidSpan, additionalAndroidSpan)
+        val outerIndentLevel = currentParagraphSpans.takeWhile { it !is ParagraphSpan.Style }
+                .filterIsInstance<ParagraphSpan.Indent>()
+                .sumBy { it.level }
+        val additionalIndentSpan = when {
+            nextParagraphIsOfSameStyle && outerIndentLevel > 0 -> {
+                val restLinesIndent = indentFirstStepWidth + indentStepWidth * (outerIndentLevel - 1)
+                PositionAwareSpan(
+                        LeadingMarginSpan.Standard(restLinesIndent),
+                        span.end + 1,
+                        span.end + 2
+                )
+            }
+            else -> null
+        }
+        return listOfNotNull(additionalIndentSpan, mainAndroidSpan, additionalStyleSpan)
     }
 
     private fun newQuotationSpan(): QuotationSpan {
