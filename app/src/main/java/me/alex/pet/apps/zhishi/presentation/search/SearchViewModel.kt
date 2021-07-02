@@ -39,7 +39,7 @@ class SearchViewModel(
     fun onClickRule(ruleId: Long) {
         val ruleIds = searchResults.value!!.ruleIds
         val rulesToDisplay = RulesToDisplay(ruleIds, ruleIds.indexOf(ruleId))
-        router.navigateTo(AppScreens.rules(rulesToDisplay))
+        router.navigateTo(AppScreens.rules(rulesToDisplay, displaySectionButton = true))
     }
 }
 

@@ -8,11 +8,34 @@
     android:transitionGroup="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <me.alex.pet.apps.zhishi.presentation.common.ColoredUnderlineTextView
-        android:id="@+id/rule_content_tv"
-        android:textAppearance="?textAppearanceBody1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        tools:text="После ж, ч, ш, щ не пишутся ю, я, ы, а пишутся у, а, и, например: чудо, щука, час, роща, жир, шить." />
+        android:orientation="vertical">
+
+        <me.alex.pet.apps.zhishi.presentation.common.ColoredUnderlineTextView
+            android:id="@+id/rule_content_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:textAppearance="?textAppearanceBody1"
+            tools:text="После ж, ч, ш, щ не пишутся ю, я, ы, а пишутся у, а, и, например: чудо, щука, час, роща, жир, шить." />
+
+        <TextView
+            android:id="@+id/section_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_clickable_surface"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp"
+            android:textAppearance="?textAppearanceSubtitle1"
+            android:textColor="?colorPrimary"
+            app:drawableEndCompat="@drawable/ic_details_chevron"
+            tools:text="§§ 1–6 Гласные после шипящих и ц" />
+    </LinearLayout>
 </androidx.core.widget.NestedScrollView>

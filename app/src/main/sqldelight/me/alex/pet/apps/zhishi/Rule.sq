@@ -65,7 +65,16 @@ CREATE INDEX section_id_index ON rule_core (section_id);
 
 
 findById:
-SELECT * FROM rule WHERE id = ?;
+SELECT
+    r.id,
+    r.content,
+    r.content_markup,
+    s.id section_id,
+    s.name section_name,
+    s.markup section_name_markup
+FROM rule r
+JOIN section s ON r.section_id = s.id
+WHERE r.id = ?;
 
 findIdsOfRulesInSameSection:
 SELECT id FROM rule WHERE section_id IN (SELECT section_id FROM rule WHERE id = ?) ORDER BY id ASC;

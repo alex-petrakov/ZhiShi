@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
+import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.LinkRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
@@ -20,15 +22,17 @@ class RuleFragment : Fragment() {
     private val viewModel by viewModel<RuleViewModel> {
         val args = requireArguments()
         check(args.containsKey(ARG_RULE_ID)) { "Required rule ID argument is missing" }
+        check(args.containsKey(ARG_DISPLAY_SECTION_BUTTON)) { "Required argument is missing" }
         val ruleId = args.getLong(ARG_RULE_ID)
-        parametersOf(ruleId)
+        val displaySectionButton = args.getBoolean(ARG_DISPLAY_SECTION_BUTTON)
+        parametersOf(ruleId, displaySectionButton)
     }
 
     private var _binding: FragmentRuleBinding? = null
 
     private val binding get() = _binding!!
 
-    private val styledTextConverter by lazy {
+    private val ruleTextRenderer by lazy {
         StyledTextRenderer(
                 paragraphSpansRenderer = ParagraphSpanRenderer(
                         requireActivity().theme,
@@ -40,6 +44,10 @@ class RuleFragment : Fragment() {
                 }
         )
     }
+
+    private val sectionNameRenderer = StyledTextRenderer(
+            characterSpansRenderer = BasicCharSpanRenderer()
+    )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRuleBinding.inflate(inflater, container, false)
@@ -54,6 +62,7 @@ class RuleFragment : Fragment() {
 
     private fun prepareView(): Unit = with(binding) {
         ruleContentTv.movementMethod = LinkMovementMethod() // TODO: Use BetterLinkMovementMethod
+        sectionButton.setOnClickListener { viewModel.onNavigateToSection() }
     }
 
     private fun subscribeToModel(): Unit = with(viewModel) {
@@ -61,7 +70,9 @@ class RuleFragment : Fragment() {
     }
 
     private fun render(state: ViewState): Unit = with(binding) {
-        styledTextConverter.render(state.ruleContent, ruleContentTv)
+        ruleTextRenderer.render(state.ruleContent, ruleContentTv)
+        sectionButton.isVisible = state.sectionButtonIsVisible
+        sectionButton.text = sectionNameRenderer.convertToSpanned(state.sectionName)
     }
 
     fun resetScroll() {
@@ -76,10 +87,14 @@ class RuleFragment : Fragment() {
     companion object {
 
         private const val ARG_RULE_ID = "RULE_ID"
+        private const val ARG_DISPLAY_SECTION_BUTTON = "DISPLAY_SECTION_BUTTON"
 
-        fun newInstance(ruleId: Long): RuleFragment {
+        fun newInstance(ruleId: Long, displaySectionButton: Boolean = false): RuleFragment {
             return RuleFragment().apply {
-                arguments = bundleOf(ARG_RULE_ID to ruleId)
+                arguments = bundleOf(
+                        ARG_RULE_ID to ruleId,
+                        ARG_DISPLAY_SECTION_BUTTON to displaySectionButton
+                )
             }
         }
     }

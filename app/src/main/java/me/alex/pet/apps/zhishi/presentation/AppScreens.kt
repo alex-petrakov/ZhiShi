@@ -13,7 +13,10 @@ object AppScreens {
 
     fun section(sectionId: Long) = FragmentScreen { SectionFragment.newInstance(sectionId) }
 
-    fun rules(rulesToDisplay: RulesToDisplay) = FragmentScreen { RulesFragment.newInstance(rulesToDisplay) }
+    fun rules(
+            rulesToDisplay: RulesToDisplay,
+            displaySectionButton: Boolean = false
+    ) = FragmentScreen { RulesFragment.newInstance(rulesToDisplay, displaySectionButton) }
 
     fun search() = FragmentScreen { SearchFragment.newInstance() }
 }

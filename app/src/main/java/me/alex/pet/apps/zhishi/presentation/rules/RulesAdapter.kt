@@ -7,7 +7,8 @@ import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleFragment
 
 class RulesAdapter(
         private val fragment: Fragment,
-        ruleIds: List<Long> = emptyList()
+        ruleIds: List<Long> = emptyList(),
+        private val displaySectionButton: Boolean
 ) : FragmentStateAdapter(fragment) {
 
     var ruleIds: List<Long> = ruleIds
@@ -18,7 +19,10 @@ class RulesAdapter(
 
     override fun getItemCount() = ruleIds.size
 
-    override fun createFragment(position: Int) = RuleFragment.newInstance(ruleIds[position])
+    override fun createFragment(position: Int) = RuleFragment.newInstance(
+            ruleIds[position],
+            displaySectionButton
+    )
 
     override fun onViewDetachedFromWindow(holder: FragmentViewHolder) {
         super.onViewDetachedFromWindow(holder)

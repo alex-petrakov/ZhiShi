@@ -68,8 +68,13 @@ class RulesFragment : Fragment() {
     private fun prepareView(savedInstanceState: Bundle?): Unit = with(binding) {
         prepareToolbar()
 
+        val args = requireArguments()
+        val rulesToDisplay = args.getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
+                ?: throw IllegalStateException("Required argument is missing")
+        check(args.containsKey(ARG_DISPLAY_SECTION_BUTTON)) { "Required argument is missing" }
+        val displaySectionButton = args.getBoolean(ARG_DISPLAY_SECTION_BUTTON)
         viewPager.apply {
-            adapter = RulesAdapter(this@RulesFragment, rulesToDisplay.ids)
+            adapter = RulesAdapter(this@RulesFragment, rulesToDisplay.ids, displaySectionButton)
             registerOnPageChangeCallback(onPageChangeCallback)
             if (savedInstanceState == null) {
                 setCurrentItem(rulesToDisplay.selectionIndex, false)
@@ -104,10 +109,14 @@ class RulesFragment : Fragment() {
     companion object {
 
         private const val ARG_RULES_TO_DISPLAY = "RULES_TO_DISPLAY"
+        private const val ARG_DISPLAY_SECTION_BUTTON = "DISPLAY_SECTION_BUTTON"
 
-        fun newInstance(rulesToDisplay: RulesToDisplay): RulesFragment {
+        fun newInstance(rulesToDisplay: RulesToDisplay, displaySectionButton: Boolean = false): RulesFragment {
             return RulesFragment().apply {
-                arguments = bundleOf(ARG_RULES_TO_DISPLAY to rulesToDisplay)
+                arguments = bundleOf(
+                        ARG_RULES_TO_DISPLAY to rulesToDisplay,
+                        ARG_DISPLAY_SECTION_BUTTON to displaySectionButton
+                )
             }
         }
     }
