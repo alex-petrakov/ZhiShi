@@ -8,6 +8,8 @@
     <string name="section_rule_number">§ %d</string>
 
     <string name="rule_rule_number">§ %d</string>
+    <string name="rule_action_go_to_next_page">Перейти к следующему правилу</string>
+    <string name="rule_action_go_to_prev_page">Перейти к предыдущему правилу</string>
 
     <string name="search_bar_search_rules">Поиск правил</string>
     <string name="search_bar_cd_search_icon">Поиск</string>

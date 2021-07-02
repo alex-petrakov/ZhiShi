@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AlwaysShowAction">
+    <item
+        android:id="@+id/action_go_to_prev_page"
+        android:icon="@drawable/ic_action_prev_page"
+        android:title="@string/rule_action_go_to_prev_page"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_go_to_next_page"
+        android:icon="@drawable/ic_action_next_page"
+        android:title="@string/rule_action_go_to_next_page"
+        app:showAsAction="always" />
+</menu>

@@ -1,9 +1,8 @@
 package me.alex.pet.apps.zhishi.presentation.rules
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -24,9 +23,34 @@ class RulesFragment : Fragment() {
 
     private val binding get() = _binding!!
 
+    private val rulesToDisplay by lazy {
+        requireArguments().getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
+                ?: throw IllegalStateException("Required argument is missing")
+    }
+
+    private lateinit var nextPageMenuItem: MenuItem
+
+    private lateinit var prevPageMenuItem: MenuItem
+
     private val onPageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
             viewModel.onRuleSelected(position)
+            nextPageMenuItem.isEnabled = position < rulesToDisplay.ids.lastIndex
+            prevPageMenuItem.isEnabled = position > 0
+        }
+    }
+
+    private val menuItemClickListener = Toolbar.OnMenuItemClickListener { item ->
+        when (item.itemId) {
+            R.id.action_go_to_next_page -> {
+                binding.viewPager.currentItem += 1
+                true
+            }
+            R.id.action_go_to_prev_page -> {
+                binding.viewPager.currentItem -= 1
+                true
+            }
+            else -> false
         }
     }
 
@@ -42,13 +66,8 @@ class RulesFragment : Fragment() {
     }
 
     private fun prepareView(savedInstanceState: Bundle?): Unit = with(binding) {
-        toolbar.apply {
-            setNavigationIcon(R.drawable.ic_action_up)
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
-        }
+        prepareToolbar()
 
-        val rulesToDisplay = requireArguments().getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
-                ?: throw IllegalStateException("Required argument is missing")
         viewPager.apply {
             adapter = RulesAdapter(this@RulesFragment, rulesToDisplay.ids)
             registerOnPageChangeCallback(onPageChangeCallback)
@@ -56,6 +75,17 @@ class RulesFragment : Fragment() {
                 setCurrentItem(rulesToDisplay.selectionIndex, false)
             }
         }
+    }
+
+    private fun prepareToolbar() = with(binding.toolbar) {
+        setNavigationIcon(R.drawable.ic_action_up)
+
+        inflateMenu(R.menu.rules)
+        nextPageMenuItem = menu.findItem(R.id.action_go_to_next_page)
+        prevPageMenuItem = menu.findItem(R.id.action_go_to_prev_page)
+
+        setNavigationOnClickListener { requireActivity().onBackPressed() }
+        setOnMenuItemClickListener(menuItemClickListener)
     }
 
     private fun subscribeToModel(): Unit = with(viewModel) {
