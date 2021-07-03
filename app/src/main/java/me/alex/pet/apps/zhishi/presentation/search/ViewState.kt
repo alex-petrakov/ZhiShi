@@ -1,5 +1,7 @@
 package me.alex.pet.apps.zhishi.presentation.search
 
+import androidx.recyclerview.widget.DiffUtil
+
 data class ViewState(
         val searchResults: SearchResults,
         val emptyView: EmptyView,
@@ -24,4 +26,14 @@ data class SearchResultItem(
         val ruleId: Long,
         val annotation: String,
         val snippet: String
-)
+) {
+    object DiffCallback : DiffUtil.ItemCallback<SearchResultItem>() {
+        override fun areItemsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
+            return oldItem.ruleId == newItem.ruleId
+        }
+
+        override fun areContentsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
+            return oldItem == newItem
+        }
+    }
+}

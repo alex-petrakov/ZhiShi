@@ -88,7 +88,7 @@ class SearchFragment : Fragment() {
         }
 
         recyclerView.isVisible = state.searchResults.isVisible
-        searchResultsAdapter.items = state.searchResults.items
+        searchResultsAdapter.submitList(state.searchResults.items)
 
         emptyView.isVisible = state.emptyView.isVisible
 

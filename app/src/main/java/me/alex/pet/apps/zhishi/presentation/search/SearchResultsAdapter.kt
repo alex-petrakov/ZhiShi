@@ -2,35 +2,14 @@ package me.alex.pet.apps.zhishi.presentation.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ItemRuleSearchResultBinding
 
 class SearchResultsAdapter(
         private val onRuleClick: (Long) -> Unit
-) : RecyclerView.Adapter<SearchResultsAdapter.Holder>() {
-
-    var items: List<SearchResultItem>
-        set(value) {
-            listDiffer.submitList(value)
-        }
-        get() = listDiffer.currentList
-
-    private val diffCallback = object : DiffUtil.ItemCallback<SearchResultItem>() {
-        override fun areItemsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
-            return oldItem.ruleId == newItem.ruleId
-        }
-
-        override fun areContentsTheSame(oldItem: SearchResultItem, newItem: SearchResultItem): Boolean {
-            return oldItem == newItem
-        }
-    }
-
-    private val listDiffer = AsyncListDiffer(this, diffCallback)
-
-    override fun getItemCount() = items.size
+) : ListAdapter<SearchResultItem, SearchResultsAdapter.Holder>(SearchResultItem.DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = ItemRuleSearchResultBinding.inflate(
@@ -38,11 +17,11 @@ class SearchResultsAdapter(
                 parent,
                 false
         )
-        return Holder(binding) { adapterPosition -> onRuleClick(items[adapterPosition].ruleId) }
+        return Holder(binding) { adapterPosition -> onRuleClick(getItem(adapterPosition).ruleId) }
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(getItem(position))
     }
 
     class Holder(
