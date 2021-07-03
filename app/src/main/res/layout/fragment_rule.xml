@@ -35,7 +35,9 @@
             android:paddingBottom="12dp"
             android:textAppearance="?textAppearanceSubtitle1"
             android:textColor="?colorPrimary"
+            android:visibility="gone"
             app:drawableEndCompat="@drawable/ic_details_chevron"
-            tools:text="§§ 1–6 Гласные после шипящих и ц" />
+            tools:text="§§ 1–6 Гласные после шипящих и ц"
+            tools:visibility="visible" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
