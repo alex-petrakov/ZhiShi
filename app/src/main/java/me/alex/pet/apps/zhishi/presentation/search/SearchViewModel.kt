@@ -48,5 +48,5 @@ private val List<SearchResult>.ruleIds get() = map { it.ruleId }
 private fun List<SearchResult>.toUiModel() = map { it.toUiModel() }
 
 private fun SearchResult.toUiModel(): SearchResultItem {
-    return SearchResultItem(ruleId, snippet)
+    return SearchResultItem(ruleId, annotation, snippet)
 }

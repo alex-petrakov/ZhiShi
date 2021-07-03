@@ -7,9 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ItemRuleSearchResultBinding
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
-import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
 
 class SearchResultsAdapter(
         private val onRuleClick: (Long) -> Unit
@@ -53,22 +50,16 @@ class SearchResultsAdapter(
             private val onClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val styledTextRenderer = StyledTextRenderer(
-                paragraphSpansRenderer = ParagraphSpanRenderer(theme, binding.contentTv.paint),
-                characterSpansRenderer = CharSpanRenderer(theme)
-        )
-
         private val context get() = binding.root.context
-
-        private val theme get() = context.theme
 
         init {
             binding.root.setOnClickListener { onClick(adapterPosition) }
         }
 
         fun bind(item: SearchResultItem) = with(binding) {
-            numberTv.text = context.getString(R.string.rule_rule_number, item.ruleId)
-            styledTextRenderer.render(item.snippet, contentTv)
+            numberTextView.text = context.getString(R.string.rule_rule_number, item.ruleId)
+            annotationTextView.text = item.annotation
+            snippetTextView.text = item.snippet
         }
     }
 }

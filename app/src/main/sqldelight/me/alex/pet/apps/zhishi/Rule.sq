@@ -89,9 +89,9 @@ ORDER BY id ASC;
 findByContent:
 SELECT
 	rule_core.id,
-	rule_core.section_id,
-	snippet(rule_content_fts, '', '', '...') AS snippet,
-	rule_core.content_markup
+	rule_core.annotation,
+	rule_core.annotation_markup,
+	snippet(rule_content_fts, '', '', '...') AS snippet
 FROM rule_content_fts INNER JOIN rule_core ON rule_content_fts.rowid = rule_core.rowid
 WHERE rule_content_fts.content MATCH :searchQuery
 ORDER BY length(offsets(rule_content_fts)) DESC LIMIT :limit;

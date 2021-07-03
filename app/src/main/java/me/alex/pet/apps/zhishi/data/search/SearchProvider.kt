@@ -3,7 +3,6 @@ package me.alex.pet.apps.zhishi.data.search
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.RuleQueries
-import me.alex.pet.apps.zhishi.domain.common.StyledText
 import me.alex.pet.apps.zhishi.domain.search.SearchRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 
@@ -28,8 +27,8 @@ class SearchProvider(private val ruleQueries: RuleQueries) : SearchRepository {
 
     override suspend fun queryRulesById(numbers: List<Long>): List<SearchResult> {
         return withContext(Dispatchers.IO) {
-            ruleQueries.findByIds(numbers) { id, _, _, _, content, _ ->
-                SearchResult(id, StyledText(content))
+            ruleQueries.findByIds(numbers) { id, _, annotation, _, content, _ ->
+                SearchResult(id, annotation, content)
             }.executeAsList()
         }
     }
@@ -38,14 +37,14 @@ class SearchProvider(private val ruleQueries: RuleQueries) : SearchRepository {
             searchTerms: List<String>,
             limit: Int
     ): List<SearchResult> {
+        require(limit > 0) { "Limit must be > 0, but it was $limit" }
         return withContext(Dispatchers.IO) {
-            require(limit > 0) { "Limit must be > 0, but it was $limit" }
             val query = searchTerms.joinToString(
                     separator = " ",
                     transform = { term -> "$term*" }
             )
-            ruleQueries.findByContent(query, 30) { id, _, snippet, _ ->
-                SearchResult(id, StyledText(snippet!!.replace("\n+".toRegex(), " ")))
+            ruleQueries.findByContent(query, 30) { id, annotation, _, snippet ->
+                SearchResult(id, annotation, snippet!!.replace("\n+".toRegex(), " "))
             }.executeAsList()
         }
     }

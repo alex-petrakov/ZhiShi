@@ -1,7 +1,5 @@
 package me.alex.pet.apps.zhishi.presentation.search
 
-import me.alex.pet.apps.zhishi.domain.common.StyledText
-
 data class ViewState(
         val searchResults: SearchResults,
         val emptyView: EmptyView,
@@ -24,5 +22,6 @@ data class SearchResults(
 
 data class SearchResultItem(
         val ruleId: Long,
-        val snippet: StyledText
+        val annotation: String,
+        val snippet: String
 )
