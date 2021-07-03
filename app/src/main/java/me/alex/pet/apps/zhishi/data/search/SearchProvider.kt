@@ -42,7 +42,7 @@ class SearchProvider(private val ruleQueries: RuleQueries) : SearchRepository {
             require(limit > 0) { "Limit must be > 0, but it was $limit" }
             val query = searchTerms.joinToString(separator = " OR ", transform = { term -> "$term*" })
             ruleQueries.findByContent(query, 30) { id, _, snippet, _ ->
-                SearchResult(id, StyledText(snippet!!))
+                SearchResult(id, StyledText(snippet!!.replace("\n+".toRegex(), " ")))
             }.executeAsList()
         }
     }
