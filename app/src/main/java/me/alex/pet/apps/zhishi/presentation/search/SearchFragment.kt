@@ -38,9 +38,17 @@ class SearchFragment : Fragment() {
     private var lastRenderedState: ViewState? = null
 
     private val searchResultsAdapter by lazy {
-        SearchResultsAdapter() { ruleId ->
+        SearchResultsAdapter { ruleId ->
+            requireActivity().hideKeyboard()
             viewModel.onClickRule(ruleId)
         }
+    }
+
+    private var firstStart = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        firstStart = savedInstanceState?.getBoolean(STATE_FIRST_START, true) ?: true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -71,7 +79,10 @@ class SearchFragment : Fragment() {
                 .debounce(300)
                 .onEach { viewModel.onUpdateQuery(it.toString()) }
                 .launchIn(viewLifecycleOwner.lifecycle.coroutineScope)
-        queryEt.focusAndShowKeyboard()
+        if (firstStart) {
+            queryEt.post { queryEt.focusAndShowKeyboard() }
+            firstStart = false
+        }
     }
 
     private fun subscribeToModel() = with(viewModel) {
@@ -122,7 +133,19 @@ class SearchFragment : Fragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(STATE_FIRST_START, firstStart)
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     companion object {
+
+        private const val STATE_FIRST_START = "FIRST_START"
+
         fun newInstance() = SearchFragment()
     }
 }
