@@ -28,6 +28,10 @@ class ContentsViewModel(
         router.navigateTo(AppScreens.search())
     }
 
+    fun onClickAboutAction() {
+        router.navigateTo(AppScreens.about())
+    }
+
     private suspend fun mapContentsToViewState(contents: Contents): ViewState {
         return withContext(Dispatchers.Default) {
             ViewState(contents.toUiModel())

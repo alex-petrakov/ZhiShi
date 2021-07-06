@@ -59,6 +59,10 @@ class ContentsFragment : Fragment() {
                 viewModel.onClickSearchAction()
                 true
             }
+            R.id.action_about -> {
+                viewModel.onClickAboutAction()
+                true
+            }
             else -> false
         }
     }

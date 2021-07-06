@@ -1,6 +1,7 @@
 package me.alex.pet.apps.zhishi.presentation
 
 import com.github.terrakok.cicerone.androidx.FragmentScreen
+import me.alex.pet.apps.zhishi.presentation.about.AboutFragment
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsFragment
 import me.alex.pet.apps.zhishi.presentation.rules.RulesFragment
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
@@ -19,4 +20,6 @@ object AppScreens {
     ) = FragmentScreen { RulesFragment.newInstance(rulesToDisplay, displaySectionButton) }
 
     fun search() = FragmentScreen { SearchFragment.newInstance() }
+
+    fun about() = FragmentScreen { AboutFragment.newInstance() }
 }

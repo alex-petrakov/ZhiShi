@@ -3,6 +3,7 @@
     <string name="app_navigate_up">Перейти наверх</string>
     <string name="app_rule_number">§ %d</string>
     <string name="app_action_search_rules">Поиск правил</string>
+    <string name="app_action_about">О программе</string>
 
     <string name="section_rule_numbers_range">§§ %d–%d</string>
     <string name="section_rule_number">§ %d</string>
@@ -17,4 +18,14 @@
 
     <string name="search_no_results">Ничего не найдено</string>
     <string name="search_suggestions_explanation">Ищите номера параграфов и всё, что душе угодно:</string>
+
+    <string name="about_title">О программе</string>
+    <string name="about_see_open_source_licences">Посмотреть лицензии открытого ПО</string>
+    <string name="about_title_developer">Разработчик</string>
+    <string name="about_developer_name">Александр Петраков</string>
+    <string name="about_title_version">Версия</string>
+    <string name="about_version_placeholder">-.-</string>
+    <string name="about_title_inspiration">Вдохновение</string>
+    <string name="about_the_rules_ru" translatable="false">therules.ru</string>
+    <string name="about_error_no_web_browser">Не удалось найти веб-браузер</string>
 </resources>
