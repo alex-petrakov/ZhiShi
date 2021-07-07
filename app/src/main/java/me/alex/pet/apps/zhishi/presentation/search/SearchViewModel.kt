@@ -6,6 +6,7 @@ import me.alex.pet.apps.zhishi.domain.search.SearchRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
 import me.alex.pet.apps.zhishi.presentation.AppScreens
+import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 
 class SearchViewModel(
@@ -32,17 +33,27 @@ class SearchViewModel(
         }
     }
 
+    private val _viewEffect = SingleLiveEvent<ViewEffect>()
+
+    val viewEffect: LiveData<ViewEffect> get() = _viewEffect
+
     fun onUpdateQuery(query: String) {
         this.query.value = query
     }
 
     fun onClickRule(ruleId: Long) {
+        _viewEffect.value = ViewEffect.HIDE_KEYBOARD
         val ruleIds = searchResults.value!!.ruleIds
         val rulesToDisplay = RulesToDisplay(ruleIds, ruleIds.indexOf(ruleId))
         router.navigateTo(AppScreens.rules(rulesToDisplay, displaySectionButton = true))
     }
 
+    fun onScrollResults() {
+        _viewEffect.value = ViewEffect.HIDE_KEYBOARD
+    }
+
     fun onBackPressed() {
+        _viewEffect.value = ViewEffect.HIDE_KEYBOARD
         router.exit()
     }
 }

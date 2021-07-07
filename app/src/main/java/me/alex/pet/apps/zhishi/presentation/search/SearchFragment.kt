@@ -39,7 +39,6 @@ class SearchFragment : Fragment() {
 
     private val searchResultsAdapter by lazy {
         SearchResultsAdapter { ruleId ->
-            requireActivity().hideKeyboard()
             viewModel.onClickRule(ruleId)
         }
     }
@@ -69,12 +68,14 @@ class SearchFragment : Fragment() {
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                        requireActivity().hideKeyboard()
+                        viewModel.onScrollResults()
                     }
                 }
             })
         }
-        toolbar.setNavigationOnClickListener { viewModel.onBackPressed() }
+        toolbar.setNavigationOnClickListener {
+            viewModel.onBackPressed()
+        }
         queryEt.textChanges()
                 .debounce(300)
                 .onEach { viewModel.onUpdateQuery(it.toString()) }
@@ -87,6 +88,7 @@ class SearchFragment : Fragment() {
 
     private fun subscribeToModel() = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
+        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
     private fun render(state: ViewState) = with(binding) {
@@ -130,6 +132,12 @@ class SearchFragment : Fragment() {
                     queryEt.setSelection(chipText.length)
                 }
             }
+        }
+    }
+
+    private fun handle(effect: ViewEffect) {
+        when (effect) {
+            ViewEffect.HIDE_KEYBOARD -> requireActivity().hideKeyboard()
         }
     }
 
