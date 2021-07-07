@@ -74,7 +74,7 @@ class SearchFragment : Fragment() {
                 }
             })
         }
-        toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        toolbar.setNavigationOnClickListener { viewModel.onBackPressed() }
         queryEt.textChanges()
                 .debounce(300)
                 .onEach { viewModel.onUpdateQuery(it.toString()) }

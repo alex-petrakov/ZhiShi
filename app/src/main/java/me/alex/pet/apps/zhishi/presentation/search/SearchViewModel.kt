@@ -41,6 +41,10 @@ class SearchViewModel(
         val rulesToDisplay = RulesToDisplay(ruleIds, ruleIds.indexOf(ruleId))
         router.navigateTo(AppScreens.rules(rulesToDisplay, displaySectionButton = true))
     }
+
+    fun onBackPressed() {
+        router.exit()
+    }
 }
 
 private val List<SearchResult>.ruleIds get() = map { it.ruleId }

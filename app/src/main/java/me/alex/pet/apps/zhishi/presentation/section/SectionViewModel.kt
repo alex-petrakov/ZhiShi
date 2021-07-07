@@ -34,6 +34,10 @@ class SectionViewModel(
         router.navigateTo(AppScreens.rules(rulesToDisplay))
     }
 
+    fun onBackPressed() {
+        router.exit()
+    }
+
     private suspend fun mapSectionToViewState(section: Section): ViewState {
         return withContext(Dispatchers.Default) {
             ViewState(section.ruleIds, section.toUiModel())

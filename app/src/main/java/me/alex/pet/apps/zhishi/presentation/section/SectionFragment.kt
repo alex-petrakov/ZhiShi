@@ -48,7 +48,7 @@ class SectionFragment : Fragment() {
         toolbar.apply {
             setNavigationIcon(R.drawable.ic_action_up)
             setNavigationContentDescription(R.string.app_navigate_up)
-            setNavigationOnClickListener { requireActivity().onBackPressed() }
+            setNavigationOnClickListener { viewModel.onBackPressed() }
         }
     }
 

@@ -89,7 +89,7 @@ class RulesFragment : Fragment() {
         nextPageMenuItem = menu.findItem(R.id.action_go_to_next_page)
         prevPageMenuItem = menu.findItem(R.id.action_go_to_prev_page)
 
-        setNavigationOnClickListener { requireActivity().onBackPressed() }
+        setNavigationOnClickListener { viewModel.onBackPressed() }
         setOnMenuItemClickListener(menuItemClickListener)
     }
 

@@ -73,7 +73,7 @@ val appModule = module {
 
     viewModel { ContentsViewModel(get(), get()) }
     viewModel { (sectionId: Long) -> SectionViewModel(sectionId, get(), get()) }
-    viewModel { (rulesToDisplay: RulesToDisplay) -> RulesViewModel(rulesToDisplay) }
+    viewModel { (rulesToDisplay: RulesToDisplay) -> RulesViewModel(rulesToDisplay, get()) }
     viewModel { (ruleId: Long, displaySectionButton: Boolean) ->
         RuleViewModel(ruleId, displaySectionButton, get(), get())
     }
