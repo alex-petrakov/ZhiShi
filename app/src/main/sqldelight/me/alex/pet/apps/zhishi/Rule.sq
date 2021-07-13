@@ -8,23 +8,23 @@ CREATE TABLE rule_core (
 	FOREIGN KEY (section_id) REFERENCES section_core(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE VIRTUAL TABLE rule_content_fts
-USING fts5(tokenize=unicode61, content TEXT NOT NULL, content="rule_core");
+CREATE VIRTUAL TABLE rule_fts
+USING fts5(tokenize=unicode61, annotation TEXT NOT NULL, content TEXT NOT NULL, content="rule_core");
 
 CREATE TRIGGER rule_core_before_upd_update_fts_index BEFORE UPDATE ON rule_core BEGIN
-    DELETE FROM rule_content_fts WHERE rowid=old.rowid;
+    DELETE FROM rule_fts WHERE rowid=old.rowid;
 END;
 
 CREATE TRIGGER rule_core_before_del_update_fts_index BEFORE DELETE ON rule_core BEGIN
-    DELETE FROM rule_content_fts WHERE rowid=old.rowid;
+    DELETE FROM rule_fts WHERE rowid=old.rowid;
 END;
 
 CREATE TRIGGER rule_core_after_upd_update_fts_index AFTER UPDATE ON rule_core BEGIN
-    INSERT INTO rule_content_fts(rowid, content) VALUES (new.rowid, new.content);
+    INSERT INTO rule_fts(rowid, annotation, content) VALUES (new.rowid, new.annotation, new.content);
 END;
 
 CREATE TRIGGER rule_core_after_ins_update_fts_index AFTER INSERT ON rule_core BEGIN
-    INSERT INTO rule_content_fts(rowid, content) VALUES (new.rowid, new.content);
+    INSERT INTO rule_fts(rowid, annotation, content) VALUES (new.rowid, new.annotation, new.content);
 END;
 
 CREATE VIEW rule AS
@@ -33,9 +33,9 @@ SELECT
     rule_core.section_id AS section_id,
     rule_core.annotation AS annotation,
     rule_core.annotation_markup AS annotation_markup,
-    rule_content_fts.content AS content,
+    rule_fts.content AS content,
     rule_core.content_markup AS content_markup
-FROM rule_core JOIN rule_content_fts ON rule_core.rowid = rule_content_fts.rowid;
+FROM rule_core JOIN rule_fts ON rule_core.rowid = rule_fts.rowid;
 
 CREATE TRIGGER on_rule_insert INSTEAD OF INSERT ON rule
 BEGIN
@@ -89,8 +89,8 @@ ORDER BY id ASC;
 findByContent:
 SELECT
 	id,
-	annotation,
-	snippet(rule_content_fts, 0, '', '', '...', 15) AS snippet
-FROM rule_content_fts INNER JOIN rule_core ON rule_content_fts.rowid = rule_core.rowid
-WHERE rule_content_fts.content MATCH :searchQuery
-ORDER BY bm25(rule_content_fts) LIMIT :limit;
+	rule_core.annotation,
+	snippet(rule_fts, 1, '', '', '...', 15) AS snippet
+FROM rule_fts INNER JOIN rule_core ON rule_fts.rowid = rule_core.rowid
+WHERE rule_fts MATCH :searchQuery
+ORDER BY bm25(rule_fts, 3.0, 1.0) LIMIT :limit;
