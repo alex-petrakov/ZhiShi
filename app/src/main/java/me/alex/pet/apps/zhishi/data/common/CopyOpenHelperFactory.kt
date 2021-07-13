@@ -1,11 +1,11 @@
 package me.alex.pet.apps.zhishi.data.common
 
 import androidx.sqlite.db.SupportSQLiteOpenHelper
-import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
+import io.requery.android.database.sqlite.RequerySQLiteOpenHelperFactory
 
 class CopyOpenHelperFactory(private val assetsPath: String) : SupportSQLiteOpenHelper.Factory {
     override fun create(configuration: SupportSQLiteOpenHelper.Configuration): SupportSQLiteOpenHelper {
-        val frameworkOpenHelper = FrameworkSQLiteOpenHelperFactory().create(configuration)
+        val frameworkOpenHelper = RequerySQLiteOpenHelperFactory().create(configuration)
         return CopyOpenHelper(
                 configuration.context,
                 assetsPath,

@@ -25,6 +25,6 @@ class SearchRules(
         }
 
         val ruleIds = withContext(Dispatchers.Default) { searchTerms.mapNotNull { it.toLongOrNull() } }
-        return repository.queryRulesById(ruleIds) + repository.queryRulesByContent(searchTerms, 30)
+        return repository.queryRulesById(ruleIds) + repository.queryRulesByContent(searchTerms, 15)
     }
 }

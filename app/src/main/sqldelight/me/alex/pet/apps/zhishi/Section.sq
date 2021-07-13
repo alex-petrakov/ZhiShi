@@ -7,22 +7,22 @@ CREATE TABLE section_core (
 );
 
 CREATE VIRTUAL TABLE section_name_fts
-USING fts4(tokenize=unicode61, content="section_core", name TEXT NOT NULL);
+USING fts5(tokenize=unicode61, name TEXT NOT NULL, content="section_core");
 
 CREATE TRIGGER section_core_before_upd_update_fts_index BEFORE UPDATE ON section_core BEGIN
-    DELETE FROM section_name_fts WHERE docid=old.rowid;
+    DELETE FROM section_name_fts WHERE rowid=old.rowid;
 END;
 
 CREATE TRIGGER section_core_before_del_update_fts_index BEFORE DELETE ON section_core BEGIN
-    DELETE FROM section_name_fts WHERE docid=old.rowid;
+    DELETE FROM section_name_fts WHERE rowid=old.rowid;
 END;
 
 CREATE TRIGGER section_core_after_upd_update_fts_index AFTER UPDATE ON section_core BEGIN
-    INSERT INTO section_name_fts(docid, name) VALUES (new.rowid, new.name);
+    INSERT INTO section_name_fts(rowid, name) VALUES (new.rowid, new.name);
 END;
 
 CREATE TRIGGER section_core_after_ins_update_fts_index AFTER INSERT ON section_core BEGIN
-    INSERT INTO section_name_fts(docid, name) VALUES (new.rowid, new.name);
+    INSERT INTO section_name_fts(rowid, name) VALUES (new.rowid, new.name);
 END;
 
 CREATE VIEW section AS

@@ -9,22 +9,22 @@ CREATE TABLE rule_core (
 );
 
 CREATE VIRTUAL TABLE rule_content_fts
-USING fts4(tokenize=unicode61, content="rule_core", content TEXT NOT NULL);
+USING fts5(tokenize=unicode61, content TEXT NOT NULL, content="rule_core");
 
 CREATE TRIGGER rule_core_before_upd_update_fts_index BEFORE UPDATE ON rule_core BEGIN
-    DELETE FROM rule_content_fts WHERE docid=old.rowid;
+    DELETE FROM rule_content_fts WHERE rowid=old.rowid;
 END;
 
 CREATE TRIGGER rule_core_before_del_update_fts_index BEFORE DELETE ON rule_core BEGIN
-    DELETE FROM rule_content_fts WHERE docid=old.rowid;
+    DELETE FROM rule_content_fts WHERE rowid=old.rowid;
 END;
 
 CREATE TRIGGER rule_core_after_upd_update_fts_index AFTER UPDATE ON rule_core BEGIN
-    INSERT INTO rule_content_fts(docid, content) VALUES (new.rowid, new.content);
+    INSERT INTO rule_content_fts(rowid, content) VALUES (new.rowid, new.content);
 END;
 
 CREATE TRIGGER rule_core_after_ins_update_fts_index AFTER INSERT ON rule_core BEGIN
-    INSERT INTO rule_content_fts(docid, content) VALUES (new.rowid, new.content);
+    INSERT INTO rule_content_fts(rowid, content) VALUES (new.rowid, new.content);
 END;
 
 CREATE VIEW rule AS
@@ -85,3 +85,12 @@ SELECT id, annotation, annotation_markup FROM rule WHERE section_id = ? ORDER BY
 findByIds:
 SELECT * FROM rule WHERE id IN :ids
 ORDER BY id ASC;
+
+findByContent:
+SELECT
+	id,
+	annotation,
+	snippet(rule_content_fts, 0, '', '', '...', 15) AS snippet
+FROM rule_content_fts INNER JOIN rule_core ON rule_content_fts.rowid = rule_core.rowid
+WHERE rule_content_fts.content MATCH :searchQuery
+ORDER BY bm25(rule_content_fts) LIMIT :limit;
