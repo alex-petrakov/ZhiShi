@@ -19,11 +19,7 @@ class ParagraphSpanRenderer(
 
     private val stripeColor by lazy { theme.resolveColorAttr(R.attr.colorPrimary) }
 
-    private val indentFirstStepWidth = textPaint.measureText(indentFirstStepSample).roundToInt()
-
     private val indentStepWidth = textPaint.measureText(indentStepSample).roundToInt()
-
-    private val minHangingIndentWidth = textPaint.measureText(minHangingIndentSample).roundToInt()
 
     private val quoteStripeWidth = 2.dp(theme.resources)
 
@@ -32,102 +28,72 @@ class ParagraphSpanRenderer(
     private val footnoteTextSize = 15.sp(theme.resources)
 
     override fun convertToAndroidSpans(spans: List<ParagraphSpan>): List<PositionAwareSpan> {
-        val spansGroupedByStartIndices = spans.groupBy { it.start }
-        return spans.flatMap { element ->
-            val currentParagraphSpans = spansGroupedByStartIndices.getOrElse(element.start) {
-                emptyList()
-            }
-            val nextParagraphSpans = spansGroupedByStartIndices.getOrElse(element.end + 2) {
-                emptyList()
-            }
-            convertToAndroidSpans(element, currentParagraphSpans, nextParagraphSpans)
+        return spans.flatMap { convertToAndroidSpans(it) }
+    }
+
+    private fun convertToAndroidSpans(span: ParagraphSpan): List<PositionAwareSpan> {
+        val outerIndentSpan = convertToOuterIndentSpan(span)
+        val appearanceSpans = convertToAppearanceSpans(span)
+        val innerIndentSpan = convertToInnerIndentSpan(span)
+        return listOfNotNull(outerIndentSpan) + appearanceSpans + listOfNotNull(innerIndentSpan)
+    }
+
+    private fun convertToOuterIndentSpan(span: ParagraphSpan): PositionAwareSpan? {
+        if (!span.hasOuterIndent) {
+            return null
+        }
+        val hangingText = when {
+            span.hasInnerIndent -> ""
+            else -> span.indent.hangingText
+        }
+        return newIndent(span.start, span.end, span.indent.outer, hangingText)
+    }
+
+    private fun convertToInnerIndentSpan(span: ParagraphSpan): PositionAwareSpan? {
+        if (!span.hasInnerIndent) {
+            return null
+        }
+        return newIndent(span.start, span.end, span.indent.inner, span.indent.hangingText)
+    }
+
+    private val ParagraphSpan.hasInnerIndent get() = indent.inner > 0
+
+    private val ParagraphSpan.hasOuterIndent get() = indent.outer > 0
+
+    private fun newIndent(start: Int, end: Int, level: Int, hangingText: String): PositionAwareSpan {
+        require(level > 0)
+        val restLinesIndent = indentStepWidth * level
+        val hangingTextWidth = textPaint.measureText(hangingText)
+        val firstLineIndent = (restLinesIndent - hangingTextWidth).roundToInt()
+        val leadingMarginSpan = LeadingMarginSpan.Standard(firstLineIndent, restLinesIndent)
+        return PositionAwareSpan(leadingMarginSpan, start, end)
+    }
+
+    private fun convertToAppearanceSpans(span: ParagraphSpan): List<PositionAwareSpan> {
+        return when (span.appearance) {
+            ParagraphAppearance.NORMAL -> emptyList()
+            ParagraphAppearance.FOOTNOTE -> listOf(newFootnote(span.start, span.end))
+            ParagraphAppearance.QUOTE -> listOf(newQuote(span.start, span.end))
+            ParagraphAppearance.FOOTNOTE_QUOTE -> newFootnoteQuote(span.start, span.end)
         }
     }
 
-    private fun convertToAndroidSpans(
-            element: ParagraphSpan,
-            currentParagraphSpans: List<ParagraphSpan>,
-            nextParagraphSpans: List<ParagraphSpan>
-    ): List<PositionAwareSpan> {
-        return when (element) {
-            is ParagraphSpan.Indent -> convertToAndroidSpans(element)
-            is ParagraphSpan.Style -> convertToAndroidSpans(element, currentParagraphSpans, nextParagraphSpans)
-        }
+    private fun newFootnote(start: Int, end: Int): PositionAwareSpan {
+        val footnoteSpan = AbsoluteSizeSpan(footnoteTextSize, false)
+        return PositionAwareSpan(footnoteSpan, start, end)
     }
 
-    private fun convertToAndroidSpans(span: ParagraphSpan.Indent): List<PositionAwareSpan> {
-        val restLinesIndent = indentFirstStepWidth + indentStepWidth * (span.level - 1)
-        val hangingTextWidth = textPaint.measureText(span.hangingText)
-        val firstLineIndent = when (span.level) {
-            0 -> minHangingIndentWidth - hangingTextWidth
-            else -> restLinesIndent - hangingTextWidth
-        }.roundToInt()
-        val androidSpan = LeadingMarginSpan.Standard(firstLineIndent, restLinesIndent)
-        return listOf(PositionAwareSpan(androidSpan, span.start, span.end))
+    private fun newQuote(start: Int, end: Int): PositionAwareSpan {
+        val quotationSpan = QuotationSpan(stripeColor, quoteStripeWidth, quoteBorderGapWidth)
+        return PositionAwareSpan(quotationSpan, start, end)
     }
 
-    private fun convertToAndroidSpans(
-            span: ParagraphSpan.Style,
-            currentParagraphSpans: List<ParagraphSpan>,
-            nextParagraphSpans: List<ParagraphSpan>
-    ): List<PositionAwareSpan> {
-        val mainAndroidSpan = when (span.appearance) {
-            ParagraphAppearance.QUOTE -> PositionAwareSpan(newQuotationSpan(), span.start, span.end)
-            ParagraphAppearance.FOOTNOTE -> PositionAwareSpan(
-                    newFootnoteSpan(),
-                    span.start,
-                    span.end + 1
-            )
-        }
-        val nextParagraphIsOfSameStyle = nextParagraphSpans.any { nextParaSpan ->
-            nextParaSpan is ParagraphSpan.Style && nextParaSpan.appearance == span.appearance
-        }
-        val additionalStyleSpan = when {
-            nextParagraphIsOfSameStyle -> when (span.appearance) {
-                ParagraphAppearance.QUOTE -> PositionAwareSpan(
-                        newQuotationSpan(),
-                        span.end + 1,
-                        span.end + 1
-                )
-                ParagraphAppearance.FOOTNOTE -> PositionAwareSpan(
-                        newFootnoteSpan(),
-                        span.end + 1,
-                        span.end + 2
-                )
-            }
-            else -> null
-        }
-        val outerIndentLevel = currentParagraphSpans.takeWhile { it !is ParagraphSpan.Style }
-                .filterIsInstance<ParagraphSpan.Indent>()
-                .sumBy { it.level }
-        val additionalIndentSpan = when {
-            nextParagraphIsOfSameStyle && outerIndentLevel > 0 -> {
-                val restLinesIndent = indentFirstStepWidth + indentStepWidth * (outerIndentLevel - 1)
-                PositionAwareSpan(
-                        LeadingMarginSpan.Standard(restLinesIndent),
-                        span.end + 1,
-                        span.end + 2
-                )
-            }
-            else -> null
-        }
-        return listOfNotNull(additionalIndentSpan, mainAndroidSpan, additionalStyleSpan)
-    }
-
-    private fun newQuotationSpan(): QuotationSpan {
-        return QuotationSpan(stripeColor, quoteStripeWidth, quoteBorderGapWidth)
-    }
-
-    private fun newFootnoteSpan(): AbsoluteSizeSpan {
-        return AbsoluteSizeSpan(footnoteTextSize, false)
+    private fun newFootnoteQuote(start: Int, end: Int): List<PositionAwareSpan> {
+        return listOf(newFootnote(start, end), newQuote(start, end))
     }
 }
 
-private const val indentFirstStepSample = "      "
-
-private const val indentStepSample = "   "
-
-private const val minHangingIndentSample = "MM. "
+private const val indentStepSample = "     "
 
 private const val quoteGapSample = "  "
 

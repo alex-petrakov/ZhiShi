@@ -5,41 +5,31 @@ import me.alex.pet.apps.zhishi.domain.common.*
 
 @JsonClass(generateAdapter = true)
 data class MarkupDto(
-        val paragraphSpans: ParagraphSpansDto,
+        val paragraphSpans: List<ParagraphSpanDto>,
         val characterSpans: List<CharacterSpanDto>,
         val linkSpans: List<LinkSpanDto>
 )
 
 @JsonClass(generateAdapter = true)
-data class ParagraphSpansDto(
-        val indents: List<IndentSpanDto>,
-        val styles: List<ParagraphStyleDto>
-)
-
-interface Sortable {
-    val globalOrder: Int
-}
-
-@JsonClass(generateAdapter = true)
-data class IndentSpanDto(
-        val start: Int,
-        val end: Int,
-        val level: Int,
-        val hangingText: String,
-        override val globalOrder: Int
-) : Sortable
-
-@JsonClass(generateAdapter = true)
-data class ParagraphStyleDto(
+data class ParagraphSpanDto(
         val start: Int,
         val end: Int,
         val appearance: ParagraphAppearanceDto,
-        override val globalOrder: Int
-) : Sortable
+        val indent: IndentDto
+)
+
+@JsonClass(generateAdapter = true)
+data class IndentDto(
+        val outer: Int,
+        val inner: Int,
+        val hangingText: String
+)
 
 enum class ParagraphAppearanceDto {
+    NORMAL,
+    FOOTNOTE,
     QUOTE,
-    FOOTNOTE
+    FOOTNOTE_QUOTE
 }
 
 @JsonClass(generateAdapter = true)
@@ -88,19 +78,22 @@ private fun CharacterAppearanceDto.toCharacterStyle(): CharacterAppearance {
 }
 
 private fun MarkupDto.toParagraphStyles(): List<ParagraphSpan> {
-    val allParagraphSpans = paragraphSpans.indents + paragraphSpans.styles
-    return allParagraphSpans.sortedBy { it.globalOrder }.map { span ->
-        when (span) {
-            is IndentSpanDto -> ParagraphSpan.Indent(span.start, span.end, span.level, span.hangingText)
-            is ParagraphStyleDto -> ParagraphSpan.Style(span.start, span.end, span.appearance.unwrap())
-            else -> throw IllegalStateException()
-        }
-    }
+    return paragraphSpans.map { it.unwrap() }
+}
+
+private fun ParagraphSpanDto.unwrap(): ParagraphSpan {
+    return ParagraphSpan(start, end, appearance.unwrap(), indent.unwrap())
 }
 
 private fun ParagraphAppearanceDto.unwrap(): ParagraphAppearance {
     return when (this) {
-        ParagraphAppearanceDto.QUOTE -> ParagraphAppearance.QUOTE
+        ParagraphAppearanceDto.NORMAL -> ParagraphAppearance.NORMAL
         ParagraphAppearanceDto.FOOTNOTE -> ParagraphAppearance.FOOTNOTE
+        ParagraphAppearanceDto.QUOTE -> ParagraphAppearance.QUOTE
+        ParagraphAppearanceDto.FOOTNOTE_QUOTE -> ParagraphAppearance.FOOTNOTE_QUOTE
     }
+}
+
+private fun IndentDto.unwrap(): Indent {
+    return Indent(outer, inner, hangingText)
 }
