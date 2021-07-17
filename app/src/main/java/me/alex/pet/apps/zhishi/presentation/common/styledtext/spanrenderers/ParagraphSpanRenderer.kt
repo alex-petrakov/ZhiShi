@@ -3,6 +3,7 @@ package me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers
 import android.content.res.Resources
 import android.text.TextPaint
 import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.text.style.LeadingMarginSpan
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.common.ParagraphAppearance
@@ -17,7 +18,9 @@ class ParagraphSpanRenderer(
         private val textPaint: TextPaint
 ) : SpanRenderer<ParagraphSpan> {
 
-    private val stripeColor by lazy { theme.resolveColorAttr(R.attr.colorPrimary) }
+    private val emphasisColor by lazy { theme.resolveColorAttr(R.attr.colorTextEmphasis) }
+
+    private val stripeColor by lazy { theme.resolveColorAttr(R.attr.colorQuoteStripe) }
 
     private val indentStepWidth = textPaint.measureText(indentStepSample).roundToInt()
 
@@ -109,7 +112,7 @@ class ParagraphSpanRenderer(
         return when (span.appearance) {
             ParagraphAppearance.NORMAL -> emptyList()
             ParagraphAppearance.FOOTNOTE -> listOf(newFootnote(span.start, span.end))
-            ParagraphAppearance.QUOTE -> listOf(newQuote(span.start, span.end))
+            ParagraphAppearance.QUOTE -> newQuote(span.start, span.end)
             ParagraphAppearance.FOOTNOTE_QUOTE -> newFootnoteQuote(span.start, span.end)
         }
     }
@@ -119,13 +122,17 @@ class ParagraphSpanRenderer(
         return PositionAwareSpan(footnoteSpan, start, end)
     }
 
-    private fun newQuote(start: Int, end: Int): PositionAwareSpan {
+    private fun newQuote(start: Int, end: Int): List<PositionAwareSpan> {
+        val foregroundColorSpan = ForegroundColorSpan(emphasisColor)
         val quotationSpan = QuotationSpan(stripeColor, quoteStripeWidth, quoteGapWidth)
-        return PositionAwareSpan(quotationSpan, start, end)
+        return listOf(
+                PositionAwareSpan(quotationSpan, start, end),
+                PositionAwareSpan(foregroundColorSpan, start, end)
+        )
     }
 
     private fun newFootnoteQuote(start: Int, end: Int): List<PositionAwareSpan> {
-        return listOf(newFootnote(start, end), newQuote(start, end))
+        return listOf(newFootnote(start, end)) + newQuote(start, end)
     }
 }
 

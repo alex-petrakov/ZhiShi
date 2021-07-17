@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="colorTextEmphasis" format="reference|color" />
+    <attr name="colorQuoteStripe" format="reference|color" />
     <attr name="colorMisspelledTextUnderline" format="reference|color" />
 </resources>

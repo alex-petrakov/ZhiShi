@@ -17,5 +17,6 @@
     <!-- Custom colors -->
     <color name="colorSurfaceVariant">#757575</color>
     <color name="colorTextEmphasis">#824010</color>
+    <color name="colorQuoteStripe">#FFF5902B</color>
     <color name="colorMisspelledTextUnderline">#D43945</color>
 </resources>

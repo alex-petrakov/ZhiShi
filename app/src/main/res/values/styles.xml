@@ -34,6 +34,7 @@
 
         <!-- Custom attributes -->
         <item name="colorTextEmphasis">@color/colorTextEmphasis</item>
+        <item name="colorQuoteStripe">@color/colorQuoteStripe</item>
         <item name="colorMisspelledTextUnderline">@color/colorMisspelledTextUnderline</item>
     </style>
 
