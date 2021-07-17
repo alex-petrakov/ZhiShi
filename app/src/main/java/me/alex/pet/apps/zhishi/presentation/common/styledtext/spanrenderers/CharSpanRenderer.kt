@@ -18,15 +18,18 @@ class CharSpanRenderer(private val theme: Resources.Theme) : SpanRenderer<Charac
     private val underlineColor by lazy { theme.resolveColorAttr(R.attr.colorMisspelledTextUnderline) }
 
     override fun convertToAndroidSpans(spans: List<CharacterSpan>): List<PositionAwareSpan> {
-        return spans.map { convertToAndroidSpan(it) }
+        return spans.flatMap { convertToAndroidSpans(it) }
     }
 
-    private fun convertToAndroidSpan(span: CharacterSpan): PositionAwareSpan {
-        val androidSpan = when (span.appearance) {
-            CharacterAppearance.EMPHASIS -> ForegroundColorSpan(emphasisColor)
-            CharacterAppearance.STRONG_EMPHASIS -> StyleSpan(Typeface.BOLD)
-            CharacterAppearance.MISSPELL -> ColoredUnderlineSpan(underlineColor)
+    private fun convertToAndroidSpans(span: CharacterSpan): List<PositionAwareSpan> {
+        val androidSpans = when (span.appearance) {
+            CharacterAppearance.EMPHASIS -> listOf(ForegroundColorSpan(emphasisColor))
+            CharacterAppearance.STRONG_EMPHASIS -> listOf(StyleSpan(Typeface.BOLD))
+            CharacterAppearance.MISSPELL -> listOf(
+                    ColoredUnderlineSpan(underlineColor),
+                    ForegroundColorSpan(emphasisColor)
+            )
         }
-        return PositionAwareSpan(androidSpan, span.start, span.end)
+        return androidSpans.map { PositionAwareSpan(it, span.start, span.end) }
     }
 }
