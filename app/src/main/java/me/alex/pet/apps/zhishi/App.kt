@@ -1,7 +1,7 @@
 package me.alex.pet.apps.zhishi
 
 import android.app.Application
-import me.alex.pet.apps.zhishi.di.appModule
+import me.alex.pet.apps.zhishi.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -20,7 +20,7 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(appModule)
+            modules(commonModule, contentsModule, sectionsModule, rulesModule, searchModule)
         }
     }
 }
