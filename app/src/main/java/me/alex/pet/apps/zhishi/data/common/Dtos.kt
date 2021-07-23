@@ -1,28 +1,29 @@
 package me.alex.pet.apps.zhishi.data.common
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import me.alex.pet.apps.zhishi.domain.common.*
 
 @JsonClass(generateAdapter = true)
 data class MarkupDto(
-        val paragraphSpans: List<ParagraphSpanDto>,
-        val characterSpans: List<CharacterSpanDto>,
-        val linkSpans: List<LinkSpanDto>
+        @Json(name = "ps") val paragraphSpans: List<ParagraphSpanDto>,
+        @Json(name = "cs") val characterSpans: List<CharacterSpanDto>,
+        @Json(name = "ls") val linkSpans: List<LinkSpanDto>
 )
 
 @JsonClass(generateAdapter = true)
 data class ParagraphSpanDto(
-        val start: Int,
-        val end: Int,
-        val appearance: ParagraphAppearanceDto,
-        val indent: IndentDto
+        @Json(name = "s") val start: Int,
+        @Json(name = "e") val end: Int,
+        @Json(name = "a") val appearance: ParagraphAppearanceDto,
+        @Json(name = "i") val indent: IndentDto
 )
 
 @JsonClass(generateAdapter = true)
 data class IndentDto(
-        val outer: Int,
-        val inner: Int,
-        val hangingText: String
+        @Json(name = "o") val outer: Int,
+        @Json(name = "i") val inner: Int,
+        @Json(name = "ht") val hangingText: String
 )
 
 enum class ParagraphAppearanceDto {
@@ -34,9 +35,9 @@ enum class ParagraphAppearanceDto {
 
 @JsonClass(generateAdapter = true)
 data class CharacterSpanDto(
-        val start: Int,
-        val end: Int,
-        val appearance: CharacterAppearanceDto
+        @Json(name = "s") val start: Int,
+        @Json(name = "e") val end: Int,
+        @Json(name = "a") val appearance: CharacterAppearanceDto
 )
 
 enum class CharacterAppearanceDto {
@@ -47,9 +48,9 @@ enum class CharacterAppearanceDto {
 
 @JsonClass(generateAdapter = true)
 data class LinkSpanDto(
-        val start: Int,
-        val end: Int,
-        val ruleId: Long
+        @Json(name = "s") val start: Int,
+        @Json(name = "e") val end: Int,
+        @Json(name = "ri") val ruleId: Long
 )
 
 fun styledTextOf(content: String, markup: MarkupDto): StyledText {
