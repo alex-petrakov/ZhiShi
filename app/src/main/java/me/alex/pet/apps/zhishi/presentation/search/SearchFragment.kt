@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
@@ -29,11 +29,11 @@ import org.koin.android.viewmodel.ext.android.viewModel
 @ExperimentalCoroutinesApi
 class SearchFragment : Fragment() {
 
+    private val viewModel by viewModel<SearchViewModel>()
+
     private var _binding: FragmentSearchBinding? = null
 
     private val binding get() = _binding!!
-
-    private val viewModel by viewModel<SearchViewModel>()
 
     private var lastRenderedState: ViewState? = null
 
@@ -55,8 +55,8 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareView()
         subscribeToModel()
     }
@@ -79,7 +79,7 @@ class SearchFragment : Fragment() {
         queryEt.textChanges()
                 .debounce(300)
                 .onEach { viewModel.onUpdateQuery(it.toString()) }
-                .launchIn(viewLifecycleOwner.lifecycle.coroutineScope)
+                .launchIn(viewLifecycleOwner.lifecycleScope)
         if (firstStart) {
             queryEt.post { queryEt.focusAndShowKeyboard() }
             firstStart = false
