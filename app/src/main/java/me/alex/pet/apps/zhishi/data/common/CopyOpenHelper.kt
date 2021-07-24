@@ -109,6 +109,11 @@ class CopyOpenHelper(
 
         tryOpenDatabase(tempFile, writable)
 
+        val assetsDbVersion = readDatabaseVersion(tempFile)
+        if (assetsDbVersion != databaseVersion) {
+            throw IOException("Assets contain DB with unexpected version (expected = $databaseVersion, actual = $assetsDbVersion)")
+        }
+
         if (!tempFile.renameTo(destinationFile)) {
             throw IOException("Failed to move temp file ${tempFile.absolutePath} to ${destinationFile.absolutePath}")
         }
@@ -117,13 +122,13 @@ class CopyOpenHelper(
 
     private fun tryReadDatabaseVersion(dbFile: File): Int {
         return try {
-            readVersion(dbFile)
+            readDatabaseVersion(dbFile)
         } catch (e: IOException) {
             throw DatabaseCopyException("Unable to read database version", e)
         }
     }
 
-    private fun readVersion(dbFile: File): Int {
+    private fun readDatabaseVersion(dbFile: File): Int {
         return FileInputStream(dbFile).channel.use { input ->
             input.tryLock(60, 4, true)
             input.position(60)
