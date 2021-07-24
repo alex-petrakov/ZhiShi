@@ -7,4 +7,4 @@ CREATE TABLE chapter(
 
 
 findByPartId:
-SELECT * FROM chapter WHERE part_id = ? ORDER BY id;
+SELECT id, part_id, name FROM chapter WHERE part_id = ? ORDER BY id;

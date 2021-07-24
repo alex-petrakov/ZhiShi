@@ -5,4 +5,4 @@ CREATE TABLE part (
 
 
 getAll:
-SELECT * FROM part ORDER BY id;
+SELECT id, name FROM part ORDER BY id;

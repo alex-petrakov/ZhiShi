@@ -83,7 +83,8 @@ findIdAndAnnotationBySectionId:
 SELECT id, annotation, annotation_markup FROM rule WHERE section_id = ? ORDER BY id ASC;
 
 findByIds:
-SELECT * FROM rule WHERE id IN :ids
+SELECT id, section_id, annotation, annotation_markup, content, content_markup
+FROM rule WHERE id IN :ids
 ORDER BY id ASC;
 
 findByContent:

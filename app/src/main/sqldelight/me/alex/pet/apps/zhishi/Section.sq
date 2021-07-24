@@ -56,7 +56,7 @@ END;
 
 
 findById:
-SELECT * FROM section WHERE id = ?;
+SELECT id, chapter_id, name, markup FROM section WHERE id = ?;
 
 findByChapterId:
-SELECT * FROM section WHERE chapter_id = ? ORDER BY id;
+SELECT id, chapter_id, name, markup FROM section WHERE chapter_id = ? ORDER BY id;
