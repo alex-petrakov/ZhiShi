@@ -5,7 +5,7 @@ import me.alex.pet.apps.zhishi.data.Database
 import me.alex.pet.apps.zhishi.data.contents.ContentsDataStore
 import me.alex.pet.apps.zhishi.domain.contents.ContentsRepository
 import me.alex.pet.apps.zhishi.presentation.contents.ContentsViewModel
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val contentsModule = module {

@@ -7,7 +7,7 @@ import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 import me.alex.pet.apps.zhishi.presentation.rules.RulesViewModel
 import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleViewModel
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val rulesModule = module {

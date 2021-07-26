@@ -5,7 +5,7 @@ import me.alex.pet.apps.zhishi.data.Database
 import me.alex.pet.apps.zhishi.data.sections.SectionsDataStore
 import me.alex.pet.apps.zhishi.domain.sections.SectionsRepository
 import me.alex.pet.apps.zhishi.presentation.section.SectionViewModel
-import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val sectionsModule = module {
