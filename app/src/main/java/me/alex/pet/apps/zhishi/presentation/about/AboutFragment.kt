@@ -47,6 +47,7 @@ class AboutFragment : Fragment() {
             requireActivity().startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             Snackbar.make(binding.root, R.string.about_error_no_web_browser, Snackbar.LENGTH_SHORT)
+                    .show()
         }
     }
 
