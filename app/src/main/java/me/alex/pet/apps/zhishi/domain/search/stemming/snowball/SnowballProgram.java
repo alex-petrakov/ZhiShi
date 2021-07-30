@@ -3,6 +3,8 @@ package me.alex.pet.apps.zhishi.domain.search.stemming.snowball;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
+import timber.log.Timber;
+
 @SuppressWarnings({
         "SameParameterValue",
         "ManualMinMaxCalculation",
@@ -201,10 +203,10 @@ public class SnowballProgram implements Serializable {
                     res = resobj.toString().equals("true");
                 } catch (InvocationTargetException e) {
                     res = false;
-                    // FIXME - debug message
+                    Timber.d(e);
                 } catch (IllegalAccessException e) {
                     res = false;
-                    // FIXME - debug message
+                    Timber.d(e);
                 }
                 cursor = c + w.s.length;
                 if (res) return w.result;
@@ -268,10 +270,10 @@ public class SnowballProgram implements Serializable {
                     res = resobj.toString().equals("true");
                 } catch (InvocationTargetException e) {
                     res = false;
-                    // FIXME - debug message
+                    Timber.d(e);
                 } catch (IllegalAccessException e) {
                     res = false;
-                    // FIXME - debug message
+                    Timber.d(e);
                 }
                 cursor = c - w.s.length;
                 if (res) return w.result;
@@ -299,8 +301,7 @@ public class SnowballProgram implements Serializable {
                 ket > limit ||
                 limit > current.length())   // this line could be removed
         {
-            System.err.println("faulty slice operation");
-            // FIXME: report error somehow.
+            Timber.d("Faulty slice operation");
 	/*
 	    fprintf(stderr, "faulty slice operation:\n");
 	    debug(z, -1, 0);
@@ -364,4 +365,4 @@ extern void debug(struct SN_env * z, int number, int line_count)
 }
 */
 
-};
+}
