@@ -6,7 +6,6 @@ apply plugin: 'com.squareup.sqldelight'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.0"
 
     defaultConfig {
         applicationId "me.alex.pet.apps.zhishi"
@@ -30,6 +29,7 @@ android {
     }
 
     buildFeatures {
+        dataBinding false
         viewBinding true
     }
 
