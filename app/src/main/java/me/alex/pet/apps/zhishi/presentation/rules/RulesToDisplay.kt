@@ -10,6 +10,4 @@ data class RulesToDisplay(val ids: List<Long>, val selectionIndex: Int) : Parcel
         require(ids.isNotEmpty())
         require(selectionIndex in ids.indices)
     }
-
-    constructor(ruleId: Long) : this(listOf(ruleId), 0)
 }

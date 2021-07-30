@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.presentation.contents
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,8 @@ class ContentsAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items: List<DisplayableItem> = emptyList()
+        // Adapter data is updated only on first screen load
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             notifyDataSetChanged()

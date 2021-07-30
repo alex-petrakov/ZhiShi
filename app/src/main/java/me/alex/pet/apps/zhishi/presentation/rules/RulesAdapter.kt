@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.presentation.rules
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
@@ -12,6 +13,8 @@ class RulesAdapter(
 ) : FragmentStateAdapter(fragment) {
 
     var ruleIds: List<Long> = ruleIds
+        // Adapter data is updated only on first screen load
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             notifyDataSetChanged()

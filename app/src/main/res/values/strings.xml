@@ -13,8 +13,6 @@
     <string name="rule_action_go_to_prev_page">Перейти к предыдущему правилу</string>
 
     <string name="search_bar_search_rules">Поиск правил</string>
-    <string name="search_bar_cd_search_icon">Поиск</string>
-    <string name="search_bar_cd_menu">Больше опций</string>
 
     <string name="search_no_results">Ничего не найдено</string>
     <string name="search_suggestions_explanation">Ищите номера параграфов и всё, что душе угодно:</string>

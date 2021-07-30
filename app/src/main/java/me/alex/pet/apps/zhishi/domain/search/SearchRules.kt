@@ -12,7 +12,7 @@ class SearchRules(
 
     suspend operator fun invoke(query: String): List<SearchResult> {
         val searchTerms = withContext(Dispatchers.Default) {
-            query.toLowerCase(Locale.getDefault())
+            query.lowercase(Locale.getDefault())
                     .filter { it.isLetterOrDigit() || it.isWhitespace() }
                     .replace("ё", "е")
                     .split("\\s".toRegex())
