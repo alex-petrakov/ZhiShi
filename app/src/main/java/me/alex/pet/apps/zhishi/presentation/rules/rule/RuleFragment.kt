@@ -61,7 +61,7 @@ class RuleFragment : Fragment() {
     }
 
     private fun prepareView(): Unit = with(binding) {
-        ruleContentTv.movementMethod = LinkMovementMethod() // TODO: Use BetterLinkMovementMethod
+        ruleContentTv.movementMethod = LinkMovementMethod()
         sectionButton.setOnClickListener { viewModel.onNavigateToSection() }
     }
 

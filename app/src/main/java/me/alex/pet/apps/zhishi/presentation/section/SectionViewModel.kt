@@ -20,7 +20,7 @@ class SectionViewModel(
 
     private val section = liveData {
         val section = sectionsRepository.getSection(sectionId)
-                ?: throw IllegalStateException("Section with ID $sectionId was not found") // TODO: consider displaying an error message
+                ?: throw IllegalStateException("Section with ID $sectionId was not found")
         emit(section)
     }
 

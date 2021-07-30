@@ -19,7 +19,7 @@ class RuleViewModel(
 
     private val rule: LiveData<Rule> = liveData {
         val rule = rulesRepository.getRule(ruleId)
-                ?: throw IllegalStateException("Rule with ID $ruleId was not found") // TODO: Consider showing an empty view instead
+                ?: throw IllegalStateException("Rule with ID $ruleId was not found")
         emit(rule)
     }
 
