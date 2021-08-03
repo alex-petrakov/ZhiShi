@@ -28,6 +28,9 @@
         <item name="textAppearanceOverline">@style/TextAppearance.ZhiShi.Overline</item>
         <item name="textAppearanceButton">@style/TextAppearance.ZhiShi.Button</item>
 
+        <item name="android:statusBarColor">@color/colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
+
         <item name="chipStyle">@style/Widget.ZhiShi.Chip.Action</item>
 
         <item name="editTextStyle">@style/Base.Widget.MaterialComponents.TextInputEditText</item>
@@ -36,10 +39,6 @@
         <item name="colorTextEmphasis">@color/colorTextEmphasis</item>
         <item name="colorQuoteStripe">@color/colorQuoteStripe</item>
         <item name="colorMisspelledTextUnderline">@color/colorMisspelledTextUnderline</item>
-    </style>
-
-    <style name="AppTheme" parent="BaseAppTheme">
-        <item name="android:statusBarColor">@color/colorSurfaceVariant</item>
     </style>
 
     <style name="BaseAppTheme.Overlay.PrimaryOnSurface" parent="BaseAppTheme">
