@@ -26,6 +26,7 @@ data class IndentDto(
         @Json(name = "ht") val hangingText: String
 )
 
+@JsonClass(generateAdapter = false)
 enum class ParagraphAppearanceDto {
     NORMAL,
     FOOTNOTE,
@@ -40,6 +41,7 @@ data class CharacterSpanDto(
         @Json(name = "a") val appearance: CharacterAppearanceDto
 )
 
+@JsonClass(generateAdapter = false)
 enum class CharacterAppearanceDto {
     EMPHASIS,
     STRONG_EMPHASIS,
