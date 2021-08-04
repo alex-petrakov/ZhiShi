@@ -1,6 +1,7 @@
 package me.alex.pet.apps.zhishi
 
 import android.app.Application
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import me.alex.pet.apps.zhishi.di.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -15,6 +16,7 @@ class App : Application() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
         }
 
         startKoin {
