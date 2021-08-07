@@ -19,6 +19,7 @@
 
     <string name="about_title">О программе</string>
     <string name="about_see_open_source_licences">Посмотреть лицензии открытого ПО</string>
+    <string name="about_see_privacy_policy">Посмотреть политику конфиденциальности</string>
     <string name="about_title_developer">Разработчик</string>
     <string name="about_developer_name">Александр Петраков</string>
     <string name="about_title_version">Версия</string>

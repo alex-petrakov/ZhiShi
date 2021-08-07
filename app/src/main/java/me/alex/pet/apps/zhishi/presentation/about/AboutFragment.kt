@@ -24,30 +24,37 @@ class AboutFragment : Fragment() {
 
     private val router by inject<Router>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentAboutBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareView()
     }
 
     private fun prepareView(): Unit = with(binding) {
         toolbar.setNavigationOnClickListener { router.exit() }
         versionTextView.text = BuildConfig.VERSION_NAME
-        inspirationCell.setOnClickListener { openTheRulesLink() }
+        inspirationCell.setOnClickListener { openWebLink("https://therules.ru") }
         seeOpenSourceLicensesButton.setOnClickListener { router.navigateTo(AppScreens.licenses()) }
+        seePrivacyPolicyButton.setOnClickListener {
+            openWebLink("https://alex-petrakov.github.io/zhishiprivacy")
+        }
     }
 
-    private fun openTheRulesLink() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://therules.ru"))
+    private fun openWebLink(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         try {
             requireActivity().startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             Snackbar.make(binding.root, R.string.about_error_no_web_browser, Snackbar.LENGTH_SHORT)
-                    .show()
+                .show()
         }
     }
 
