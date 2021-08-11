@@ -44,7 +44,7 @@ class AboutFragment : Fragment() {
         inspirationCell.setOnClickListener { openWebLink("https://therules.ru") }
         seeOpenSourceLicensesButton.setOnClickListener { router.navigateTo(AppScreens.licenses()) }
         seePrivacyPolicyButton.setOnClickListener {
-            openWebLink("https://alex-petrakov.github.io/zhishiprivacy")
+            openWebLink("https://alex-petrakov.github.io/ZhiShiPrivacy")
         }
     }
 
