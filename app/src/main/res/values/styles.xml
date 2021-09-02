@@ -46,6 +46,9 @@
     </style>
 
 
+    <style name="AppTheme" parent="BaseAppTheme" />
+
+
     <style name="TextAppearance.ZhiShi.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
         <item name="fontFamily">@font/family_fira_sans_regular</item>
     </style>

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentContentsBinding
+import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ContentsFragment : Fragment() {
@@ -36,6 +37,8 @@ class ContentsFragment : Fragment() {
 
     private fun prepareView(): Unit = with(binding) {
         recyclerView.apply {
+            extendBottomPaddingWithSystemInsets()
+            clipToPadding = false
             layoutManager = LinearLayoutManager(context)
             adapter = contentsAdapter
         }

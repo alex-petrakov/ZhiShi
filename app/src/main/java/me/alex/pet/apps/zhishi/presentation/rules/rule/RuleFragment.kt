@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
+import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
@@ -46,21 +47,29 @@ class RuleFragment : Fragment() {
     }
 
     private val sectionNameRenderer = StyledTextRenderer(
-            characterSpansRenderer = BasicCharSpanRenderer()
+        characterSpansRenderer = BasicCharSpanRenderer()
     )
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentRuleBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareView()
         subscribeToModel()
     }
 
     private fun prepareView(): Unit = with(binding) {
+        scrollView.apply {
+            extendBottomPaddingWithSystemInsets()
+            clipToPadding = false
+        }
         ruleContentTv.movementMethod = LinkMovementMethod()
         sectionButton.setOnClickListener { viewModel.onNavigateToSection() }
     }

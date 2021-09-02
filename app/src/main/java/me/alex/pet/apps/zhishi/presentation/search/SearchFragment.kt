@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSearchBinding
+import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import me.alex.pet.apps.zhishi.presentation.common.extensions.focusAndShowKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.hideKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.textChanges
@@ -63,6 +64,8 @@ class SearchFragment : Fragment() {
 
     private fun prepareView() = with(binding) {
         recyclerView.apply {
+            extendBottomPaddingWithSystemInsets()
+            clipToPadding = false
             layoutManager = LinearLayoutManager(requireContext())
             adapter = searchResultsAdapter
             addOnScrollListener(object : RecyclerView.OnScrollListener() {

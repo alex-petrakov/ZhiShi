@@ -14,6 +14,7 @@ import me.alex.pet.apps.zhishi.BuildConfig
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentAboutBinding
 import me.alex.pet.apps.zhishi.presentation.AppScreens
+import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import org.koin.android.ext.android.inject
 
 class AboutFragment : Fragment() {
@@ -39,6 +40,10 @@ class AboutFragment : Fragment() {
     }
 
     private fun prepareView(): Unit = with(binding) {
+        scrollView.apply {
+            extendBottomPaddingWithSystemInsets()
+            clipToPadding = false
+        }
         toolbar.setNavigationOnClickListener { router.exit() }
         versionTextView.text = BuildConfig.VERSION_NAME
         inspirationCell.setOnClickListener { openWebLink("https://therules.ru") }
