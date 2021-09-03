@@ -18,7 +18,10 @@
             style="@style/Widget.MaterialComponents.Toolbar.Surface"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="4dp" />
+            android:elevation="4dp"
+            app:navigationContentDescription="@string/app_navigate_up"
+            app:navigationIcon="@drawable/ic_action_up"
+            tools:title="§ 15–16" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView

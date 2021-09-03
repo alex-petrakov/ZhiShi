@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="4dp"
+        app:navigationContentDescription="@string/app_navigate_up"
         app:navigationIcon="@drawable/ic_action_up">
 
         <EditText
@@ -22,17 +23,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
-            android:paddingStart="0dp"
-            android:paddingEnd="0dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
             android:gravity="center_vertical"
             android:hint="@string/search_bar_search_rules"
             android:imeOptions="actionSearch"
             android:importantForAutofill="no"
             android:inputType="text|textAutoComplete|textCapSentences"
             android:maxLength="30"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:paddingStart="0dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="12dp" />
     </com.google.android.material.appbar.MaterialToolbar>
 
     <FrameLayout
@@ -47,42 +48,42 @@
             android:orientation="vertical">
 
             <TextView
-                android:textAppearance="?textAppearanceBody1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="?android:textColorSecondary"
-                android:text="@string/search_suggestions_explanation" />
+                android:text="@string/search_suggestions_explanation"
+                android:textAppearance="?textAppearanceBody1"
+                android:textColor="?android:textColorSecondary" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/suggestions_chip_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 app:singleLine="false" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/empty_view"
-            android:textAppearance="?textAppearanceBody1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:visibility="gone"
             android:gravity="center"
             android:text="@string/search_no_results"
-            android:textColor="?android:textColorTertiary" />
+            android:textAppearance="?textAppearanceBody1"
+            android:textColor="?android:textColorTertiary"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

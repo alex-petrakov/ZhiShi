@@ -83,8 +83,6 @@ class RulesFragment : Fragment() {
     }
 
     private fun prepareToolbar() = with(binding.toolbar) {
-        setNavigationIcon(R.drawable.ic_action_up)
-
         inflateMenu(R.menu.rules)
         nextPageMenuItem = menu.findItem(R.id.action_go_to_next_page)
         prevPageMenuItem = menu.findItem(R.id.action_go_to_prev_page)

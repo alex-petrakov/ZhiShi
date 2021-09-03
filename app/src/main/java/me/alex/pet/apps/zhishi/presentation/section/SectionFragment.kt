@@ -51,11 +51,7 @@ class SectionFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rulesAdapter
         }
-        toolbar.apply {
-            setNavigationIcon(R.drawable.ic_action_up)
-            setNavigationContentDescription(R.string.app_navigate_up)
-            setNavigationOnClickListener { viewModel.onBackPressed() }
-        }
+        toolbar.setNavigationOnClickListener { viewModel.onBackPressed() }
     }
 
     private fun subscribeToModel(): Unit = with(viewModel) {
