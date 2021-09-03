@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.presentation.search
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -64,7 +65,9 @@ class SearchFragment : Fragment() {
 
     private fun prepareView() = with(binding) {
         recyclerView.apply {
-            extendBottomPaddingWithSystemInsets()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                extendBottomPaddingWithSystemInsets()
+            }
             clipToPadding = false
             layoutManager = LinearLayoutManager(requireContext())
             adapter = searchResultsAdapter

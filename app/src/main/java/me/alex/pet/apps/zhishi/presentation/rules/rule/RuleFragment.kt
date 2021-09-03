@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.presentation.rules.rule
 
+import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -67,7 +68,9 @@ class RuleFragment : Fragment() {
 
     private fun prepareView(): Unit = with(binding) {
         scrollView.apply {
-            extendBottomPaddingWithSystemInsets()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                extendBottomPaddingWithSystemInsets()
+            }
             clipToPadding = false
         }
         ruleContentTv.movementMethod = LinkMovementMethod()

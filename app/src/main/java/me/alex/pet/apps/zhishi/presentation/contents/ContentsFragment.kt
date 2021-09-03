@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.presentation.contents
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -37,7 +38,9 @@ class ContentsFragment : Fragment() {
 
     private fun prepareView(): Unit = with(binding) {
         recyclerView.apply {
-            extendBottomPaddingWithSystemInsets()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                extendBottomPaddingWithSystemInsets()
+            }
             clipToPadding = false
             layoutManager = LinearLayoutManager(context)
             adapter = contentsAdapter

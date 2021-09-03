@@ -3,6 +3,7 @@ package me.alex.pet.apps.zhishi.presentation.about
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,7 +42,9 @@ class AboutFragment : Fragment() {
 
     private fun prepareView(): Unit = with(binding) {
         scrollView.apply {
-            extendBottomPaddingWithSystemInsets()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                extendBottomPaddingWithSystemInsets()
+            }
             clipToPadding = false
         }
         toolbar.setNavigationOnClickListener { router.exit() }
