@@ -62,11 +62,11 @@
     </style>
 
     <style name="TextAppearance.ZhiShi.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
-        <item name="fontFamily">@font/family_fira_sans_regular</item>
+        <item name="fontFamily">@font/family_fira_sans_medium</item>
     </style>
 
     <style name="TextAppearance.ZhiShi.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="fontFamily">@font/family_fira_sans_regular</item>
+        <item name="fontFamily">@font/family_fira_sans_medium</item>
     </style>
 
     <style name="TextAppearance.ZhiShi.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
