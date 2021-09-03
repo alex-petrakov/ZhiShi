@@ -21,6 +21,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
+            android:minHeight="48dp"
             android:textAppearance="?textAppearanceBody1"
             tools:text="После ж, ч, ш, щ не пишутся ю, я, ы, а пишутся у, а, и, например: чудо, щука, час, роща, жир, шить." />
 
