@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ItemGenericIndentedSubtitleBinding
 import me.alex.pet.apps.zhishi.databinding.ItemRuleNumberedBinding
+import me.alex.pet.apps.zhishi.presentation.common.extensions.withExistingAdapterPosition
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
@@ -85,7 +86,9 @@ class RulesAdapter(
         private val theme get() = context.theme
 
         init {
-            binding.root.setOnClickListener { onClick(adapterPosition) }
+            binding.root.setOnClickListener {
+                withExistingAdapterPosition { position -> onClick(position) }
+            }
         }
 
         fun bind(rule: DisplayableItem.Rule): Unit = with(binding) {

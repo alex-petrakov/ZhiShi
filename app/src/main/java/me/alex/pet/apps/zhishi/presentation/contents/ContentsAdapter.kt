@@ -8,6 +8,7 @@ import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ItemClickableSectionBinding
 import me.alex.pet.apps.zhishi.databinding.ItemGenericSubtitleBinding
 import me.alex.pet.apps.zhishi.databinding.ItemGenericTitleBinding
+import me.alex.pet.apps.zhishi.presentation.common.extensions.withExistingAdapterPosition
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
 
@@ -86,7 +87,9 @@ class ContentsAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener { onClick(adapterPosition) }
+            binding.root.setOnClickListener {
+                withExistingAdapterPosition { position -> onClick(position) }
+            }
         }
 
         fun bind(item: DisplayableItem.Section) {

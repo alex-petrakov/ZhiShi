@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ItemRuleSearchResultBinding
+import me.alex.pet.apps.zhishi.presentation.common.extensions.withExistingAdapterPosition
 
 class SearchResultsAdapter(
         private val onRuleClick: (Long) -> Unit
@@ -32,7 +33,9 @@ class SearchResultsAdapter(
         private val context get() = binding.root.context
 
         init {
-            binding.root.setOnClickListener { onClick(adapterPosition) }
+            binding.root.setOnClickListener {
+                withExistingAdapterPosition { position -> onClick(position) }
+            }
         }
 
         fun bind(item: SearchResultItem) = with(binding) {
