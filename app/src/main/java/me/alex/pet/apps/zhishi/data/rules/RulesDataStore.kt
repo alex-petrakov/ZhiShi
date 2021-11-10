@@ -9,10 +9,13 @@ import me.alex.pet.apps.zhishi.data.common.styledTextOf
 import me.alex.pet.apps.zhishi.domain.rules.Rule
 import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.domain.rules.Section
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RulesDataStore(
-        private val ruleQueries: RuleQueries,
-        moshi: Moshi
+@Singleton
+class RulesDataStore @Inject constructor(
+    private val ruleQueries: RuleQueries,
+    moshi: Moshi
 ) : RulesRepository {
 
     private val markupAdapter = moshi.adapter(MarkupDto::class.java)
@@ -20,9 +23,9 @@ class RulesDataStore(
     override suspend fun getRule(ruleId: Long): Rule? = withContext(Dispatchers.IO) {
         ruleQueries.findById(ruleId) { id, content, contentMarkup, sectionId, sectionName, sectionMarkup ->
             val contentMarkupDto = markupAdapter.fromJson(contentMarkup)
-                    ?: throw IllegalStateException("Unable to parse markup")
+                ?: throw IllegalStateException("Unable to parse markup")
             val sectionNameMarkupDto = markupAdapter.fromJson(sectionMarkup)
-                    ?: throw IllegalStateException("Unable to parse markup")
+                ?: throw IllegalStateException("Unable to parse markup")
             val section = Section(sectionId, styledTextOf(sectionName, sectionNameMarkupDto))
             Rule(id, styledTextOf(content, contentMarkupDto), section)
         }.executeAsOneOrNull()

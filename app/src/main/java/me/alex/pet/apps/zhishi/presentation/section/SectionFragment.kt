@@ -7,21 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSectionBinding
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import me.alex.pet.apps.zhishi.presentation.section.SectionViewModel.Companion.ARG_SECTION_ID
 
+@AndroidEntryPoint
 class SectionFragment : Fragment() {
 
-    private val viewModel by viewModel<SectionViewModel> {
-        val args = requireArguments()
-        check(args.containsKey(ARG_SECTION_ID)) { "Required section ID argument is missing" }
-        val sectionId = args.getLong(ARG_SECTION_ID)
-        parametersOf(sectionId)
-    }
+    private val viewModel by viewModels<SectionViewModel>()
 
     private var _binding: FragmentSectionBinding? = null
 
@@ -31,7 +28,11 @@ class SectionFragment : Fragment() {
         viewModel.onClickRule(clickedRuleId)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentSectionBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -62,7 +63,11 @@ class SectionFragment : Fragment() {
         val ruleNumbersRange = state.ruleNumbersRange
         toolbar.title = when (ruleNumbersRange.first) {
             ruleNumbersRange.last -> getString(R.string.section_rule_number, ruleNumbersRange.first)
-            else -> getString(R.string.section_rule_numbers_range, ruleNumbersRange.first, ruleNumbersRange.last)
+            else -> getString(
+                R.string.section_rule_numbers_range,
+                ruleNumbersRange.first,
+                ruleNumbersRange.last
+            )
         }
         rulesAdapter.items = state.listItems
     }
@@ -73,8 +78,6 @@ class SectionFragment : Fragment() {
     }
 
     companion object {
-
-        private const val ARG_SECTION_ID = "SECTION_ID"
 
         fun newInstance(sectionId: Long): SectionFragment {
             return SectionFragment().apply {

@@ -7,19 +7,21 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentContentsBinding
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@AndroidEntryPoint
 class ContentsFragment : Fragment() {
 
     private var _binding: FragmentContentsBinding? = null
 
     private val binding get() = _binding!!
 
-    private val viewModel by viewModel<ContentsViewModel>()
+    private val viewModel by viewModels<ContentsViewModel>()
 
     private val contentsAdapter = ContentsAdapter { clickedSectionId ->
         viewModel.onClickSection(clickedSectionId)

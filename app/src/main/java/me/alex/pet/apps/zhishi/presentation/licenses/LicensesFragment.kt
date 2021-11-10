@@ -6,16 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.terrakok.cicerone.Router
+import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.databinding.FragmentLicensesBinding
-import org.koin.android.ext.android.inject
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LicensesFragment : Fragment() {
 
     private var _binding: FragmentLicensesBinding? = null
 
     private val binding get() = _binding!!
 
-    private val router by inject<Router>()
+    @Inject
+    lateinit var router: Router
 
     override fun onCreateView(
         inflater: LayoutInflater,

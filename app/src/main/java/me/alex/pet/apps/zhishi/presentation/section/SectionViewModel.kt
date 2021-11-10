@@ -1,26 +1,33 @@
 package me.alex.pet.apps.zhishi.presentation.section
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.github.terrakok.cicerone.Router
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.sections.Rule
 import me.alex.pet.apps.zhishi.domain.sections.Section
 import me.alex.pet.apps.zhishi.domain.sections.SectionsRepository
 import me.alex.pet.apps.zhishi.presentation.AppScreens
+import me.alex.pet.apps.zhishi.presentation.common.extensions.getOrThrow
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
+import javax.inject.Inject
 
-class SectionViewModel(
-        private val sectionId: Long,
-        private val sectionsRepository: SectionsRepository,
-        private val router: Router
+@HiltViewModel
+class SectionViewModel @Inject constructor(
+    stateHandle: SavedStateHandle,
+    private val sectionsRepository: SectionsRepository,
+    private val router: Router
 ) : ViewModel() {
+
+    private val sectionId: Long = stateHandle.getOrThrow(ARG_SECTION_ID)
 
     private val section = liveData {
         val section = sectionsRepository.getSection(sectionId)
-                ?: throw IllegalStateException("Section with ID $sectionId was not found")
+            ?: throw IllegalStateException("Section with ID $sectionId was not found")
         emit(section)
     }
 
@@ -43,6 +50,10 @@ class SectionViewModel(
             ViewState(section.ruleIds, section.toUiModel())
         }
     }
+
+    companion object {
+        const val ARG_SECTION_ID = "SECTION_ID"
+    }
 }
 
 private fun Section.toUiModel(): List<DisplayableItem> {
@@ -52,7 +63,7 @@ private fun Section.toUiModel(): List<DisplayableItem> {
 
 private fun Rule.toUiModel(): DisplayableItem {
     return DisplayableItem.Rule(
-            this.id,
-            this.annotation
+        this.id,
+        this.annotation
     )
 }

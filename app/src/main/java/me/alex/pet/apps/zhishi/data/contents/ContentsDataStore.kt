@@ -9,12 +9,15 @@ import me.alex.pet.apps.zhishi.SectionQueries
 import me.alex.pet.apps.zhishi.data.common.MarkupDto
 import me.alex.pet.apps.zhishi.data.common.styledTextOf
 import me.alex.pet.apps.zhishi.domain.contents.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ContentsDataStore(
-        private val partQueries: PartQueries,
-        private val chapterQueries: ChapterQueries,
-        private val sectionQueries: SectionQueries,
-        moshi: Moshi
+@Singleton
+class ContentsDataStore @Inject constructor(
+    private val partQueries: PartQueries,
+    private val chapterQueries: ChapterQueries,
+    private val sectionQueries: SectionQueries,
+    moshi: Moshi
 ) : ContentsRepository {
 
     private val markupAdapter = moshi.adapter(MarkupDto::class.java)

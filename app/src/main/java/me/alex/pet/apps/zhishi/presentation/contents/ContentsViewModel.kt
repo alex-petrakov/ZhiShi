@@ -4,14 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.github.terrakok.cicerone.Router
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.contents.*
 import me.alex.pet.apps.zhishi.presentation.AppScreens
+import javax.inject.Inject
 
-class ContentsViewModel(
-        contentsRepository: ContentsRepository,
-        private val router: Router
+@HiltViewModel
+class ContentsViewModel @Inject constructor(
+    contentsRepository: ContentsRepository,
+    private val router: Router
 ) : ViewModel() {
 
     val viewState: LiveData<ViewState> = liveData {

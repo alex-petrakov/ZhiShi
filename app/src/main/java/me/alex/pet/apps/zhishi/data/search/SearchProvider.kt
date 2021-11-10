@@ -5,20 +5,23 @@ import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.RuleQueries
 import me.alex.pet.apps.zhishi.domain.search.SearchRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SearchProvider(private val ruleQueries: RuleQueries) : SearchRepository {
+@Singleton
+class SearchProvider @Inject constructor(private val ruleQueries: RuleQueries) : SearchRepository {
 
     private val suggestions = listOf(
-            "140",
-            "двойное н",
-            "пре при",
-            "не ни",
-            "гар гор",
-            "союзы",
-            "обращения",
-            "правила переноса",
-            "тире",
-            "прямая речь"
+        "140",
+        "двойное н",
+        "пре при",
+        "не ни",
+        "гар гор",
+        "союзы",
+        "обращения",
+        "правила переноса",
+        "тире",
+        "прямая речь"
     )
 
     override fun getSuggestions(): List<String> {
@@ -34,14 +37,14 @@ class SearchProvider(private val ruleQueries: RuleQueries) : SearchRepository {
     }
 
     override suspend fun queryRulesByContent(
-            searchTerms: List<String>,
-            limit: Int
+        searchTerms: List<String>,
+        limit: Int
     ): List<SearchResult> {
         require(limit > 0) { "Limit must be > 0, but it was $limit" }
         return withContext(Dispatchers.IO) {
             val query = searchTerms.joinToString(
-                    separator = " ",
-                    transform = { term -> "$term*" }
+                separator = " ",
+                transform = { term -> "$term*" }
             )
             ruleQueries.findByContent(query, limit.toLong()) { id, annotation, snippet ->
                 SearchResult(id, annotation, snippet!!.replace("\n+".toRegex(), " "))

@@ -5,19 +5,17 @@ import android.view.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
+import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRulesBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import me.alex.pet.apps.zhishi.presentation.rules.RulesViewModel.Companion.ARG_RULES_TO_DISPLAY
 
+@AndroidEntryPoint
 class RulesFragment : Fragment() {
 
-    private val viewModel by viewModel<RulesViewModel> {
-        val rulesToDisplay = requireArguments().getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
-                ?: throw IllegalStateException("Required argument is missing")
-        parametersOf(rulesToDisplay)
-    }
+    private val viewModel by viewModels<RulesViewModel>()
 
     private var _binding: FragmentRulesBinding? = null
 
@@ -25,7 +23,7 @@ class RulesFragment : Fragment() {
 
     private val rulesToDisplay by lazy {
         requireArguments().getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
-                ?: throw IllegalStateException("Required argument is missing")
+            ?: throw IllegalStateException("Required argument is missing")
     }
 
     private lateinit var nextPageMenuItem: MenuItem
@@ -54,7 +52,11 @@ class RulesFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentRulesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -70,7 +72,7 @@ class RulesFragment : Fragment() {
 
         val args = requireArguments()
         val rulesToDisplay = args.getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
-                ?: throw IllegalStateException("Required argument is missing")
+            ?: throw IllegalStateException("Required argument is missing")
         check(args.containsKey(ARG_DISPLAY_SECTION_BUTTON)) { "Required argument is missing" }
         val displaySectionButton = args.getBoolean(ARG_DISPLAY_SECTION_BUTTON)
         viewPager.apply {
@@ -106,14 +108,16 @@ class RulesFragment : Fragment() {
 
     companion object {
 
-        private const val ARG_RULES_TO_DISPLAY = "RULES_TO_DISPLAY"
         private const val ARG_DISPLAY_SECTION_BUTTON = "DISPLAY_SECTION_BUTTON"
 
-        fun newInstance(rulesToDisplay: RulesToDisplay, displaySectionButton: Boolean = false): RulesFragment {
+        fun newInstance(
+            rulesToDisplay: RulesToDisplay,
+            displaySectionButton: Boolean = false
+        ): RulesFragment {
             return RulesFragment().apply {
                 arguments = bundleOf(
-                        ARG_RULES_TO_DISPLAY to rulesToDisplay,
-                        ARG_DISPLAY_SECTION_BUTTON to displaySectionButton
+                    ARG_RULES_TO_DISPLAY to rulesToDisplay,
+                    ARG_DISPLAY_SECTION_BUTTON to displaySectionButton
                 )
             }
         }

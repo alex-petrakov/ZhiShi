@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
@@ -16,19 +18,13 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.Basi
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.CharSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.LinkRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleViewModel.Companion.ARG_DISPLAY_SECTION_BUTTON
+import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleViewModel.Companion.ARG_RULE_ID
 
+@AndroidEntryPoint
 class RuleFragment : Fragment() {
 
-    private val viewModel by viewModel<RuleViewModel> {
-        val args = requireArguments()
-        check(args.containsKey(ARG_RULE_ID)) { "Required rule ID argument is missing" }
-        check(args.containsKey(ARG_DISPLAY_SECTION_BUTTON)) { "Required argument is missing" }
-        val ruleId = args.getLong(ARG_RULE_ID)
-        val displaySectionButton = args.getBoolean(ARG_DISPLAY_SECTION_BUTTON)
-        parametersOf(ruleId, displaySectionButton)
-    }
+    private val viewModel by viewModels<RuleViewModel>()
 
     private var _binding: FragmentRuleBinding? = null
 
@@ -36,14 +32,14 @@ class RuleFragment : Fragment() {
 
     private val ruleTextRenderer by lazy {
         StyledTextRenderer(
-                paragraphSpansRenderer = ParagraphSpanRenderer(
-                        requireActivity().theme,
-                        binding.ruleContentTv.paint
-                ),
-                characterSpansRenderer = CharSpanRenderer(requireActivity().theme),
-                linksRenderer = LinkRenderer { clickedRuleId ->
-                    viewModel.onRuleLinkClick(clickedRuleId)
-                }
+            paragraphSpansRenderer = ParagraphSpanRenderer(
+                requireActivity().theme,
+                binding.ruleContentTv.paint
+            ),
+            characterSpansRenderer = CharSpanRenderer(requireActivity().theme),
+            linksRenderer = LinkRenderer { clickedRuleId ->
+                viewModel.onRuleLinkClick(clickedRuleId)
+            }
         )
     }
 
@@ -98,14 +94,11 @@ class RuleFragment : Fragment() {
 
     companion object {
 
-        private const val ARG_RULE_ID = "RULE_ID"
-        private const val ARG_DISPLAY_SECTION_BUTTON = "DISPLAY_SECTION_BUTTON"
-
         fun newInstance(ruleId: Long, displaySectionButton: Boolean = false): RuleFragment {
             return RuleFragment().apply {
                 arguments = bundleOf(
-                        ARG_RULE_ID to ruleId,
-                        ARG_DISPLAY_SECTION_BUTTON to displaySectionButton
+                    ARG_RULE_ID to ruleId,
+                    ARG_DISPLAY_SECTION_BUTTON to displaySectionButton
                 )
             }
         }

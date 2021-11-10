@@ -15,18 +15,20 @@ import com.github.terrakok.cicerone.Replace
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ActivityHostBinding
-import org.koin.android.ext.android.inject
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HostActivity : AppCompatActivity() {
 
     private val navigator = object : AppNavigator(this, R.id.fragment_container) {
         override fun setupFragmentTransaction(
-                screen: FragmentScreen,
-                fragmentTransaction: FragmentTransaction,
-                currentFragment: Fragment?,
-                nextFragment: Fragment
+            screen: FragmentScreen,
+            fragmentTransaction: FragmentTransaction,
+            currentFragment: Fragment?,
+            nextFragment: Fragment
         ) {
             if (currentFragment == null) {
                 return
@@ -42,7 +44,8 @@ class HostActivity : AppCompatActivity() {
         }
     }
 
-    private val navigatorHolder by inject<NavigatorHolder>()
+    @Inject
+    lateinit var navigatorHolder: NavigatorHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

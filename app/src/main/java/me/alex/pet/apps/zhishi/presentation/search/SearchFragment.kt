@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.material.chip.Chip
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -25,13 +27,13 @@ import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddin
 import me.alex.pet.apps.zhishi.presentation.common.extensions.focusAndShowKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.hideKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.textChanges
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @FlowPreview
 @ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
-    private val viewModel by viewModel<SearchViewModel>()
+    private val viewModel by viewModels<SearchViewModel>()
 
     private var _binding: FragmentSearchBinding? = null
 
@@ -52,7 +54,11 @@ class SearchFragment : Fragment() {
         firstStart = savedInstanceState?.getBoolean(STATE_FIRST_START, true) ?: true
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -83,9 +89,9 @@ class SearchFragment : Fragment() {
             viewModel.onBackPressed()
         }
         queryEt.textChanges()
-                .debounce(300)
-                .onEach { viewModel.onUpdateQuery(it.toString()) }
-                .launchIn(viewLifecycleOwner.lifecycleScope)
+            .debounce(300)
+            .onEach { viewModel.onUpdateQuery(it.toString()) }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
         if (firstStart) {
             queryEt.post { queryEt.focusAndShowKeyboard() }
             firstStart = false
@@ -125,9 +131,9 @@ class SearchFragment : Fragment() {
     private fun inflateSuggestionChips(suggestions: List<String>) = with(binding) {
         suggestions.map { suggestion ->
             val chip = layoutInflater.inflate(
-                    R.layout.view_suggestion_chip,
-                    suggestionsChipGroup,
-                    false
+                R.layout.view_suggestion_chip,
+                suggestionsChipGroup,
+                false
             ) as Chip
             chip.apply {
                 text = suggestion
