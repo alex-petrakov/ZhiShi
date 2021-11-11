@@ -43,6 +43,7 @@ class ContentsFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 extendBottomPaddingWithSystemInsets()
             }
+            setHasFixedSize(true)
             clipToPadding = false
             layoutManager = LinearLayoutManager(context)
             adapter = contentsAdapter

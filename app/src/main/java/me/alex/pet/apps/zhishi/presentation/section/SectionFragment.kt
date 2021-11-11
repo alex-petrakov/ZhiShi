@@ -48,6 +48,7 @@ class SectionFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 extendBottomPaddingWithSystemInsets()
             }
+            setHasFixedSize(true)
             clipToPadding = false
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rulesAdapter
