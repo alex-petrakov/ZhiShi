@@ -28,8 +28,6 @@ import me.alex.pet.apps.zhishi.presentation.common.extensions.focusAndShowKeyboa
 import me.alex.pet.apps.zhishi.presentation.common.extensions.hideKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.textChanges
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
@@ -69,6 +67,7 @@ class SearchFragment : Fragment() {
         subscribeToModel()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun prepareView() = with(binding) {
         recyclerView.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
