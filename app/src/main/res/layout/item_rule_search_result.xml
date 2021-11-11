@@ -1,56 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_clickable_surface">
+    android:background="@drawable/bg_clickable_surface"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
 
     <TextView
         android:id="@+id/number_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
         android:textAppearance="?textAppearanceBody1"
         android:textColor="?colorPrimary"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:text="§ 1" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="72dp" />
+        android:orientation="vertical">
 
-    <me.alex.pet.apps.zhishi.presentation.common.ColoredUnderlineTextView
-        android:id="@+id/annotation_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:ellipsize="end"
-        android:maxLines="4"
-        android:textAppearance="?textAppearanceBody1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="@+id/number_text_view"
-        tools:text="у, а, и после ж, ч, ш, щ" />
+        <me.alex.pet.apps.zhishi.presentation.common.ColoredUnderlineTextView
+            android:id="@+id/annotation_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:textAppearance="?textAppearanceBody1"
+            tools:text="у, а, и после ж, ч, ш, щ" />
 
-    <me.alex.pet.apps.zhishi.presentation.common.ColoredUnderlineTextView
-        android:id="@+id/snippet_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="12dp"
-        android:ellipsize="end"
-        android:maxLines="5"
-        android:textAppearance="?textAppearanceBody1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/annotation_text_view"
-        app:layout_constraintStart_toStartOf="@+id/annotation_text_view"
-        app:layout_constraintTop_toBottomOf="@+id/annotation_text_view"
-        tools:text="После ж, ч, ш, щ не пишутся ю, я, ы, а пишутся у, а, и, например: чудо, щука, час, роща, жир, шить." />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <me.alex.pet.apps.zhishi.presentation.common.ColoredUnderlineTextView
+            android:id="@+id/snippet_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxLines="5"
+            android:textAppearance="?textAppearanceBody1"
+            tools:text="После ж, ч, ш, щ не пишутся ю, я, ы, а пишутся у, а, и, например: чудо, щука, час, роща, жир, шить." />
+    </LinearLayout>
+</LinearLayout>
