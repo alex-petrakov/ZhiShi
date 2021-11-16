@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.rules.Rule
 import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.AppScreens
+import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 import me.alex.pet.apps.zhishi.presentation.common.extensions.getOrThrow
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
 import javax.inject.Inject
@@ -34,6 +35,9 @@ class RuleViewModel @Inject constructor(
         liveData { emit(mapRuleToViewState(rule)) }
     }
 
+    private val _viewEffect = SingleLiveEvent<ViewEffect>()
+    val viewEffect: LiveData<ViewEffect> get() = _viewEffect
+
     fun onRuleLinkClick(ruleId: Long) {
         viewModelScope.launch {
             val neighbours = rulesRepository.getIdsOfRulesInSameSection(ruleId)
@@ -47,6 +51,10 @@ class RuleViewModel @Inject constructor(
         return withContext(Dispatchers.Default) {
             ViewState(rule.content, displaySectionButton, rule.section.name)
         }
+    }
+
+    fun onShareRuleText() {
+        _viewEffect.value = ViewEffect.ShareRuleText(rule.value!!.content.string)
     }
 
     fun onNavigateToSection() {

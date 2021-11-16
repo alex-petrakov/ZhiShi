@@ -23,14 +23,17 @@ class RulesAdapter(
     override fun getItemCount() = ruleIds.size
 
     override fun createFragment(position: Int) = RuleFragment.newInstance(
-            ruleIds[position],
-            displaySectionButton
+        ruleIds[position],
+        displaySectionButton
     )
 
     override fun onViewDetachedFromWindow(holder: FragmentViewHolder) {
         super.onViewDetachedFromWindow(holder)
-        val fragment = fragment.childFragmentManager
-                .findFragmentByTag("f${holder.adapterPosition}") as RuleFragment
-        fragment.resetScroll()
+        val fragment = findFragmentAt(holder.adapterPosition) as? RuleFragment
+        fragment?.resetScroll()
+    }
+
+    fun findFragmentAt(position: Int): Fragment? {
+        return fragment.childFragmentManager.findFragmentByTag("f$position")
     }
 }

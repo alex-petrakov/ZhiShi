@@ -13,4 +13,8 @@
         android:icon="@drawable/ic_action_next_page"
         android:title="@string/rule_action_go_to_next_page"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/rule_action_share"
+        app:showAsAction="never" />
 </menu>

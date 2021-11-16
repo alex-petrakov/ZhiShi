@@ -1,5 +1,6 @@
 package me.alex.pet.apps.zhishi.presentation.rules.rule
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -11,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRuleBinding
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
@@ -62,6 +64,16 @@ class RuleFragment : Fragment() {
         subscribeToModel()
     }
 
+    fun onMenuItemClick(itemId: Int): Boolean {
+        return when (itemId) {
+            R.id.action_share -> {
+                viewModel.onShareRuleText()
+                true
+            }
+            else -> false
+        }
+    }
+
     private fun prepareView(): Unit = with(binding) {
         scrollView.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -75,12 +87,27 @@ class RuleFragment : Fragment() {
 
     private fun subscribeToModel(): Unit = with(viewModel) {
         viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
+        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
     }
 
     private fun render(state: ViewState): Unit = with(binding) {
         ruleTextRenderer.render(state.ruleContent, ruleContentTv)
         sectionButton.isVisible = state.sectionButtonIsVisible
         sectionButton.text = sectionNameRenderer.convertToSpanned(state.sectionName)
+    }
+
+    private fun handle(effect: ViewEffect) {
+        when (effect) {
+            is ViewEffect.ShareRuleText -> shareTextThroughShareSheet(effect.text)
+        }
+    }
+
+    private fun shareTextThroughShareSheet(text: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = MIME_TYPE_PLAIN_TEXT
+        }
+        startActivity(Intent.createChooser(shareIntent, null))
     }
 
     fun resetScroll() {
@@ -93,6 +120,8 @@ class RuleFragment : Fragment() {
     }
 
     companion object {
+
+        private const val MIME_TYPE_PLAIN_TEXT = "text/plain"
 
         fun newInstance(ruleId: Long, displaySectionButton: Boolean = false): RuleFragment {
             return RuleFragment().apply {

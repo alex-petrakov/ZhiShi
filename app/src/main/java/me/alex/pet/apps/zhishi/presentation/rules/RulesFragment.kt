@@ -11,6 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRulesBinding
 import me.alex.pet.apps.zhishi.presentation.rules.RulesViewModel.Companion.ARG_RULES_TO_DISPLAY
+import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleFragment
 
 @AndroidEntryPoint
 class RulesFragment : Fragment() {
@@ -21,9 +22,15 @@ class RulesFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private val rulesToDisplay by lazy {
-        requireArguments().getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
+    private val rulesToDisplay: RulesToDisplay
+        get() = requireArguments().getParcelable(ARG_RULES_TO_DISPLAY)
             ?: throw IllegalStateException("Required argument is missing")
+
+    private val displaySectionButton: Boolean
+        get() = requireArguments().getBoolean(ARG_DISPLAY_SECTION_BUTTON)
+
+    private val rulesAdapter by lazy {
+        RulesAdapter(this@RulesFragment, rulesToDisplay.ids, displaySectionButton)
     }
 
     private lateinit var nextPageMenuItem: MenuItem
@@ -39,7 +46,14 @@ class RulesFragment : Fragment() {
     }
 
     private val menuItemClickListener = Toolbar.OnMenuItemClickListener { item ->
-        when (item.itemId) {
+
+        fun dispatchMenuItemClickToChildFragment(item: MenuItem): Boolean {
+            val selectedPosition = binding.viewPager.currentItem
+            val fragment = rulesAdapter.findFragmentAt(selectedPosition) as? RuleFragment
+            return fragment?.onMenuItemClick(item.itemId) ?: false
+        }
+
+        fun handleMenuItemClick(item: MenuItem) = when (item.itemId) {
             R.id.action_go_to_next_page -> {
                 binding.viewPager.currentItem += 1
                 true
@@ -49,6 +63,13 @@ class RulesFragment : Fragment() {
                 true
             }
             else -> false
+        }
+
+        val eventWasConsumedByChildFragment = dispatchMenuItemClickToChildFragment(item)
+        return@OnMenuItemClickListener if (eventWasConsumedByChildFragment) {
+            true
+        } else {
+            handleMenuItemClick(item)
         }
     }
 
@@ -70,13 +91,8 @@ class RulesFragment : Fragment() {
     private fun prepareView(savedInstanceState: Bundle?): Unit = with(binding) {
         prepareToolbar()
 
-        val args = requireArguments()
-        val rulesToDisplay = args.getParcelable<RulesToDisplay>(ARG_RULES_TO_DISPLAY)
-            ?: throw IllegalStateException("Required argument is missing")
-        check(args.containsKey(ARG_DISPLAY_SECTION_BUTTON)) { "Required argument is missing" }
-        val displaySectionButton = args.getBoolean(ARG_DISPLAY_SECTION_BUTTON)
         viewPager.apply {
-            adapter = RulesAdapter(this@RulesFragment, rulesToDisplay.ids, displaySectionButton)
+            adapter = rulesAdapter
             registerOnPageChangeCallback(onPageChangeCallback)
             if (savedInstanceState == null) {
                 setCurrentItem(rulesToDisplay.selectionIndex, false)
