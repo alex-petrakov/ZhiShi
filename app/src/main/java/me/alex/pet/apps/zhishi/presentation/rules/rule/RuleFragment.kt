@@ -1,12 +1,12 @@
 package me.alex.pet.apps.zhishi.presentation.rules.rule
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ShareCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -103,11 +103,10 @@ class RuleFragment : Fragment() {
     }
 
     private fun shareTextThroughShareSheet(text: String) {
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_TEXT, text)
-            type = MIME_TYPE_PLAIN_TEXT
-        }
-        startActivity(Intent.createChooser(shareIntent, null))
+        ShareCompat.IntentBuilder(requireActivity())
+            .setText(text)
+            .setType(MIME_TYPE_PLAIN_TEXT)
+            .startChooser()
     }
 
     fun resetScroll() {
