@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.alex.pet.apps.zhishi.data.common.ScreenshotProvider
 import me.alex.pet.apps.zhishi.domain.rules.Rule
 import me.alex.pet.apps.zhishi.domain.rules.RulesRepository
 import me.alex.pet.apps.zhishi.presentation.AppScreens
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class RuleViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
     private val rulesRepository: RulesRepository,
+    private val screenshotProvider: ScreenshotProvider,
     private val router: Router
 ) : ViewModel() {
 
@@ -57,8 +59,21 @@ class RuleViewModel @Inject constructor(
         _viewEffect.value = ViewEffect.ShareRuleText(rule.value!!.content.string)
     }
 
+    fun onShareRuleAsImage() {
+        _viewEffect.value = ViewEffect.RequestViewSnapshot
+    }
+
     fun onNavigateToSection() {
         router.navigateTo(AppScreens.section(rule.value!!.section.id))
+    }
+
+    fun onScreenshotCaptured(bytes: ByteArray) {
+        viewModelScope.launch {
+            val uri = screenshotProvider.shareScreenshot(bytes)
+            if (uri != null) {
+                _viewEffect.value = ViewEffect.ShareRuleSnapshot(uri)
+            }
+        }
     }
 
     companion object {

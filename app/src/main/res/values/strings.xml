@@ -28,4 +28,6 @@
     <string name="about_title_inspiration">Вдохновение</string>
     <string name="about_the_rules_ru" translatable="false">therules.ru</string>
     <string name="about_error_no_web_browser">Не удалось найти веб-браузер</string>
+    <string name="rule_action_share_as_text">Текстом</string>
+    <string name="rule_action_share_as_image">Картинкой</string>
 </resources>

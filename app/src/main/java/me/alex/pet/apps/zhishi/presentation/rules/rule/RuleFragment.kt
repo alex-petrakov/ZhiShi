@@ -1,12 +1,16 @@
 package me.alex.pet.apps.zhishi.presentation.rules.rule
 
-import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ShareCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -22,6 +26,7 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.Link
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.ParagraphSpanRenderer
 import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleViewModel.Companion.ARG_DISPLAY_SECTION_BUTTON
 import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleViewModel.Companion.ARG_RULE_ID
+import java.io.ByteArrayOutputStream
 
 @AndroidEntryPoint
 class RuleFragment : Fragment() {
@@ -66,8 +71,12 @@ class RuleFragment : Fragment() {
 
     fun onMenuItemClick(itemId: Int): Boolean {
         return when (itemId) {
-            R.id.action_share -> {
+            R.id.action_share_as_text -> {
                 viewModel.onShareRuleText()
+                true
+            }
+            R.id.action_share_as_image -> {
+                viewModel.onShareRuleAsImage()
                 true
             }
             else -> false
@@ -99,15 +108,42 @@ class RuleFragment : Fragment() {
     private fun handle(effect: ViewEffect) {
         when (effect) {
             is ViewEffect.ShareRuleText -> shareTextThroughShareSheet(effect.text)
+            is ViewEffect.ShareRuleSnapshot -> shareImageThroughShareSheet(effect.snapshotUri)
+            ViewEffect.RequestViewSnapshot -> captureScreenshotAndShareIt()
         }
     }
 
     private fun shareTextThroughShareSheet(text: String) {
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_TEXT, text)
-            type = MIME_TYPE_PLAIN_TEXT
+        ShareCompat.IntentBuilder(requireContext())
+            .setType(MIME_TYPE_PLAIN_TEXT)
+            .setText(text)
+            .startChooser()
+    }
+
+    private fun shareImageThroughShareSheet(uri: Uri) {
+        ShareCompat.IntentBuilder(requireContext())
+            .setType(MIME_TYPE_JPEG_IMAGE)
+            .addStream(uri)
+            .startChooser()
+    }
+
+    private fun captureScreenshotAndShareIt(): Unit = with(binding) {
+        // TODO: (1) consider scaling the bitmap
+        val bitmap =
+            Bitmap.createBitmap(ruleContentTv.width, ruleContentTv.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap).apply {
+            drawColor(Color.WHITE) // TODO: (2) use theme attribute
         }
-        startActivity(Intent.createChooser(shareIntent, null))
+
+        root.draw(canvas)
+
+        // TODO: (3) consider compressing the bitmap only once
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+
+        val bytes = outputStream.toByteArray()
+        bitmap.recycle()
+        viewModel.onScreenshotCaptured(bytes)
     }
 
     fun resetScroll() {
@@ -122,6 +158,7 @@ class RuleFragment : Fragment() {
     companion object {
 
         private const val MIME_TYPE_PLAIN_TEXT = "text/plain"
+        private const val MIME_TYPE_JPEG_IMAGE = "image/jpeg"
 
         fun newInstance(ruleId: Long, displaySectionButton: Boolean = false): RuleFragment {
             return RuleFragment().apply {
