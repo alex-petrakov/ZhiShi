@@ -34,15 +34,10 @@
             android:orientation="vertical">
 
             <TextView
+                style="@style/Widget.ZhiShi.TextCell.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:minHeight="56dp"
-                android:paddingHorizontal="16dp"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:text="@string/about_title"
-                android:textAppearance="?textAppearanceHeadline6" />
+                android:text="@string/about_title" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -111,27 +106,38 @@
 
             <TextView
                 android:id="@+id/see_open_source_licenses_button"
+                style="@style/Widget.ZhiShi.TextCell.Action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_clickable_surface"
-                android:minHeight="48dp"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:text="@string/about_see_open_source_licences"
-                android:textAppearance="?textAppearanceSubtitle1"
-                android:textColor="?colorPrimary" />
+                android:text="@string/about_see_open_source_licences" />
 
             <TextView
                 android:id="@+id/see_privacy_policy_button"
+                style="@style/Widget.ZhiShi.TextCell.Action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_clickable_surface"
-                android:minHeight="48dp"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="12dp"
-                android:text="@string/about_see_privacy_policy"
-                android:textAppearance="?textAppearanceSubtitle1"
-                android:textColor="?colorPrimary" />
+                android:text="@string/about_see_privacy_policy" />
+
+            <TextView
+                style="@style/Widget.ZhiShi.TextCell.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_feedback_title" />
+
+            <TextView
+                android:id="@+id/rate_app_button"
+                style="@style/Widget.ZhiShi.TextCell.Action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_rate_app" />
+
+            <TextView
+                android:id="@+id/email_developer_button"
+                style="@style/Widget.ZhiShi.TextCell.Action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/about_email_developer" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
