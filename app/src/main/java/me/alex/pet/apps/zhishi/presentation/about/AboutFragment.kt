@@ -51,12 +51,16 @@ class AboutFragment : Fragment() {
             clipToPadding = false
         }
         toolbar.setNavigationOnClickListener { router.exit() }
+
         versionTextView.text = BuildConfig.VERSION_NAME
+
         inspirationCell.setOnClickListener { openWebLink("https://therules.ru") }
         seeOpenSourceLicensesButton.setOnClickListener { router.navigateTo(AppScreens.licenses()) }
         seePrivacyPolicyButton.setOnClickListener {
             openWebLink("https://alex-petrakov.github.io/ZhiShiPrivacy")
         }
+
+        rateAppButton.setOnClickListener { openAppPageInGooglePlay() }
     }
 
     private fun openWebLink(url: String) {
@@ -65,6 +69,19 @@ class AboutFragment : Fragment() {
             requireActivity().startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             Snackbar.make(binding.root, R.string.about_error_no_web_browser, Snackbar.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    private fun openAppPageInGooglePlay() {
+        val appId = BuildConfig.APPLICATION_ID.removeSuffix(".debug")
+        val intent = Intent(Intent.ACTION_VIEW)
+            .setData(Uri.parse("https://play.google.com/store/apps/details?id=$appId"))
+            .setPackage("com.android.vending")
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Snackbar.make(binding.root, R.string.about_error_no_google_play, Snackbar.LENGTH_SHORT)
                 .show()
         }
     }
