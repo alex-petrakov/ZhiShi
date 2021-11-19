@@ -17,6 +17,7 @@ import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentAboutBinding
 import me.alex.pet.apps.zhishi.presentation.AppScreens
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,12 +62,13 @@ class AboutFragment : Fragment() {
         }
 
         rateAppButton.setOnClickListener { openAppPageInGooglePlay() }
+        emailDeveloperButton.setOnClickListener { composeFeedbackEmail() }
     }
 
     private fun openWebLink(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         try {
-            requireActivity().startActivity(intent)
+            startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             Snackbar.make(binding.root, R.string.about_error_no_web_browser, Snackbar.LENGTH_SHORT)
                 .show()
@@ -82,6 +84,38 @@ class AboutFragment : Fragment() {
             startActivity(intent)
         } catch (e: ActivityNotFoundException) {
             Snackbar.make(binding.root, R.string.about_error_no_google_play, Snackbar.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    private fun composeFeedbackEmail() {
+        val appVersion = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+        val device = "${Build.MANUFACTURER} ${Build.MODEL}"
+        val osVersion = "${Build.VERSION.RELEASE} (${Build.VERSION.SDK_INT})"
+        val locale = Locale.getDefault()
+
+        val recipients = arrayOf("alex.petrakov.dev@gmail.com")
+        val emailSubject = getString(R.string.feedback_email_subject_template, appVersion)
+        val emailBody = getString(
+            R.string.feedback_email_body_template,
+            appVersion,
+            device,
+            osVersion,
+            locale
+        )
+        composeEmail(recipients, emailSubject, emailBody)
+    }
+
+    private fun composeEmail(recipients: Array<String>, subject: String, body: String) {
+        val intent = Intent(Intent.ACTION_SENDTO)
+            .setData(Uri.parse("mailto:"))
+            .putExtra(Intent.EXTRA_EMAIL, recipients)
+            .putExtra(Intent.EXTRA_SUBJECT, subject)
+            .putExtra(Intent.EXTRA_TEXT, body)
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Snackbar.make(binding.root, R.string.about_error_no_email_client, Snackbar.LENGTH_SHORT)
                 .show()
         }
     }

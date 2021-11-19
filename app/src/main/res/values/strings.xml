@@ -31,4 +31,7 @@
     <string name="about_rate_app">Оценить приложение в Google Play</string>
     <string name="about_error_no_google_play">Не удалось открыть Google Play</string>
     <string name="about_email_developer">Написать разработчику</string>
+    <string name="about_error_no_email_client">Не удалось открыть почтовый клиент</string>
+    <string name="feedback_email_subject_template">Правила русского языка %s</string>
+    <string name="feedback_email_body_template">Версия приложения: %s\nУстройство: %s\nВерсия ОС: %s\nЯзык: %s</string>
 </resources>
