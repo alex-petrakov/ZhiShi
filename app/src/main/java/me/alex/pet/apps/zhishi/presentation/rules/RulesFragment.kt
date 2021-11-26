@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRulesBinding
+import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
 import me.alex.pet.apps.zhishi.presentation.rules.RulesViewModel.Companion.ARG_RULES_TO_DISPLAY
 import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleFragment
 
@@ -71,6 +72,11 @@ class RulesFragment : Fragment() {
         } else {
             handleMenuItemClick(item)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MaterialZAxisTransition.setupOriginAndDestination(this)
     }
 
     override fun onCreateView(

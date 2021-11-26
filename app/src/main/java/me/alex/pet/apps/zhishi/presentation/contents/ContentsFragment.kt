@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentContentsBinding
+import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 
 @AndroidEntryPoint
@@ -27,7 +28,16 @@ class ContentsFragment : Fragment() {
         viewModel.onClickSection(clickedSectionId)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MaterialZAxisTransition.setupOrigin(this)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentContentsBinding.inflate(inflater, container, false)
         return binding.root
     }

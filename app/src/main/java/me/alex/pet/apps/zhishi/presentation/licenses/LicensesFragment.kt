@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.github.terrakok.cicerone.Router
 import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.databinding.FragmentLicensesBinding
+import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -19,6 +20,11 @@ class LicensesFragment : Fragment() {
 
     @Inject
     lateinit var router: Router
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MaterialZAxisTransition.setupOriginAndDestination(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

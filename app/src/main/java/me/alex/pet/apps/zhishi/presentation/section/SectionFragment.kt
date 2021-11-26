@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSectionBinding
+import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import me.alex.pet.apps.zhishi.presentation.section.SectionViewModel.Companion.ARG_SECTION_ID
 
@@ -26,6 +27,11 @@ class SectionFragment : Fragment() {
 
     private val rulesAdapter = RulesAdapter { clickedRuleId ->
         viewModel.onClickRule(clickedRuleId)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MaterialZAxisTransition.setupOriginAndDestination(this)
     }
 
     override fun onCreateView(

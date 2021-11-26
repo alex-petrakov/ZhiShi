@@ -16,6 +16,7 @@ import me.alex.pet.apps.zhishi.BuildConfig
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentAboutBinding
 import me.alex.pet.apps.zhishi.presentation.AppScreens
+import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import java.util.*
 import javax.inject.Inject
@@ -29,6 +30,11 @@ class AboutFragment : Fragment() {
 
     @Inject
     lateinit var router: Router
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MaterialZAxisTransition.setupOriginAndDestination(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

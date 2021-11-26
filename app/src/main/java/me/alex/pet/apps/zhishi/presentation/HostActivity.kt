@@ -8,13 +8,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Replace
 import com.github.terrakok.cicerone.androidx.AppNavigator
-import com.github.terrakok.cicerone.androidx.FragmentScreen
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.ActivityHostBinding
@@ -23,26 +19,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HostActivity : AppCompatActivity() {
 
-    private val navigator = object : AppNavigator(this, R.id.fragment_container) {
-        override fun setupFragmentTransaction(
-            screen: FragmentScreen,
-            fragmentTransaction: FragmentTransaction,
-            currentFragment: Fragment?,
-            nextFragment: Fragment
-        ) {
-            if (currentFragment == null) {
-                return
-            }
-            currentFragment.apply {
-                exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-                reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-            }
-            nextFragment.apply {
-                enterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true)
-                returnTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false)
-            }
-        }
-    }
+    private val navigator = AppNavigator(this, R.id.fragment_container)
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder

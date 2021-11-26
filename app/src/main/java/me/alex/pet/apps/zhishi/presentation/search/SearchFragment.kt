@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSearchBinding
+import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
 import me.alex.pet.apps.zhishi.presentation.common.extensions.focusAndShowKeyboard
 import me.alex.pet.apps.zhishi.presentation.common.extensions.hideKeyboard
@@ -49,6 +50,7 @@ class SearchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MaterialZAxisTransition.setupOriginAndDestination(this)
         firstStart = savedInstanceState?.getBoolean(STATE_FIRST_START, true) ?: true
     }
 
