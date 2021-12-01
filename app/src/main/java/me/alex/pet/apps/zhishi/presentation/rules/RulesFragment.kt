@@ -12,7 +12,6 @@ import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentRulesBinding
 import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
 import me.alex.pet.apps.zhishi.presentation.rules.RulesViewModel.Companion.ARG_RULES_TO_DISPLAY
-import me.alex.pet.apps.zhishi.presentation.rules.rule.RuleFragment
 
 @AndroidEntryPoint
 class RulesFragment : Fragment() {
@@ -30,10 +29,6 @@ class RulesFragment : Fragment() {
     private val displaySectionButton: Boolean
         get() = requireArguments().getBoolean(ARG_DISPLAY_SECTION_BUTTON)
 
-    private val rulesAdapter by lazy {
-        RulesAdapter(this@RulesFragment, rulesToDisplay.ids, displaySectionButton)
-    }
-
     private lateinit var nextPageMenuItem: MenuItem
 
     private lateinit var prevPageMenuItem: MenuItem
@@ -50,8 +45,9 @@ class RulesFragment : Fragment() {
 
         fun dispatchMenuItemClickToChildFragment(item: MenuItem): Boolean {
             val selectedPosition = binding.viewPager.currentItem
-            val fragment = rulesAdapter.findFragmentAt(selectedPosition) as? RuleFragment
-            return fragment?.onMenuItemClick(item.itemId) ?: false
+            val rulesAdapter = binding.viewPager.adapter as? RulesAdapter ?: return false
+            val fragment = rulesAdapter.findFragmentAt(selectedPosition) ?: return false
+            return fragment.onMenuItemClick(item.itemId)
         }
 
         fun handleMenuItemClick(item: MenuItem) = when (item.itemId) {
@@ -98,7 +94,9 @@ class RulesFragment : Fragment() {
         prepareToolbar()
 
         viewPager.apply {
-            adapter = rulesAdapter
+            // The same instance of FragmentStateAdapter can't be attached to the underlying RecyclerView
+            // twice, hence a completely new instance of RulesAdapter must be created here every time
+            adapter = RulesAdapter(this@RulesFragment, rulesToDisplay.ids, displaySectionButton)
             registerOnPageChangeCallback(onPageChangeCallback)
             if (savedInstanceState == null) {
                 setCurrentItem(rulesToDisplay.selectionIndex, false)

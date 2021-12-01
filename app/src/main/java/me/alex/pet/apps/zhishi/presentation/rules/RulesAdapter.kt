@@ -29,11 +29,11 @@ class RulesAdapter(
 
     override fun onViewDetachedFromWindow(holder: FragmentViewHolder) {
         super.onViewDetachedFromWindow(holder)
-        val fragment = findFragmentAt(holder.adapterPosition) as? RuleFragment
+        val fragment = findFragmentAt(holder.adapterPosition)
         fragment?.resetScroll()
     }
 
-    fun findFragmentAt(position: Int): Fragment? {
-        return fragment.childFragmentManager.findFragmentByTag("f$position")
+    fun findFragmentAt(position: Int): RuleFragment? {
+        return fragment.childFragmentManager.findFragmentByTag("f$position") as? RuleFragment
     }
 }
