@@ -9,16 +9,15 @@
     tools:context=".presentation.section.SectionFragment">
 
     <com.google.android.material.appbar.AppBarLayout
+        style="@style/Widget.MaterialComponents.AppBarLayout.Surface"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:liftOnScroll="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="@style/Widget.MaterialComponents.Toolbar.Surface"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="4dp"
             app:navigationContentDescription="@string/app_navigate_up"
             app:navigationIcon="@drawable/ic_action_up"
             tools:title="§ 15–16" />

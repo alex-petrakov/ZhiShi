@@ -1,5 +1,5 @@
 <resources>
-    <style name="BaseAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Material theme attributes -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
@@ -13,6 +13,11 @@
         <item name="colorOnBackground">@color/colorOnBackground</item>
         <item name="colorSurface">@color/colorSurface</item>
         <item name="colorOnSurface">@color/colorOnSurface</item>
+
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorTertiary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
 
         <item name="textAppearanceHeadline1">@style/TextAppearance.ZhiShi.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.ZhiShi.Headline2</item>
@@ -29,7 +34,7 @@
         <item name="textAppearanceButton">@style/TextAppearance.ZhiShi.Button</item>
 
         <item name="android:statusBarColor">@color/colorSurface</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">@bool/status_bar_is_light</item>
 
         <item name="chipStyle">@style/Widget.ZhiShi.Chip.Action</item>
 
