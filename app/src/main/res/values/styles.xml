@@ -38,6 +38,7 @@
 
         <item name="appBarLayoutStyle">@style/Widget.ZhiShi.AppBarLayout</item>
         <item name="toolbarStyle">@style/Widget.ZhiShi.Toolbar</item>
+        <item name="radioButtonStyle">@style/Widget.ZhiShi.RadioButton</item>
         <item name="chipStyle">@style/Widget.ZhiShi.Chip.Action</item>
         <item name="editTextStyle">@style/Base.Widget.MaterialComponents.TextInputEditText</item>
 
@@ -136,6 +137,13 @@
 
     <style name="ThemeOverlay.ZhiShi.Toolbar" parent="">
         <item name="elevationOverlayEnabled">false</item>
+    </style>
+
+    <style name="Widget.ZhiShi.RadioButton" parent="Widget.MaterialComponents.CompoundButton.RadioButton">
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textAppearance">?textAppearanceBody1</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">0dp</item>
     </style>
 
 

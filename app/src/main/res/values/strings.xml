@@ -35,4 +35,9 @@
     <string name="about_error_no_email_client">Не удалось открыть почтовый клиент</string>
     <string name="feedback_email_subject_template">Правила русского языка %s</string>
     <string name="feedback_email_body_template">Версия приложения: %s\nУстройство: %s\nВерсия ОС: %s\nЯзык: %s</string>
+    <string name="about_settings_title">Настройки</string>
+    <string name="about_theme">Тема оформления</string>
+    <string name="about_theme_system">Системная</string>
+    <string name="about_theme_light">Светлая</string>
+    <string name="about_theme_dark">Тёмная</string>
 </resources>

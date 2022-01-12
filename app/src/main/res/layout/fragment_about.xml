@@ -36,6 +36,48 @@
                 style="@style/Widget.ZhiShi.TextCell.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/about_settings_title" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:text="@string/about_theme"
+                android:textAppearance="?textAppearanceSubtitle1" />
+
+            <RadioGroup
+                android:id="@+id/theme_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="16dp">
+
+                <RadioButton
+                    android:id="@+id/theme_system_radio_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_theme_system" />
+
+                <RadioButton
+                    android:id="@+id/theme_light_radio_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_theme_light" />
+
+                <RadioButton
+                    android:id="@+id/theme_dark_radio_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_theme_dark" />
+            </RadioGroup>
+
+            <TextView
+                style="@style/Widget.ZhiShi.TextCell.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/about_title" />
 
             <LinearLayout
@@ -121,6 +163,7 @@
                 style="@style/Widget.ZhiShi.TextCell.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/about_feedback_title" />
 
             <TextView
