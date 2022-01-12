@@ -36,8 +36,9 @@
         <item name="android:statusBarColor">@color/colorSurface</item>
         <item name="android:windowLightStatusBar">@bool/status_bar_is_light</item>
 
+        <item name="appBarLayoutStyle">@style/Widget.ZhiShi.AppBarLayout</item>
+        <item name="toolbarStyle">@style/Widget.ZhiShi.Toolbar</item>
         <item name="chipStyle">@style/Widget.ZhiShi.Chip.Action</item>
-
         <item name="editTextStyle">@style/Base.Widget.MaterialComponents.TextInputEditText</item>
 
         <!-- Custom attributes -->
@@ -123,6 +124,18 @@
     <style name="ShapeAppearance.ZhiShi.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="Widget.ZhiShi.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.ZhiShi.Toolbar</item>
+    </style>
+
+    <style name="Widget.ZhiShi.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.ZhiShi.Toolbar</item>
+    </style>
+
+    <style name="ThemeOverlay.ZhiShi.Toolbar" parent="">
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
 
