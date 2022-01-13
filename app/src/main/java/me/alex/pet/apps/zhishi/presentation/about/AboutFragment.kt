@@ -8,13 +8,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.github.terrakok.cicerone.Router
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import me.alex.pet.apps.zhishi.BuildConfig
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentAboutBinding
+import me.alex.pet.apps.zhishi.domain.settings.ThemeSwitchingMode
 import me.alex.pet.apps.zhishi.presentation.AppScreens
 import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
 import me.alex.pet.apps.zhishi.presentation.common.extensions.extendBottomPaddingWithSystemInsets
@@ -23,6 +26,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class AboutFragment : Fragment() {
+
+    private val viewModel by viewModels<AboutViewModel>()
 
     private var _binding: FragmentAboutBinding? = null
 
@@ -48,6 +53,7 @@ class AboutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareView()
+        subscribeToModel()
     }
 
     private fun prepareView(): Unit = with(binding) {
@@ -59,6 +65,11 @@ class AboutFragment : Fragment() {
         }
         toolbar.setNavigationOnClickListener { router.exit() }
 
+        themeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val themeSwitchingMode = themeSwitchingModeFrom(checkedId)
+            viewModel.onChangeThemeSwitchingMode(themeSwitchingMode)
+        }
+
         versionTextView.text = BuildConfig.VERSION_NAME
 
         inspirationCell.setOnClickListener { openWebLink("https://therules.ru") }
@@ -69,6 +80,38 @@ class AboutFragment : Fragment() {
 
         rateAppButton.setOnClickListener { openAppPageInGooglePlay() }
         emailDeveloperButton.setOnClickListener { composeFeedbackEmail() }
+    }
+
+    private fun themeSwitchingModeFrom(@IdRes radioButtonId: Int) = when (radioButtonId) {
+        R.id.theme_system_radio_btn -> ThemeSwitchingMode.FOLLOW_SYSTEM
+        R.id.theme_light_radio_btn -> ThemeSwitchingMode.ALWAYS_LIGHT
+        R.id.theme_dark_radio_btn -> ThemeSwitchingMode.ALWAYS_DARK
+        else -> throw IllegalStateException("Unexpected ID: $radioButtonId")
+    }
+
+
+    private fun subscribeToModel() {
+        viewModel.themeSwitchingMode.observe(viewLifecycleOwner) { render(it) }
+    }
+
+    private fun render(themeSwitchingMode: ThemeSwitchingMode): Unit = with(binding) {
+        val radioButtonId = themeSwitchingMode.toRadioButtonId()
+        if (themeRadioGroup.checkedRadioButtonId == radioButtonId) {
+            return
+        }
+        themeRadioGroup.apply {
+            check(radioButtonId)
+            jumpDrawablesToCurrentState()
+        }
+    }
+
+    @IdRes
+    private fun ThemeSwitchingMode.toRadioButtonId(): Int {
+        return when (this) {
+            ThemeSwitchingMode.FOLLOW_SYSTEM -> R.id.theme_system_radio_btn
+            ThemeSwitchingMode.ALWAYS_LIGHT -> R.id.theme_light_radio_btn
+            ThemeSwitchingMode.ALWAYS_DARK -> R.id.theme_dark_radio_btn
+        }
     }
 
     private fun openWebLink(url: String) {
