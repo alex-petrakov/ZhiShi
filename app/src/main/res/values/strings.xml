@@ -3,6 +3,7 @@
     <string name="app_navigate_up">Перейти наверх</string>
     <string name="app_rule_number">§ %d</string>
     <string name="app_action_search_rules">Поиск правил</string>
+    <string name="app_action_settings">Настройки</string>
     <string name="app_action_about">О программе</string>
 
     <string name="section_rule_numbers_range">§§ %d–%d</string>

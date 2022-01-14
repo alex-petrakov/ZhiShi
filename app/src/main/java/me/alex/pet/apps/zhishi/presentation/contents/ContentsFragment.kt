@@ -75,11 +75,15 @@ class ContentsFragment : Fragment() {
     private fun handleMenuClick(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_search -> {
-                viewModel.onClickSearchAction()
+                viewModel.onNavigateToSearch()
+                true
+            }
+            R.id.action_settings -> {
+                viewModel.onNavigateToSettings()
                 true
             }
             R.id.action_about -> {
-                viewModel.onClickAboutAction()
+                viewModel.onNavigateToAboutScreen()
                 true
             }
             else -> false

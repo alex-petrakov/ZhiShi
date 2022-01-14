@@ -27,11 +27,15 @@ class ContentsViewModel @Inject constructor(
         router.navigateTo(AppScreens.section(sectionId))
     }
 
-    fun onClickSearchAction() {
+    fun onNavigateToSettings() {
+        router.navigateTo(AppScreens.about())
+    }
+
+    fun onNavigateToSearch() {
         router.navigateTo(AppScreens.search())
     }
 
-    fun onClickAboutAction() {
+    fun onNavigateToAboutScreen() {
         router.navigateTo(AppScreens.about())
     }
 
