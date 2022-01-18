@@ -18,6 +18,7 @@ A beautiful Russian language rules reference for Android
 * Prepackaged database.
 * Quick search built using SQLite FTS capabilities and Porter stemmer.
 * Styled text rendering via Android Spannables (no WebView is involved).
+* Dark theme support.
 
 ## Download
 
