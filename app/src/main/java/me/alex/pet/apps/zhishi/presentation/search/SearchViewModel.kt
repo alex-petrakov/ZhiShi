@@ -3,6 +3,7 @@ package me.alex.pet.apps.zhishi.presentation.search
 import androidx.lifecycle.*
 import com.github.terrakok.cicerone.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import me.alex.pet.apps.zhishi.domain.search.SearchRepository
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
 import me.alex.pet.apps.zhishi.domain.search.SearchRules
@@ -22,12 +23,14 @@ class SearchViewModel @Inject constructor(
     private val query = MutableLiveData("")
 
     private val searchResults = Transformations.switchMap(query) { query ->
-        liveData { emit(searchRules(query)) }
+        liveData(timeoutInMs = 0L) {
+            delay(300L)
+            emit(searchRules(query))
+        }
     }
 
-    val viewState: LiveData<ViewState> =
-        Transformations.switchMap(searchResults) { searchResults: List<SearchResult> ->
-            liveData {
+    val viewState: LiveData<ViewState> = Transformations.switchMap(searchResults) { searchResults ->
+        liveData {
             val query = query.value!!
             val newState = ViewState(
                 SearchResults(
@@ -37,9 +40,9 @@ class SearchViewModel @Inject constructor(
                 EmptyView(query.isNotEmpty() && searchResults.isEmpty()),
                 SuggestionsView(query.isEmpty(), searchRepo.getSuggestions())
             )
-                emit(newState)
-            }
+            emit(newState)
         }
+    }
 
     private val _viewEffect = SingleLiveEvent<ViewEffect>()
     val viewEffect: LiveData<ViewEffect> get() = _viewEffect
