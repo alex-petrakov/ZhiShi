@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val searchRules: SearchRules,
     private val searchRepo: SearchRepository,
     private val router: Router
@@ -29,17 +30,29 @@ class SearchViewModel @Inject constructor(
             liveData {
             val query = query.value!!
             val newState = ViewState(
-                    SearchResults(query.isNotEmpty() && searchResults.isNotEmpty(), searchResults.toUiModel()),
-                    EmptyView(query.isNotEmpty() && searchResults.isEmpty()),
-                    SuggestionsView(query.isEmpty(), searchRepo.getSuggestions())
+                SearchResults(
+                    query.isNotEmpty() && searchResults.isNotEmpty(),
+                    searchResults.toUiModel()
+                ),
+                EmptyView(query.isNotEmpty() && searchResults.isEmpty()),
+                SuggestionsView(query.isEmpty(), searchRepo.getSuggestions())
             )
-            emit(newState)
+                emit(newState)
+            }
         }
-    }
 
     private val _viewEffect = SingleLiveEvent<ViewEffect>()
-
     val viewEffect: LiveData<ViewEffect> get() = _viewEffect
+
+    private val isFirstStart: Boolean
+        get() = savedStateHandle.keys().isEmpty()
+
+    init {
+        if (isFirstStart) {
+            _viewEffect.value = ViewEffect.SHOW_KEYBOARD
+            rememberFirstStart()
+        }
+    }
 
     fun onUpdateQuery(query: String) {
         this.query.value = query
@@ -59,6 +72,14 @@ class SearchViewModel @Inject constructor(
     fun onBackPressed() {
         _viewEffect.value = ViewEffect.HIDE_KEYBOARD
         router.exit()
+    }
+
+    private fun rememberFirstStart() {
+        savedStateHandle.set(STATE_FIRST_START_FLAG, false)
+    }
+
+    companion object {
+        private const val STATE_FIRST_START_FLAG = "FIRST_START_FLAG"
     }
 }
 

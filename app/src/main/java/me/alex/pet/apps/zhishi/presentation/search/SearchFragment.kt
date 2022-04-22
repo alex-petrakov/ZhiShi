@@ -46,12 +46,9 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private var firstStart = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MaterialZAxisTransition.setupOriginAndDestination(this)
-        firstStart = savedInstanceState?.getBoolean(STATE_FIRST_START, true) ?: true
     }
 
     override fun onCreateView(
@@ -94,10 +91,6 @@ class SearchFragment : Fragment() {
             .debounce(300)
             .onEach { viewModel.onUpdateQuery(it.toString()) }
             .launchIn(viewLifecycleOwner.lifecycleScope)
-        if (firstStart) {
-            queryEt.post { queryEt.focusAndShowKeyboard() }
-            firstStart = false
-        }
     }
 
     private fun subscribeToModel() = with(viewModel) {
@@ -151,12 +144,9 @@ class SearchFragment : Fragment() {
 
     private fun handle(effect: ViewEffect) {
         when (effect) {
+            ViewEffect.SHOW_KEYBOARD -> binding.queryEt.focusAndShowKeyboard()
             ViewEffect.HIDE_KEYBOARD -> requireActivity().hideKeyboard()
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(STATE_FIRST_START, firstStart)
     }
 
     override fun onDestroyView() {
