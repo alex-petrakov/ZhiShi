@@ -91,11 +91,21 @@ class SearchFragment : Fragment() {
     }
 
     private fun subscribeToModel() = with(viewModel) {
-        viewState.observe(viewLifecycleOwner) { newState -> render(newState) }
-        viewEffect.observe(viewLifecycleOwner) { effect -> handle(effect) }
+        query.observe(viewLifecycleOwner, ::render)
+        viewState.observe(viewLifecycleOwner, ::render)
+        viewEffect.observe(viewLifecycleOwner, ::handle)
     }
 
-    private fun render(state: ViewState) = with(binding) {
+    private fun render(query: String): Unit = with(binding) {
+        if (queryEt.text.toString() != query) {
+            queryEt.apply {
+                setText(query)
+                setSelection(query.length)
+            }
+        }
+    }
+
+    private fun render(state: ViewState): Unit = with(binding) {
         if (lastRenderedState != null) {
             val autoTransition = AutoTransition().apply {
                 duration = 150

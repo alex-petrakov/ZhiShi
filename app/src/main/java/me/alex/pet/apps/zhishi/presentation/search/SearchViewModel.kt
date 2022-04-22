@@ -20,18 +20,23 @@ class SearchViewModel @Inject constructor(
     private val router: Router
 ) : ViewModel() {
 
-    private val query = MutableLiveData("")
+    private val _query = MutableLiveData(savedStateHandle.query)
+    val query: LiveData<String> = Transformations.map(_query, Query::text)
 
-    private val searchResults = Transformations.switchMap(query) { query ->
+    private val searchResults = Transformations.switchMap(_query) { query ->
         liveData(timeoutInMs = 0L) {
-            delay(300L)
-            emit(searchRules(query))
+            // When the system restores screen state, don't apply debounce
+            // and start search immediately
+            if (query.source == Query.Source.USER) {
+                delay(300L)
+            }
+            emit(searchRules(query.text))
         }
     }
 
     val viewState: LiveData<ViewState> = Transformations.switchMap(searchResults) { searchResults ->
         liveData {
-            val query = query.value!!
+            val query = _query.value!!.text
             val newState = ViewState(
                 SearchResults(
                     query.isNotEmpty() && searchResults.isNotEmpty(),
@@ -58,7 +63,9 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onUpdateQuery(query: String) {
-        this.query.value = query
+        val newQuery = Query(query, Query.Source.USER)
+        _query.value = newQuery
+        savedStateHandle.query = newQuery
     }
 
     fun onClickRule(ruleId: Long) {
@@ -81,8 +88,17 @@ class SearchViewModel @Inject constructor(
         savedStateHandle.set(STATE_FIRST_START_FLAG, false)
     }
 
+    private var SavedStateHandle.query: Query
+        get() = Query(get(STATE_QUERY) ?: "", Query.Source.SYSTEM)
+        set(value) = set(STATE_QUERY, value.text)
+
+    private data class Query(val text: String, val source: Source) {
+        enum class Source { SYSTEM, USER }
+    }
+
     companion object {
         private const val STATE_FIRST_START_FLAG = "FIRST_START_FLAG"
+        private const val STATE_QUERY = "STATE_QUERY"
     }
 }
 
