@@ -34,7 +34,7 @@ class SearchFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private var lastRenderedState: ViewState? = null
+    private var lastRenderedSuggestions: List<String>? = null
 
     private val searchResultsAdapter by lazy {
         SearchResultsAdapter { ruleId ->
@@ -105,29 +105,31 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun render(state: ViewState): Unit = with(binding) {
-        if (lastRenderedState != null) {
-            val autoTransition = AutoTransition().apply {
-                duration = 150
-                removeTarget(R.id.suggestions_chip_group)
-            }
-            TransitionManager.beginDelayedTransition(contentFrame, autoTransition)
+    private fun render(state: ViewState) = with(binding) {
+        val autoTransition = AutoTransition().apply {
+            duration = 150
+            removeTarget(R.id.suggestions_chip_group)
         }
+        TransitionManager.beginDelayedTransition(contentFrame, autoTransition)
 
-        recyclerView.isVisible = state.searchResults.isVisible
-        searchResultsAdapter.submitList(state.searchResults.items)
+        recyclerView.isVisible = state is ViewState.Content
+        emptyView.isVisible = state == ViewState.Empty
+        suggestionsView.isVisible = state is ViewState.Suggestions
 
-        emptyView.isVisible = state.emptyView.isVisible
+        when (state) {
+            is ViewState.Content -> searchResultsAdapter.submitList(state.searchResults)
+            ViewState.Empty -> Unit // Do nothing
+            is ViewState.Suggestions -> renderSuggestions(state)
+        }
+    }
 
-        suggestionsView.isVisible = state.suggestionsView.isVisible
-
-        if (state.suggestionsView != lastRenderedState?.suggestionsView) {
-            val chips = inflateSuggestionChips(state.suggestionsView.suggestions)
+    private fun FragmentSearchBinding.renderSuggestions(state: ViewState.Suggestions) {
+        if (state.suggestions != lastRenderedSuggestions) {
+            val chips = inflateSuggestionChips(state.suggestions)
             suggestionsChipGroup.removeAllViews()
             chips.forEach { suggestionsChipGroup.addView(it) }
+            lastRenderedSuggestions = state.suggestions
         }
-
-        lastRenderedState = state
     }
 
     private fun inflateSuggestionChips(suggestions: List<String>) = with(binding) {

@@ -2,25 +2,11 @@ package me.alex.pet.apps.zhishi.presentation.search
 
 import androidx.recyclerview.widget.DiffUtil
 
-data class ViewState(
-        val searchResults: SearchResults,
-        val emptyView: EmptyView,
-        val suggestionsView: SuggestionsView
-)
-
-data class EmptyView(
-        val isVisible: Boolean
-)
-
-data class SuggestionsView(
-        val isVisible: Boolean,
-        val suggestions: List<String>
-)
-
-data class SearchResults(
-        val isVisible: Boolean,
-        val items: List<SearchResultItem>
-)
+sealed class ViewState {
+    object Empty : ViewState()
+    data class Suggestions(val suggestions: List<String>) : ViewState()
+    data class Content(val searchResults: List<SearchResultItem>) : ViewState()
+}
 
 data class SearchResultItem(
         val ruleId: Long,

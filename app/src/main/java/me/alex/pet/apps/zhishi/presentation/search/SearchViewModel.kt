@@ -36,15 +36,12 @@ class SearchViewModel @Inject constructor(
 
     val viewState: LiveData<ViewState> = Transformations.switchMap(searchResults) { searchResults ->
         liveData {
-            val query = _query.value!!.text
-            val newState = ViewState(
-                SearchResults(
-                    query.isNotEmpty() && searchResults.isNotEmpty(),
-                    searchResults.toUiModel()
-                ),
-                EmptyView(query.isNotEmpty() && searchResults.isEmpty()),
-                SuggestionsView(query.isEmpty(), searchRepo.getSuggestions())
-            )
+            val currentQuery = query.value!!
+            val newState = when {
+                currentQuery.isEmpty() -> ViewState.Suggestions(searchRepo.getSuggestions())
+                searchResults.isEmpty() -> ViewState.Empty
+                else -> ViewState.Content(searchResults.toUiModel())
+            }
             emit(newState)
         }
     }
