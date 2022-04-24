@@ -4,9 +4,10 @@ import androidx.lifecycle.*
 import com.github.terrakok.cicerone.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import me.alex.pet.apps.zhishi.domain.search.SearchRepository
+import me.alex.pet.apps.zhishi.domain.search.SearchInteractor
+import me.alex.pet.apps.zhishi.domain.search.SearchInteractor.InteractionResult.Failure
+import me.alex.pet.apps.zhishi.domain.search.SearchInteractor.InteractionResult.Success
 import me.alex.pet.apps.zhishi.domain.search.SearchResult
-import me.alex.pet.apps.zhishi.domain.search.SearchRules
 import me.alex.pet.apps.zhishi.presentation.AppScreens
 import me.alex.pet.apps.zhishi.presentation.common.SingleLiveEvent
 import me.alex.pet.apps.zhishi.presentation.rules.RulesToDisplay
@@ -15,34 +16,27 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val searchRules: SearchRules,
-    private val searchRepo: SearchRepository,
+    private val searchInteractor: SearchInteractor,
     private val router: Router
 ) : ViewModel() {
 
     private val _query = MutableLiveData(savedStateHandle.query)
     val query: LiveData<String> = Transformations.map(_query, Query::text)
 
-    private val searchResults = Transformations.switchMap(_query) { query ->
+    private val searchResult = Transformations.switchMap(_query) { query ->
         liveData(timeoutInMs = 0L) {
             // When the system restores screen state, don't apply debounce
             // and start search immediately
             if (query.source == Query.Source.USER) {
                 delay(300L)
             }
-            emit(searchRules(query.text))
+            emit(searchInteractor.searchRules(query.text))
         }
     }
 
-    val viewState: LiveData<ViewState> = Transformations.switchMap(searchResults) { searchResults ->
+    val viewState: LiveData<ViewState> = Transformations.switchMap(searchResult) { result ->
         liveData {
-            val currentQuery = query.value!!
-            val newState = when {
-                currentQuery.isEmpty() -> ViewState.Suggestions(searchRepo.getSuggestions())
-                searchResults.isEmpty() -> ViewState.Empty
-                else -> ViewState.Content(searchResults.toUiModel())
-            }
-            emit(newState)
+            emit(result.toViewState())
         }
     }
 
@@ -66,8 +60,12 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onClickRule(ruleId: Long) {
+        val currentSearchResult = searchResult.value!!
+        if (currentSearchResult !is Success) {
+            return
+        }
         _viewEffect.value = ViewEffect.HIDE_KEYBOARD
-        val ruleIds = searchResults.value!!.ruleIds
+        val ruleIds = currentSearchResult.searchResults.ruleIds
         val rulesToDisplay = RulesToDisplay(ruleIds, ruleIds.indexOf(ruleId))
         router.navigateTo(AppScreens.rules(rulesToDisplay, displaySectionButton = true))
     }
@@ -100,6 +98,21 @@ class SearchViewModel @Inject constructor(
 }
 
 private val List<SearchResult>.ruleIds get() = map { it.ruleId }
+
+private fun SearchInteractor.InteractionResult.toViewState(): ViewState {
+    return when (this) {
+        is Failure -> ViewState.Suggestions(suggestedQueries)
+        is Success -> searchResults.toViewState()
+    }
+}
+
+private fun List<SearchResult>.toViewState(): ViewState {
+    return if (this.isEmpty()) {
+        ViewState.Empty
+    } else {
+        return ViewState.Content(this.toUiModel())
+    }
+}
 
 private fun List<SearchResult>.toUiModel() = map { it.toUiModel() }
 
