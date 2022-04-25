@@ -3,7 +3,9 @@ package me.alex.pet.apps.zhishi.presentation.search
 import androidx.lifecycle.*
 import com.github.terrakok.cicerone.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import me.alex.pet.apps.zhishi.domain.search.SearchInteractor
 import me.alex.pet.apps.zhishi.domain.search.SearchInteractor.InteractionResult.Failure
 import me.alex.pet.apps.zhishi.domain.search.SearchInteractor.InteractionResult.Success
@@ -91,10 +93,12 @@ class SearchViewModel @Inject constructor(
 
 private val List<SearchResultItem>.ruleIds get() = map { it.ruleId }
 
-private fun SearchInteractor.InteractionResult.toViewState(): ViewState {
-    return when (this) {
-        is Failure -> ViewState.Suggestions(suggestedQueries)
-        is Success -> searchResults.toViewState()
+private suspend fun SearchInteractor.InteractionResult.toViewState(): ViewState {
+    return withContext(Dispatchers.Default) {
+        when (this@toViewState) {
+            is Failure -> ViewState.Suggestions(suggestedQueries)
+            is Success -> searchResults.toViewState()
+        }
     }
 }
 
