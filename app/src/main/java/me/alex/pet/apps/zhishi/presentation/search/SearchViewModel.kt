@@ -23,20 +23,15 @@ class SearchViewModel @Inject constructor(
     private val _query = MutableLiveData(savedStateHandle.query)
     val query: LiveData<String> = Transformations.map(_query, Query::text)
 
-    private val searchResult = Transformations.switchMap(_query) { query ->
+    private val viewState = Transformations.switchMap(_query) { query ->
         liveData(timeoutInMs = 0L) {
             // When the system restores screen state, don't apply debounce
             // and start search immediately
             if (query.source == Query.Source.USER) {
                 delay(300L)
             }
-            emit(searchInteractor.searchRules(query.text))
-        }
-    }
-
-    val viewState: LiveData<ViewState> = Transformations.switchMap(searchResult) { result ->
-        liveData {
-            emit(result.toViewState())
+            val searchResult = searchInteractor.searchRules(query.text)
+            emit(searchResult.toViewState())
         }
     }
 
@@ -60,12 +55,9 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onClickRule(ruleId: Long) {
-        val currentSearchResult = searchResult.value!!
-        if (currentSearchResult !is Success) {
-            return
-        }
+        val currentViewState = viewState.value as? ViewState.Content ?: return
         _viewEffect.value = ViewEffect.HIDE_KEYBOARD
-        val ruleIds = currentSearchResult.searchResults.ruleIds
+        val ruleIds = currentViewState.searchResults.ruleIds
         val rulesToDisplay = RulesToDisplay(ruleIds, ruleIds.indexOf(ruleId))
         router.navigateTo(AppScreens.rules(rulesToDisplay, displaySectionButton = true))
     }
@@ -97,7 +89,7 @@ class SearchViewModel @Inject constructor(
     }
 }
 
-private val List<SearchResult>.ruleIds get() = map { it.ruleId }
+private val List<SearchResultItem>.ruleIds get() = map { it.ruleId }
 
 private fun SearchInteractor.InteractionResult.toViewState(): ViewState {
     return when (this) {
