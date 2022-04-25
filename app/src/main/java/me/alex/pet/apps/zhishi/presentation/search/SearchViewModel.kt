@@ -91,7 +91,7 @@ class SearchViewModel @Inject constructor(
     }
 }
 
-private val List<SearchResultItem>.ruleIds get() = map { it.ruleId }
+private val List<SearchResultUiModel>.ruleIds get() = map { it.ruleId }
 
 private suspend fun SearchInteractor.InteractionResult.toViewState(): ViewState {
     return withContext(Dispatchers.Default) {
@@ -112,6 +112,6 @@ private fun List<SearchResult>.toViewState(): ViewState {
 
 private fun List<SearchResult>.toUiModel() = map { it.toUiModel() }
 
-private fun SearchResult.toUiModel(): SearchResultItem {
-    return SearchResultItem(ruleId, annotation, snippet)
+private fun SearchResult.toUiModel(): SearchResultUiModel {
+    return SearchResultUiModel(ruleId, annotation, snippet)
 }

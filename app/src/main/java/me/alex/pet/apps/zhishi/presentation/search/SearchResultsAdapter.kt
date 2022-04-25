@@ -9,14 +9,14 @@ import me.alex.pet.apps.zhishi.databinding.ItemRuleSearchResultBinding
 import me.alex.pet.apps.zhishi.presentation.common.extensions.withExistingAdapterPosition
 
 class SearchResultsAdapter(
-        private val onRuleClick: (Long) -> Unit
-) : ListAdapter<SearchResultItem, SearchResultsAdapter.Holder>(SearchResultItem.DiffCallback) {
+    private val onRuleClick: (Long) -> Unit
+) : ListAdapter<SearchResultUiModel, SearchResultsAdapter.Holder>(SearchResultUiModel.DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val binding = ItemRuleSearchResultBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
         return Holder(binding) { adapterPosition -> onRuleClick(getItem(adapterPosition).ruleId) }
     }
@@ -38,10 +38,10 @@ class SearchResultsAdapter(
             }
         }
 
-        fun bind(item: SearchResultItem) = with(binding) {
-            numberTextView.text = context.getString(R.string.rule_rule_number, item.ruleId)
-            annotationTextView.text = item.annotation
-            snippetTextView.text = item.snippet
+        fun bind(searchResult: SearchResultUiModel) = with(binding) {
+            numberTextView.text = context.getString(R.string.rule_rule_number, searchResult.ruleId)
+            annotationTextView.text = searchResult.annotation
+            snippetTextView.text = searchResult.snippet
         }
     }
 }
