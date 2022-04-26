@@ -36,11 +36,16 @@ class SearchFragment : Fragment() {
 
     private var lastRenderedSuggestions: List<String>? = null
 
-    private val searchResultsAdapter by lazy {
-        SearchResultsAdapter { ruleId ->
-            viewModel.onClickRule(ruleId)
+    private val searchResultsAdapter = SearchResultsAdapter(
+        onRuleClick = { viewModel.onClickRule(it) },
+        onListChanged = { prevList, _ ->
+            // Scroll to the top of the list, when search results are changed
+            // (but not after a configuration change)
+            if (prevList.isNotEmpty()) {
+                binding.recyclerView.scrollToPosition(0)
+            }
         }
-    }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

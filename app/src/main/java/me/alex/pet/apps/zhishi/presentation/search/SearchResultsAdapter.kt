@@ -9,7 +9,8 @@ import me.alex.pet.apps.zhishi.databinding.ItemRuleSearchResultBinding
 import me.alex.pet.apps.zhishi.presentation.common.extensions.withExistingAdapterPosition
 
 class SearchResultsAdapter(
-    private val onRuleClick: (Long) -> Unit
+    private val onRuleClick: (ruleId: Long) -> Unit,
+    private val onListChanged: ListChangeCallback
 ) : ListAdapter<SearchResultUiModel, SearchResultsAdapter.Holder>(SearchResultUiModel.DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -25,9 +26,16 @@ class SearchResultsAdapter(
         holder.bind(getItem(position))
     }
 
+    override fun onCurrentListChanged(
+        previousList: MutableList<SearchResultUiModel>,
+        currentList: MutableList<SearchResultUiModel>
+    ) {
+        onListChanged(previousList, currentList)
+    }
+
     class Holder(
-            private val binding: ItemRuleSearchResultBinding,
-            private val onClick: (Int) -> Unit
+        private val binding: ItemRuleSearchResultBinding,
+        private val onClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val context get() = binding.root.context
@@ -45,3 +53,6 @@ class SearchResultsAdapter(
         }
     }
 }
+
+typealias ListChangeCallback =
+            (prevList: List<SearchResultUiModel>, currentList: List<SearchResultUiModel>) -> Unit
