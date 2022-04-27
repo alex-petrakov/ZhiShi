@@ -41,7 +41,7 @@ class SearchViewModel @Inject constructor(
     val viewEffect: LiveData<ViewEffect> get() = _viewEffect
 
     private val isFirstStart: Boolean
-        get() = savedStateHandle.keys().isEmpty()
+        get() = savedStateHandle[STATE_FIRST_START_FLAG] ?: true
 
     init {
         if (isFirstStart) {
