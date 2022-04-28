@@ -122,29 +122,6 @@
                     tools:text="1.0" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/inspiration_cell"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_clickable_surface"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:paddingHorizontal="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/about_title_inspiration"
-                    android:textAppearance="?textAppearanceOverline" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/about_the_rules_ru"
-                    android:textAppearance="@style/TextAppearance.ZhiShi.Subtitle1"
-                    android:textColor="?colorPrimary" />
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/see_open_source_licenses_button"
                 style="@style/Widget.ZhiShi.TextCell.Action"

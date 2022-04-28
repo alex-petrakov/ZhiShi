@@ -72,7 +72,6 @@ class AboutFragment : Fragment() {
 
         versionTextView.text = BuildConfig.VERSION_NAME
 
-        inspirationCell.setOnClickListener { openWebLink("https://therules.ru") }
         seeOpenSourceLicensesButton.setOnClickListener { router.navigateTo(AppScreens.licenses()) }
         seePrivacyPolicyButton.setOnClickListener {
             openWebLink("https://alex-petrakov.github.io/ZhiShiPrivacy")
