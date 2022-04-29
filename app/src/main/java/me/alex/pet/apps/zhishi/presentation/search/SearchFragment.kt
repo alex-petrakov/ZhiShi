@@ -169,9 +169,6 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-
-        private const val STATE_FIRST_START = "FIRST_START"
-
         fun newInstance() = SearchFragment()
     }
 }
