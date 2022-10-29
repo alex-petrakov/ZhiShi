@@ -8,7 +8,8 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
+    namespace 'me.alex.pet.apps.zhishi'
 
     defaultConfig {
         applicationId "me.alex.pet.apps.zhishi"
@@ -69,32 +70,31 @@ kapt {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.fragment:fragment-ktx:1.4.1'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.fragment:fragment-ktx:1.5.3'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.sqlite:sqlite-framework:2.2.0'
 
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.7.0'
 
     implementation 'com.github.requery:sqlite-android:3.36.0'
 
     implementation "com.squareup.sqldelight:android-driver:$sqldelight_version"
 
-    def moshi_version = '1.12.0'
+    def moshi_version = '1.14.0'
     implementation "com.squareup.moshi:moshi:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
 
-    implementation 'com.fredporciuncula:flow-preferences:1.6.0'
+    implementation 'com.fredporciuncula:flow-preferences:1.8.0'
 
     implementation 'com.github.terrakok:cicerone:7.1'
 
@@ -104,5 +104,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.0'
 }
