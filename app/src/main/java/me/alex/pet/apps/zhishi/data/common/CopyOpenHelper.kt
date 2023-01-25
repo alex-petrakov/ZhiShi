@@ -22,22 +22,23 @@ class CopyOpenHelper(
 
     class DatabaseCopyException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
-    override fun getDatabaseName(): String? {
-        return delegate.databaseName
-    }
+    override val databaseName: String?
+        get() = delegate.databaseName
+
+    override val writableDatabase: SupportSQLiteDatabase
+        get() {
+            verifyDatabase(true)
+            return delegate.writableDatabase
+        }
+
+    override val readableDatabase: SupportSQLiteDatabase
+        get() {
+            verifyDatabase(false)
+            return delegate.readableDatabase
+        }
 
     override fun setWriteAheadLoggingEnabled(enabled: Boolean) {
         delegate.setWriteAheadLoggingEnabled(enabled)
-    }
-
-    override fun getWritableDatabase(): SupportSQLiteDatabase {
-        verifyDatabase(true)
-        return delegate.writableDatabase
-    }
-
-    override fun getReadableDatabase(): SupportSQLiteDatabase {
-        verifyDatabase(false)
-        return delegate.readableDatabase
     }
 
     private fun verifyDatabase(writable: Boolean) {
