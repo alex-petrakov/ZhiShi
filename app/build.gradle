@@ -8,13 +8,13 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     namespace 'me.alex.pet.apps.zhishi'
 
     defaultConfig {
         applicationId "me.alex.pet.apps.zhishi"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 6
         versionName "2.1.0"
 
