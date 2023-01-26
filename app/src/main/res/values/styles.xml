@@ -1,4 +1,5 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
     <style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Material theme attributes -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -41,6 +42,14 @@
         <item name="radioButtonStyle">@style/Widget.ZhiShi.RadioButton</item>
         <item name="chipStyle">@style/Widget.ZhiShi.Chip.Action</item>
         <item name="editTextStyle">@style/Base.Widget.MaterialComponents.TextInputEditText</item>
+
+        <item name="android:windowSplashScreenBackground" tools:targetApi="s">?colorSurface</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">
+            @drawable/ic_splash_screen
+        </item>
+        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">
+            @android:color/transparent
+        </item>
 
         <!-- Custom attributes -->
         <item name="colorTextEmphasis">@color/colorTextEmphasis</item>
