@@ -6,10 +6,8 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import timber.log.Timber
 import java.io.File
-import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.ByteBuffer
 import java.util.concurrent.locks.ReentrantLock
 
 
@@ -110,7 +108,7 @@ class CopyOpenHelper(
 
         tryOpenDatabase(tempFile, writable)
 
-        val assetsDbVersion = readDatabaseVersion(tempFile)
+        val assetsDbVersion = DbFiles.readDatabaseVersion(tempFile)
         if (assetsDbVersion != databaseVersion) {
             throw IOException("Assets contain DB with unexpected version (expected = $databaseVersion, actual = $assetsDbVersion)")
         }
@@ -123,23 +121,9 @@ class CopyOpenHelper(
 
     private fun tryReadDatabaseVersion(dbFile: File): Int {
         return try {
-            readDatabaseVersion(dbFile)
+            DbFiles.readDatabaseVersion(dbFile)
         } catch (e: IOException) {
             throw DatabaseCopyException("Unable to read database version", e)
-        }
-    }
-
-    private fun readDatabaseVersion(dbFile: File): Int {
-        return FileInputStream(dbFile).channel.use { input ->
-            input.tryLock(60, 4, true)
-            input.position(60)
-            val buffer = ByteBuffer.allocate(4)
-            val numOfReadBytes = input.read(buffer)
-            if (numOfReadBytes != 4) {
-                throw IOException("Bad database header, unable to read 4 bytes at offset 60")
-            }
-            buffer.rewind()
-            buffer.int
         }
     }
 
