@@ -3,7 +3,6 @@ package me.alex.pet.apps.zhishi.data.common
 import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
-import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -25,13 +24,13 @@ class CopyOpenHelper(
 
     override val writableDatabase: SupportSQLiteDatabase
         get() {
-            verifyDatabase(true)
+            verifyDatabase()
             return delegate.writableDatabase
         }
 
     override val readableDatabase: SupportSQLiteDatabase
         get() {
-            verifyDatabase(false)
+            verifyDatabase()
             return delegate.readableDatabase
         }
 
@@ -39,7 +38,7 @@ class CopyOpenHelper(
         delegate.setWriteAheadLoggingEnabled(enabled)
     }
 
-    private fun verifyDatabase(writable: Boolean) {
+    private fun verifyDatabase() {
         Timber.i("Verifying database file...")
         val dbFile: File = context.getDatabasePath(databaseName)
         val copyLock = ReentrantLock()
@@ -47,51 +46,51 @@ class CopyOpenHelper(
             copyLock.lock()
             if (!dbFile.exists()) {
                 Timber.i("No database file found at ${dbFile.absolutePath}")
-                tryCopyDatabaseFileFromAssets(dbFile, writable)
+                tryCopyDatabaseFileFromAssets(dbFile)
             } else {
                 Timber.i("Found database file ${dbFile.absolutePath}")
-                verifyDatabaseVersion(dbFile, writable)
+                verifyDatabaseVersion(dbFile)
             }
         } finally {
             copyLock.unlock()
         }
     }
 
-    private fun verifyDatabaseVersion(dbFile: File, writable: Boolean) {
+    private fun verifyDatabaseVersion(dbFile: File) {
         Timber.i("Verifying existing database version...")
         val currentVersion = tryReadDatabaseVersion(dbFile)
         if (currentVersion != databaseVersion) {
             Timber.i("Database version is not up to date (current version = $currentVersion, required version = $databaseVersion)")
-            replaceExistingDatabase(dbFile, writable)
+            replaceExistingDatabase(dbFile)
         } else {
             Timber.i("Database version is up to date (current version = $currentVersion)")
         }
     }
 
-    private fun replaceExistingDatabase(dbFile: File, writable: Boolean) {
+    private fun replaceExistingDatabase(dbFile: File) {
         Timber.i("Trying to replace existing database...")
         if (context.deleteDatabase(databaseName)) {
-            tryCopyDatabaseFileFromAssets(dbFile, writable)
+            tryCopyDatabaseFileFromAssets(dbFile)
         } else {
             throw DatabaseCopyException("Failed to delete old version of the database file $databaseName")
         }
     }
 
-    private fun tryCopyDatabaseFileFromAssets(dbFile: File, writable: Boolean) {
+    private fun tryCopyDatabaseFileFromAssets(dbFile: File) {
         try {
-            copyDatabaseFileFromAssets(dbFile, writable)
+            copyDatabaseFileFromAssets(dbFile)
         } catch (e: IOException) {
             throw DatabaseCopyException("Unable to copy database file from assets", e)
         }
     }
 
-    private fun copyDatabaseFileFromAssets(destinationFile: File, writable: Boolean) {
+    private fun copyDatabaseFileFromAssets(destinationFile: File) {
         Timber.i("Attempting to copy the database from the assets...")
 
         val tempFile = File.createTempFile(
-                "database",
-                ".tmp",
-                context.cacheDir
+            "database",
+            ".tmp",
+            context.cacheDir
         ).also { it.deleteOnExit() }
 
         context.assets.open(assetsPath).use { inputStream ->
@@ -105,8 +104,6 @@ class CopyOpenHelper(
         if (parent != null && !parent.exists() && !parent.mkdirs()) {
             throw IOException("Failed to create parent directories for ${destinationFile.absolutePath}")
         }
-
-        tryOpenDatabase(tempFile, writable)
 
         val assetsDbVersion = DbFiles.readDatabaseVersion(tempFile)
         if (assetsDbVersion != databaseVersion) {
@@ -125,35 +122,6 @@ class CopyOpenHelper(
         } catch (e: IOException) {
             throw DatabaseCopyException("Unable to read database version", e)
         }
-    }
-
-    private fun tryOpenDatabase(databaseFile: File, writable: Boolean) {
-        createFrameworkOpenHelper(databaseFile).use { helper ->
-            if (writable) {
-                helper.writableDatabase
-            } else {
-                helper.readableDatabase
-            }
-        }
-    }
-
-    private fun createFrameworkOpenHelper(databaseFile: File): SupportSQLiteOpenHelper {
-        val databaseName = databaseFile.name
-        val version = tryReadDatabaseVersion(databaseFile)
-        val factory = FrameworkSQLiteOpenHelperFactory()
-        val configuration = SupportSQLiteOpenHelper.Configuration.builder(context)
-                .name(databaseName)
-                .callback(object : SupportSQLiteOpenHelper.Callback(version) {
-                    override fun onCreate(db: SupportSQLiteDatabase) {
-                        // Do nothing
-                    }
-
-                    override fun onUpgrade(db: SupportSQLiteDatabase, oldVersion: Int, newVersion: Int) {
-                        // Do nothing
-                    }
-                })
-                .build()
-        return factory.create(configuration)
     }
 
     override fun close() {
