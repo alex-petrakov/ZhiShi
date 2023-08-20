@@ -87,33 +87,33 @@ class CopyOpenHelper(
     private fun copyDatabaseFileFromAssets(destinationFile: File) {
         Timber.i("Attempting to copy the database from the assets...")
 
-        val tempFile = File.createTempFile(
-            "database",
-            ".tmp",
-            context.cacheDir
-        ).also { it.deleteOnExit() }
-
-        context.assets.open(assetsPath).use { inputStream ->
-            FileOutputStream(tempFile).use { outputStream ->
-                val byteCount = inputStream.copyTo(outputStream)
-                Timber.i("Copied $byteCount B from assets to temp file")
+        val tempFile = File.createTempFile("database", ".tmp", context.cacheDir)
+            .also { it.deleteOnExit() }
+        try {
+            context.assets.open(assetsPath).use { inputStream ->
+                FileOutputStream(tempFile).use { outputStream ->
+                    val byteCount = inputStream.copyTo(outputStream)
+                    Timber.i("Copied $byteCount B from assets to temp file")
+                }
             }
-        }
 
-        val parent = destinationFile.parentFile
-        if (parent != null && !parent.exists() && !parent.mkdirs()) {
-            throw IOException("Failed to create parent directories for ${destinationFile.absolutePath}")
-        }
+            val parent = destinationFile.parentFile
+            if (parent != null && !parent.exists() && !parent.mkdirs()) {
+                throw IOException("Failed to create parent directories for ${destinationFile.absolutePath}")
+            }
 
-        val assetsDbVersion = DbFiles.readDatabaseVersion(tempFile)
-        if (assetsDbVersion != databaseVersion) {
-            throw IOException("Assets contain DB with unexpected version (expected = $databaseVersion, actual = $assetsDbVersion)")
-        }
+            val assetsDbVersion = DbFiles.readDatabaseVersion(tempFile)
+            if (assetsDbVersion != databaseVersion) {
+                throw IOException("Assets contain DB with unexpected version (expected = $databaseVersion, actual = $assetsDbVersion)")
+            }
 
-        if (!tempFile.renameTo(destinationFile)) {
-            throw IOException("Failed to move temp file ${tempFile.absolutePath} to ${destinationFile.absolutePath}")
+            if (!tempFile.renameTo(destinationFile)) {
+                throw IOException("Failed to move temp file ${tempFile.absolutePath} to ${destinationFile.absolutePath}")
+            }
+            Timber.i("Database has been successfully copied from assets")
+        } finally {
+            tempFile.delete()
         }
-        Timber.i("Database has been successfully copied from assets")
     }
 
     private fun tryReadDatabaseVersion(dbFile: File): Int {
