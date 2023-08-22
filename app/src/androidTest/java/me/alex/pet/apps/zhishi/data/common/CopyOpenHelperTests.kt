@@ -110,6 +110,21 @@ class CopyOpenHelperTests {
     }
 
     @Test
+    fun throws_if_the_prepackaged_DB_has_invalid_version() {
+        deleteOnDeviceDatabase(appContext)
+        createOnDeviceDatabase(appContext, databaseVersion = 2)
+        val copyOpenHelper = createCopyOpenHelper(
+            context = appContext,
+            declaredDbVersion = 2,
+            prepackagedDbVersion = 1,
+        )
+
+        expectThrows<CopyOpenHelper.DatabaseVersionMismatchException> {
+            copyOpenHelper.readableDatabase
+        }
+    }
+
+    @Test
     fun throws_on_upgrade_if_the_prepackaged_DB_has_invalid_version() {
         deleteOnDeviceDatabase(appContext)
         createOnDeviceDatabase(appContext, databaseVersion = 1)
@@ -119,14 +134,16 @@ class CopyOpenHelperTests {
             prepackagedDbVersion = 1,
         )
 
-        expectThrows<CopyOpenHelper.DatabaseCopyException> {
+        expectThrows<CopyOpenHelper.DatabaseVersionMismatchException> {
             copyOpenHelper.readableDatabase
         }
 
         val onDeviceDb: File = appContext.getDatabasePath(DB_NAME)
         val cacheFileNames = appContext.cacheFileNames
         expect {
-            that(onDeviceDb).doesNotExist()
+            that(onDeviceDb)
+                .exists()
+                .hasVersion(1)
             that(cacheFileNames).none { matches("rules-copy-helper.*\\.tmp".toRegex()) }
         }
     }
@@ -141,14 +158,16 @@ class CopyOpenHelperTests {
             prepackagedDbVersion = 2,
         )
 
-        expectThrows<CopyOpenHelper.DatabaseCopyException> {
+        expectThrows<CopyOpenHelper.DatabaseVersionMismatchException> {
             copyOpenHelper.readableDatabase
         }
 
         val onDeviceDb: File = appContext.getDatabasePath(DB_NAME)
         val cacheFileNames = appContext.cacheFileNames
         expect {
-            that(onDeviceDb).doesNotExist()
+            that(onDeviceDb)
+                .exists()
+                .hasVersion(2)
             that(cacheFileNames).none { matches("rules-copy-helper.*\\.tmp".toRegex()) }
         }
     }
@@ -225,11 +244,6 @@ private val Context.cacheFiles: List<File>
 private fun <T : File> Assertion.Builder<T>.exists() =
     assert("exists") {
         if (it.exists()) pass() else fail()
-    }
-
-private fun <T : File> Assertion.Builder<T>.doesNotExist() =
-    assert("does not exist") {
-        if (!it.exists()) pass() else fail()
     }
 
 private fun <T : File> Assertion.Builder<T>.hasVersion(expected: Int) =

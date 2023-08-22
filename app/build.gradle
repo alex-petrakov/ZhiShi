@@ -6,6 +6,7 @@ apply plugin: 'com.squareup.sqldelight'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'de.mannodermaus.android-junit5'
 
 android {
     compileSdkVersion 33
@@ -106,7 +107,15 @@ dependencies {
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.0'
 
+    def junit5_version = '5.9.2'
+    def strikt_version = '0.34.1'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit5_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5_version"
+    testImplementation "io.strikt:strikt-core:$strikt_version"
+
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test:rules:1.5.0'
-    androidTestImplementation 'io.strikt:strikt-core:0.34.1'
+    androidTestImplementation "io.strikt:strikt-core:$strikt_version"
 }

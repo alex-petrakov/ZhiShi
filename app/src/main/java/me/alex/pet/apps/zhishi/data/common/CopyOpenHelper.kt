@@ -20,6 +20,9 @@ class CopyOpenHelper(
     class DatabaseCopyException(message: String, cause: Throwable? = null) :
         RuntimeException(message, cause)
 
+    class DatabaseVersionMismatchException(message: String, cause: Throwable? = null) :
+        RuntimeException(message, cause)
+
     override val databaseName: String?
         get() = delegate.databaseName
 
@@ -45,6 +48,7 @@ class CopyOpenHelper(
         val copyLock = ReentrantLock()
         try {
             copyLock.lock()
+            verifyPrepackagedDatabaseVersion()
             if (!dbFile.exists()) {
                 Timber.i("No database file found at ${dbFile.absolutePath}")
                 tryCopyDatabaseFileFromAssets(dbFile)
@@ -54,6 +58,20 @@ class CopyOpenHelper(
             }
         } finally {
             copyLock.unlock()
+        }
+    }
+
+    private fun verifyPrepackagedDatabaseVersion() {
+        Timber.i("Verifying prepackaged database version...")
+        try {
+            val prepackagedDbVersion = DbFiles.readDatabaseVersion(context.assets.open(assetsPath))
+            if (prepackagedDbVersion != databaseVersion) {
+                throw DatabaseVersionMismatchException("Prepackaged database version does not match declared database version")
+            }
+        } catch (e: DbFiles.VersionReadException) {
+            throw DatabaseCopyException("Unable to verify prepackaged database version", e)
+        } catch (e: IOException) {
+            throw DatabaseCopyException("Unable to verify prepackaged database version", e)
         }
     }
 
@@ -103,11 +121,6 @@ class CopyOpenHelper(
                 throw IOException("Failed to create parent directories for ${destinationFile.absolutePath}")
             }
 
-            val assetsDbVersion = DbFiles.readDatabaseVersion(tempFile)
-            if (assetsDbVersion != databaseVersion) {
-                throw IOException("Assets contain DB with unexpected version (expected = $databaseVersion, actual = $assetsDbVersion)")
-            }
-
             if (!tempFile.renameTo(destinationFile)) {
                 throw IOException("Failed to move temp file ${tempFile.absolutePath} to ${destinationFile.absolutePath}")
             }
@@ -120,7 +133,7 @@ class CopyOpenHelper(
     private fun tryReadDatabaseVersion(dbFile: File): Int {
         return try {
             DbFiles.readDatabaseVersion(dbFile)
-        } catch (e: IOException) {
+        } catch (e: DbFiles.VersionReadException) {
             throw DatabaseCopyException("Unable to read database version", e)
         }
     }
