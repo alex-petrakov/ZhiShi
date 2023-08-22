@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock
 class CopyOpenHelper(
     private val context: Context,
     private val assetsPath: String,
-    private val databaseVersion: Int,
+    private val declaredDatabaseVersion: Int,
     private val delegate: SupportSQLiteOpenHelper,
 ) : SupportSQLiteOpenHelper {
 
@@ -50,11 +50,11 @@ class CopyOpenHelper(
             copyLock.lock()
             verifyPrepackagedDatabaseVersion()
             if (!dbFile.exists()) {
-                Timber.i("No database file found at ${dbFile.absolutePath}")
-                tryCopyDatabaseFileFromAssets(dbFile)
+                Timber.i("No on-device database file found at ${dbFile.absolutePath}")
+                tryCopyingPrepackagedDatabase(dbFile)
             } else {
-                Timber.i("Found database file ${dbFile.absolutePath}")
-                verifyDatabaseVersion(dbFile)
+                Timber.i("Found on-device database file at ${dbFile.absolutePath}")
+                verifyOnDeviceDatabaseVersion(dbFile)
             }
         } finally {
             copyLock.unlock()
@@ -64,9 +64,12 @@ class CopyOpenHelper(
     private fun verifyPrepackagedDatabaseVersion() {
         Timber.i("Verifying prepackaged database version...")
         try {
-            val prepackagedDbVersion = DbFiles.readDatabaseVersion(context.assets.open(assetsPath))
-            if (prepackagedDbVersion != databaseVersion) {
-                throw DatabaseVersionMismatchException("Prepackaged database version does not match declared database version")
+            val prepackagedDatabaseVersion =
+                DbFiles.readDatabaseVersion(context.assets.open(assetsPath))
+            if (prepackagedDatabaseVersion != declaredDatabaseVersion) {
+                throw DatabaseVersionMismatchException(
+                    "Prepackaged database version does not match declared database version (prepackaged = $prepackagedDatabaseVersion, declared = $declaredDatabaseVersion)"
+                )
             }
         } catch (e: DbFiles.VersionReadException) {
             throw DatabaseCopyException("Unable to verify prepackaged database version", e)
@@ -75,36 +78,36 @@ class CopyOpenHelper(
         }
     }
 
-    private fun verifyDatabaseVersion(dbFile: File) {
-        Timber.i("Verifying existing database version...")
-        val currentVersion = tryReadDatabaseVersion(dbFile)
-        if (currentVersion != databaseVersion) {
-            Timber.i("Database version is not up to date (current version = $currentVersion, required version = $databaseVersion)")
-            replaceExistingDatabase(dbFile)
+    private fun verifyOnDeviceDatabaseVersion(dbFile: File) {
+        Timber.i("Verifying on-device database version...")
+        val onDeviceVersion = tryReadingDatabaseVersion(dbFile)
+        if (onDeviceVersion != declaredDatabaseVersion) {
+            Timber.i("On-device database version does not math declared database version (on-device = $onDeviceVersion, declared = $declaredDatabaseVersion)")
+            replaceOnDeviceDatabase(dbFile)
         } else {
-            Timber.i("Database version is up to date (current version = $currentVersion)")
+            Timber.i("On-device database version is up to date (on-device version = $onDeviceVersion)")
         }
     }
 
-    private fun replaceExistingDatabase(dbFile: File) {
-        Timber.i("Trying to replace existing database...")
+    private fun replaceOnDeviceDatabase(dbFile: File) {
+        Timber.i("Trying to replace on-device database...")
         if (context.deleteDatabase(databaseName)) {
-            tryCopyDatabaseFileFromAssets(dbFile)
+            tryCopyingPrepackagedDatabase(dbFile)
         } else {
-            throw DatabaseCopyException("Failed to delete old version of the database file $databaseName")
+            throw DatabaseCopyException("Failed to delete the old version of the on-device database $databaseName")
         }
     }
 
-    private fun tryCopyDatabaseFileFromAssets(dbFile: File) {
+    private fun tryCopyingPrepackagedDatabase(dbFile: File) {
         try {
-            copyDatabaseFileFromAssets(dbFile)
+            copyPrepackagedDatabase(dbFile)
         } catch (e: IOException) {
-            throw DatabaseCopyException("Unable to copy database file from assets", e)
+            throw DatabaseCopyException("Unable to copy prepackaged database file from assets", e)
         }
     }
 
-    private fun copyDatabaseFileFromAssets(destinationFile: File) {
-        Timber.i("Attempting to copy the database from the assets...")
+    private fun copyPrepackagedDatabase(destinationFile: File) {
+        Timber.i("Attempting to copy prepackaged database from assets...")
 
         val tempFile = File.createTempFile("rules-copy-helper", ".tmp", context.cacheDir)
             .also { it.deleteOnExit() }
@@ -124,13 +127,13 @@ class CopyOpenHelper(
             if (!tempFile.renameTo(destinationFile)) {
                 throw IOException("Failed to move temp file ${tempFile.absolutePath} to ${destinationFile.absolutePath}")
             }
-            Timber.i("Database has been successfully copied from assets")
+            Timber.i("Prepackaged database has been successfully copied from assets")
         } finally {
             tempFile.delete()
         }
     }
 
-    private fun tryReadDatabaseVersion(dbFile: File): Int {
+    private fun tryReadingDatabaseVersion(dbFile: File): Int {
         return try {
             DbFiles.readDatabaseVersion(dbFile)
         } catch (e: DbFiles.VersionReadException) {
