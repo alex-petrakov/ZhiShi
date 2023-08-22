@@ -11,13 +11,14 @@ import java.util.concurrent.locks.ReentrantLock
 
 
 class CopyOpenHelper(
-        private val context: Context,
-        private val assetsPath: String,
-        private val databaseVersion: Int,
-        private val delegate: SupportSQLiteOpenHelper
+    private val context: Context,
+    private val assetsPath: String,
+    private val databaseVersion: Int,
+    private val delegate: SupportSQLiteOpenHelper,
 ) : SupportSQLiteOpenHelper {
 
-    class DatabaseCopyException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
+    class DatabaseCopyException(message: String, cause: Throwable? = null) :
+        RuntimeException(message, cause)
 
     override val databaseName: String?
         get() = delegate.databaseName
@@ -87,7 +88,7 @@ class CopyOpenHelper(
     private fun copyDatabaseFileFromAssets(destinationFile: File) {
         Timber.i("Attempting to copy the database from the assets...")
 
-        val tempFile = File.createTempFile("database", ".tmp", context.cacheDir)
+        val tempFile = File.createTempFile("rules-copy-helper", ".tmp", context.cacheDir)
             .also { it.deleteOnExit() }
         try {
             context.assets.open(assetsPath).use { inputStream ->

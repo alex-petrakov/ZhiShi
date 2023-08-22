@@ -6,8 +6,11 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Test
 import strikt.api.Assertion
+import strikt.api.expect
 import strikt.api.expectThat
 import strikt.api.expectThrows
+import strikt.assertions.matches
+import strikt.assertions.none
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -121,7 +124,11 @@ class CopyOpenHelperTests {
         }
 
         val onDeviceDb: File = appContext.getDatabasePath(DB_NAME)
-        expectThat(onDeviceDb).doesNotExist()
+        val cacheFileNames = appContext.cacheFileNames
+        expect {
+            that(onDeviceDb).doesNotExist()
+            that(cacheFileNames).none { matches("rules-copy-helper.*\\.tmp".toRegex()) }
+        }
     }
 
     @Test
@@ -139,7 +146,11 @@ class CopyOpenHelperTests {
         }
 
         val onDeviceDb: File = appContext.getDatabasePath(DB_NAME)
-        expectThat(onDeviceDb).doesNotExist()
+        val cacheFileNames = appContext.cacheFileNames
+        expect {
+            that(onDeviceDb).doesNotExist()
+            that(cacheFileNames).none { matches("rules-copy-helper.*\\.tmp".toRegex()) }
+        }
     }
 }
 
@@ -200,6 +211,16 @@ class NoOpCallback(declaredDbVersion: Int) : SupportSQLiteOpenHelper.Callback(de
         // Do nothing
     }
 }
+
+private val Context.cacheFileNames: List<String>
+    get() = cacheFiles.map { it.name }
+
+private val Context.cacheFiles: List<File>
+    get() {
+        return cacheDir.listFiles()
+            .orEmpty()
+            .toList()
+    }
 
 private fun <T : File> Assertion.Builder<T>.exists() =
     assert("exists") {
