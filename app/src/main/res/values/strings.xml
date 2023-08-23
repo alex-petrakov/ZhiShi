@@ -1,15 +1,15 @@
 <resources>
     <string name="app_name">Правила</string>
     <string name="app_navigate_up">Перейти наверх</string>
-    <string name="app_rule_number">§ %d</string>
+    <string name="app_rule_number">§ %1$d</string>
     <string name="app_action_search_rules">Поиск правил</string>
     <string name="app_action_settings">Настройки</string>
     <string name="app_action_about">О программе</string>
 
-    <string name="section_rule_numbers_range">§§ %d–%d</string>
-    <string name="section_rule_number">§ %d</string>
+    <string name="section_rule_numbers_range">§§ %1$d–%2$d</string>
+    <string name="section_rule_number">§ %1$d</string>
 
-    <string name="rule_rule_number">§ %d</string>
+    <string name="rule_rule_number">§ %1$d</string>
     <string name="rule_action_go_to_next_page">Перейти к следующему правилу</string>
     <string name="rule_action_go_to_prev_page">Перейти к предыдущему правилу</string>
     <string name="rule_action_share">Поделиться</string>
@@ -32,8 +32,8 @@
     <string name="about_error_no_google_play">Не удалось открыть Google Play</string>
     <string name="about_email_developer">Написать разработчику</string>
     <string name="about_error_no_email_client">Не удалось открыть почтовый клиент</string>
-    <string name="feedback_email_subject_template">Правила русского языка %s</string>
-    <string name="feedback_email_body_template">Версия приложения: %s\nУстройство: %s\nВерсия ОС: %s\nЯзык: %s</string>
+    <string name="feedback_email_subject_template">Правила русского языка %1$s</string>
+    <string name="feedback_email_body_template">Версия приложения: %1$s\nУстройство: %2$s\nВерсия ОС: %3$s\nЯзык: %4$s</string>
     <string name="about_settings_title">Настройки</string>
     <string name="about_theme">Тема оформления</string>
     <string name="about_theme_follow_system">Как в системе</string>
