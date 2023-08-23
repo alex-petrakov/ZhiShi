@@ -16,8 +16,6 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.databinding.FragmentSearchBinding
 import me.alex.pet.apps.zhishi.presentation.common.MaterialZAxisTransition
@@ -67,7 +65,6 @@ class SearchFragment : Fragment() {
         subscribeToModel()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun prepareView() = with(binding) {
         recyclerView.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

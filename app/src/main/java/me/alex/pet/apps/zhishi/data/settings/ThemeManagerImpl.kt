@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.fredporciuncula.flow.preferences.FlowSharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import me.alex.pet.apps.zhishi.BuildConfig
@@ -15,7 +14,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-@OptIn(ExperimentalCoroutinesApi::class)
 class ThemeManagerImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ThemeManager {
@@ -40,7 +38,6 @@ class ThemeManagerImpl @Inject constructor(
         applySystemNightMode(themeSwitchingMode)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override fun getThemeSwitchingModeFlow(): Flow<ThemeSwitchingMode> {
         return themeSwitchingModePref.asFlow()
             .map { ThemeSwitchingMode.from(it) ?: FOLLOW_SYSTEM }
