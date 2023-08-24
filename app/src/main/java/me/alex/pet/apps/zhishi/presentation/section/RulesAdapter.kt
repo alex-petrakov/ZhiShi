@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import me.alex.pet.apps.zhishi.R
-import me.alex.pet.apps.zhishi.databinding.ItemGenericIndentedSubtitleBinding
 import me.alex.pet.apps.zhishi.databinding.ItemRuleNumberedBinding
+import me.alex.pet.apps.zhishi.databinding.ItemSectionScreenSubtitleBinding
 import me.alex.pet.apps.zhishi.presentation.common.extensions.withExistingAdapterPosition
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.StyledTextRenderer
 import me.alex.pet.apps.zhishi.presentation.common.styledtext.spanrenderers.BasicCharSpanRenderer
@@ -27,7 +27,7 @@ class RulesAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is DisplayableItem.Heading -> R.layout.item_generic_indented_subtitle
+            is DisplayableItem.Heading -> R.layout.item_section_screen_subtitle
             is DisplayableItem.Rule -> R.layout.item_rule_numbered
         }
     }
@@ -37,8 +37,8 @@ class RulesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            R.layout.item_generic_indented_subtitle -> {
-                HeadingHolder(ItemGenericIndentedSubtitleBinding.bind(view))
+            R.layout.item_section_screen_subtitle -> {
+                HeadingHolder(ItemSectionScreenSubtitleBinding.bind(view))
             }
             R.layout.item_rule_numbered -> {
                 RuleHolder(ItemRuleNumberedBinding.bind(view)) { adapterPosition ->
@@ -59,7 +59,7 @@ class RulesAdapter(
     }
 
     private class HeadingHolder(
-            private val binding: ItemGenericIndentedSubtitleBinding
+        private val binding: ItemSectionScreenSubtitleBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val styledTextRenderer = StyledTextRenderer(

@@ -10,10 +10,9 @@
 
     <TextView
         android:id="@+id/number_tv"
-        android:layout_width="48dp"
+        android:layout_width="48sp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:maxLines="1"
         android:textAppearance="?textAppearanceBody1"
         android:textColor="?colorPrimary"
         tools:text="§ 1" />

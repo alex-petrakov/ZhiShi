@@ -6,9 +6,9 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:minHeight="56dp"
-    android:paddingStart="72dp"
+    android:paddingStart="16dp"
     android:paddingTop="16dp"
-    android:paddingBottom="8dp"
     android:paddingEnd="16dp"
+    android:paddingBottom="8dp"
     android:textAppearance="?textAppearanceHeadline6"
     tools:text="Гласные после шипящих и ц" />
