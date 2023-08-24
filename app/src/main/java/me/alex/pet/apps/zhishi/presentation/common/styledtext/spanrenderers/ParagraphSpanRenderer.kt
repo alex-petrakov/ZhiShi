@@ -141,9 +141,9 @@ private const val indentStepSample = "     "
 private const val quoteGapSample = "  "
 
 private fun Int.dp(resources: Resources): Int {
-    return this * (resources.displayMetrics.density).roundToInt()
+    return (this * resources.displayMetrics.density).roundToInt()
 }
 
 private fun Int.sp(resources: Resources): Int {
-    return this * (resources.displayMetrics.scaledDensity).roundToInt()
+    return (this * resources.displayMetrics.scaledDensity).roundToInt()
 }
