@@ -1,7 +1,10 @@
 package me.alex.pet.apps.zhishi.presentation.rules
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -23,7 +26,9 @@ class RulesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val rulesToDisplay: RulesToDisplay
-        get() = requireArguments().getParcelable(ARG_RULES_TO_DISPLAY)
+        get() = requireArguments()
+            .also { it.classLoader = javaClass.classLoader }
+            .getParcelable(ARG_RULES_TO_DISPLAY)
             ?: throw IllegalStateException("Required argument is missing")
 
     private val displaySectionButton: Boolean
@@ -78,7 +83,7 @@ class RulesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentRulesBinding.inflate(inflater, container, false)
         return binding.root
@@ -132,7 +137,7 @@ class RulesFragment : Fragment() {
 
         fun newInstance(
             rulesToDisplay: RulesToDisplay,
-            displaySectionButton: Boolean = false
+            displaySectionButton: Boolean = false,
         ): RulesFragment {
             return RulesFragment().apply {
                 arguments = bundleOf(
