@@ -1,9 +1,9 @@
 package me.alex.pet.apps.zhishi.presentation.section
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import androidx.lifecycle.switchMap
 import com.github.terrakok.cicerone.Router
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +31,7 @@ class SectionViewModel @Inject constructor(
         emit(section)
     }
 
-    val viewState = Transformations.switchMap(section) { section ->
+    val viewState = section.switchMap { section ->
         liveData { emit(mapSectionToViewState(section)) }
     }
 

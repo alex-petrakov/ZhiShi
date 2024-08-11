@@ -31,7 +31,7 @@ class RuleViewModel @Inject constructor(
         emit(rule)
     }
 
-    val viewState: LiveData<ViewState> = Transformations.switchMap(rule) { rule ->
+    val viewState: LiveData<ViewState> = rule.switchMap { rule ->
         liveData { emit(mapRuleToViewState(rule)) }
     }
 

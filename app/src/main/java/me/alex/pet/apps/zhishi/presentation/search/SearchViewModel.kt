@@ -23,9 +23,9 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _query = MutableLiveData(savedStateHandle.query)
-    val query: LiveData<String> = Transformations.map(_query, Query::text)
+    val query: LiveData<String> = _query.map { it.text }
 
-    val viewState = Transformations.switchMap(_query) { query ->
+    val viewState = _query.switchMap { query ->
         liveData(timeoutInMs = 0L) {
             // When the system restores screen state, don't apply debounce
             // and start search immediately
