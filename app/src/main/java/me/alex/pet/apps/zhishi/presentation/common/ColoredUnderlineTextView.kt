@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.text.Spanned
 import android.util.AttributeSet
+import android.util.TypedValue
 import androidx.annotation.Px
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.graphics.withTranslation
@@ -14,7 +15,7 @@ import me.alex.pet.apps.zhishi.presentation.common.styledtext.androidspans.Color
 class ColoredUnderlineTextView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
-        defStyleAttr: Int = android.R.attr.textViewStyle
+        defStyleAttr: Int = android.R.attr.textViewStyle,
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     @Px
@@ -71,5 +72,9 @@ class ColoredUnderlineTextView @JvmOverloads constructor(
 }
 
 private fun Int.dp(resources: Resources): Float {
-    return this * resources.displayMetrics.density
+    return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            this.toFloat(),
+            resources.displayMetrics
+    )
 }

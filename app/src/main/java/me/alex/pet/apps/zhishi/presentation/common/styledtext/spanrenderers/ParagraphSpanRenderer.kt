@@ -5,6 +5,7 @@ import android.text.TextPaint
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.LeadingMarginSpan
+import android.util.TypedValue
 import me.alex.pet.apps.zhishi.R
 import me.alex.pet.apps.zhishi.domain.common.ParagraphAppearance
 import me.alex.pet.apps.zhishi.domain.common.ParagraphSpan
@@ -15,7 +16,7 @@ import kotlin.math.roundToInt
 
 class ParagraphSpanRenderer(
         theme: Resources.Theme,
-        private val textPaint: TextPaint
+        private val textPaint: TextPaint,
 ) : SpanRenderer<ParagraphSpan> {
 
     private val emphasisColor by lazy { theme.resolveColorAttr(R.attr.colorTextEmphasis) }
@@ -98,7 +99,7 @@ class ParagraphSpanRenderer(
             end: Int,
             level: Int,
             hangingText: String,
-            textPaint: TextPaint
+            textPaint: TextPaint,
     ): PositionAwareSpan {
         require(level > 0)
         val restLinesIndent = indentStepWidth * level
@@ -141,9 +142,17 @@ private const val indentStepSample = "     "
 private const val quoteGapSample = "  "
 
 private fun Int.dp(resources: Resources): Int {
-    return (this * resources.displayMetrics.density).roundToInt()
+    return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            this.toFloat(),
+            resources.displayMetrics
+    ).roundToInt()
 }
 
 private fun Int.sp(resources: Resources): Int {
-    return (this * resources.displayMetrics.scaledDensity).roundToInt()
+    return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            this.toFloat(),
+            resources.displayMetrics
+    ).roundToInt()
 }
