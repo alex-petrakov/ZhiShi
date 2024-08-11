@@ -20,3 +20,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Required when R8 operates in full mode
+-keepclassmembers public class io.requery.android.database.sqlite.SQLiteConnection {
+    *;
+}
