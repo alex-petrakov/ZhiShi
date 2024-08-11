@@ -85,7 +85,7 @@ dependencies {
 
     implementation "com.squareup.sqldelight:android-driver:$sqldelight_version"
 
-    def moshi_version = '1.14.0'
+    def moshi_version = '1.15.1'
     implementation "com.squareup.moshi:moshi:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
 
